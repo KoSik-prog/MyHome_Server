@@ -1,0 +1,14 @@
+Dodanie programu do autostartu!!!!!
+
+
+/etc/xdg/lxsession/LXDE-pi/autostart
+
+
+
+
+Zawartosc:
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi 
+@xscreensaver -no-splash
+@sudo python /home/pi/Desktop/Home/watchdog.py
+@sudo python /home/pi/Desktop/Home/serwer.py
