@@ -22,7 +22,7 @@ from numpy.random import randint
 
 
 # my libraries
-from libraries import webServices
+from libraries/webServices import *
 
 AddrOut = 2222
 kasowanieSQL_flaga=False
@@ -829,7 +829,7 @@ def server():
     try:
         message, address = s.recvfrom(1024)
         dziennik.zapis_dziennika_zdarzen(dziennik.data() +" " + "Polaczenie %s: %s" % (address, message))
-        webServices.transmisja(message, address)
+        transmisja(message, address)
         return message
     except (KeyboardInterrupt, SystemExit):
         raise
