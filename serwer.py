@@ -22,7 +22,7 @@ from numpy.random import randint
 
 
 # my libraries
-from libraries/webServices import *
+from libraries.webServices import *
 
 AddrOut = 2222
 kasowanieSQL_flaga=False
