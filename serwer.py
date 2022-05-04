@@ -22,8 +22,6 @@ from numpy.random import randint
 
 
 # my libraries
-#sys.path.append('libraries') #add path
-
 from libraries import webServices
 
 AddrOut = 2222
