@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 from time import sleep
 
 print("Uruchamiam serwer MyHome...")
@@ -19,6 +19,12 @@ from pygame.compat import unichr_, unicode_
 from pygame.locals import *
 from pygame.compat import geterror
 from numpy.random import randint
+
+
+# my libraries
+#sys.path.append('libraries') #add path
+
+from libraries import webServices
 
 AddrOut = 2222
 kasowanieSQL_flaga=False
@@ -1641,6 +1647,7 @@ user_id=""
 security_user=""
 #pobranie adresu IP z serwera
 #hubip = ikea.ikea_get_ip(MACaddress)
+webServices.funkcjaTestowa()
 dziennik.zapis_dziennika_zdarzen("START")
 try:
     security_user, user_id =(ikea.tradfri_login(hubip, securityid))
