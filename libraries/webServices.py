@@ -1,4 +1,7 @@
 
+#jakas zmiana
+
+
 def transmisja(messag, adres):
     if(messag.find('salonOswietlenie.') != -1):   # SALON
         pocz=messag.find(".")+1
