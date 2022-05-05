@@ -60,3 +60,7 @@ Dziennik zdarzen:
 21:28    Sensor1 zewnetrzny ->   Lux: 0    LuxIR: 0    Bateria: 2092
 21:30 -----> ODEBRANO: #02y2151190
 21:30    Sensor3 czujnikPok2.temp: 21.5*C   Wilg3: 119%
+21:31 -----> ODEBRANO: #04t0207590100
+21:31    Sensor2 czujnikPok1.temp: 20.7*C   Wilg2: 59.0%   Batt: 100
+21:31 -----> ODEBRANO: #03t0149474000000
+21:31    Sensor1 zewnetrzny Temp: 14.9*C   Wilg: 47.4%   Wiatr: 0.0m/s   Kier:0
