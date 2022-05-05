@@ -1,0 +1,62 @@
+05-05-2022  21:19
+Dziennik zdarzen:
+
+21:21 -----> ODEBRANO: #03t0152454000000
+21:21 -----> ODEBRANO: 
+21:21    Sensor1 zewnetrzny Temp: 15.2*C   Wilg: 45.4%   Wiatr: 0.0m/s   Kier:0
+21:21 -----> ODEBRANO: #04t0207589100
+21:21 -----> ODEBRANO: 
+21:21    Sensor2 czujnikPok1.temp: 20.7*C   Wilg2: 58.9%   Batt: 100
+21:22 -----> ODEBRANO: 
+21:22 -----> ODEBRANO: #02y2151190
+21:22    Sensor3 czujnikPok2.temp: 21.5*C   Wilg3: 119%
+21:22 -----> ODEBRANO: #01k00001103607800408
+21:22 -----> ODEBRANO: 
+21:22    Kwiatek Slonce: 000%   Wilg: 011%   Woda: 036x10ml   Zas: 078%
+21:23 -----> ODEBRANO: #03s00001000002101
+21:23 -----> ODEBRANO: 
+21:23 Swiatlo obliczone=  1000 / [2000, 2000, 2000, 2000, 1]
+21:23 Obliczylem, ze swiatlo wynosci: 1000
+21:23    Sensor1 zewnetrzny ->   Lux: 1    LuxIR: 0    Bateria: 2101
+21:23 AUTO LED TV -> ON
+21:23 Ustawiono Led TV: #05K255255255070
+21:23 -----> ODEBRANO: #05?255255255070
+21:23    Led TV ON/OFF:1   Jasnosc:70
+21:24 AUTO LED TV -> ON
+21:24 Ustawiono Led TV: #05K255255255070
+21:24 -----> ODEBRANO: #05?255255255070
+21:24 -----> ODEBRANO: 
+21:24    Led TV ON/OFF:1   Jasnosc:70
+21:24 -----> ODEBRANO: #05?255255255070
+21:24    Led TV ON/OFF:1   Jasnosc:70
+21:24 -----> ODEBRANO: 
+21:24 AUTO LED TV -> ON
+21:24 Ustawiono Led TV: #05K255255255070
+21:25 AUTO LED TV -> ON
+21:25 Ustawiono Led TV: #05K255255255070
+21:25 -----> ODEBRANO: #05?255255255070
+21:25 -----> ODEBRANO: 
+21:25    Led TV ON/OFF:1   Jasnosc:70
+21:26 -----> ODEBRANO: #03t0149470000000
+21:26 -----> ODEBRANO: 
+21:26    Sensor1 zewnetrzny Temp: 14.9*C   Wilg: 47.0%   Wiatr: 0.0m/s   Kier:0
+21:27 05-05-2022 Polaczenie ('192.168.0.99', 46561): sterTVjasnosc.025
+21:27 Ustawiono Led TV: #05K255255255025
+21:27 -----> ODEBRANO: #05?255255255025
+21:27 -----> ODEBRANO: 
+21:27    Led TV ON/OFF:1   Jasnosc:25
+21:27 05-05-2022 Polaczenie ('192.168.0.99', 36382): sterTVjasnosc.075
+21:27 Ustawiono Led TV: #05K255255255075
+21:27 -----> ODEBRANO: #05?255255255075
+21:27 -----> ODEBRANO: 
+21:27    Led TV ON/OFF:1   Jasnosc:75
+21:27 05-05-2022 Polaczenie ('192.168.0.99', 44924): sterTVjasnosc.100
+21:27 Ustawiono Led TV: #05K255255255100
+21:28 -----> ODEBRANO: #14k0050012560894
+21:28    Kwiatek 14 Slonce: 005%   Wilg: 100%   Zas: 2.56V
+21:28 -----> ODEBRANO: #03s00000000002092
+21:28 Swiatlo obliczone=  6 / [32, 14, 6, 2, 0]
+21:28 Obliczylem, ze swiatlo wynosci: 6
+21:28    Sensor1 zewnetrzny ->   Lux: 0    LuxIR: 0    Bateria: 2092
+21:30 -----> ODEBRANO: #02y2151190
+21:30    Sensor3 czujnikPok2.temp: 21.5*C   Wilg3: 119%
