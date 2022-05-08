@@ -217,3 +217,9 @@ def obraz_kwiatek(kwiatwilg,kwiatslonce,kwiatwoda,kwiatzas):
     napis2(str(kwiatslonce)+"%","Nimbus Sans L",68,20,80,kolorczcionki2,255)
     napis2(str(kwiatwoda)+"%","Nimbus Sans L",68,20,150,kolorczcionki2,255)
     napis2(str(kwiatzas)+"%","Nimbus Sans L",68,20,230,kolorczcionki2,255)
+
+
+def display_picture(screen, osx, osy, alpha, picture):
+    picture = picture.convert_alpha()
+    picture.set_alpha(alpha)
+    screen.blit(picture, (osx, osy))

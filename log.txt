@@ -1,9 +1,18 @@
-08-05-2022  09:5809:58 START
-09:58 Ikea Tradfri -> id: 10    pass: kEHtoOTO1LR1ZARr
-09:58 AUTO Hyroponika -> ON
-09:58 Ustawiono Hydroponike: #17A1
-09:58 -----> ODEBRANO: #18?1     333
-09:58    Hydroponika ON/OFF:1
-09:58 -----> ODEBRANO: #18?1     333
-09:58 -----> ODEBRANO: 
-09:58    Hydroponika ON/OFF:1
+08-05-2022  13:06 LOG:
+13:06 Pobieram progrnoze pogody...
+13:06 Blad polaczenia z serwerem pogody
+13:06 Ikea Tradfri -> id: 8    pass: IU0gfVh3msE1D1rv
+13:06 AUTO Hyroponika -> ON
+13:06 Ustawiono Hydroponike: #17A1
+13:06 -----> ODEBRANO: 
+13:06 -----> ODEBRANO: #18?1     333
+13:06    Hydroponika ON/OFF:1
+13:06 -----> ODEBRANO: #18?1     333
+13:06 -----> ODEBRANO: 
+13:06    Hydroponika ON/OFF:1
+13:06 -----> ODEBRANO: 
+13:06 -----> ODEBRANO: #12k1000012800592
+13:06    Kwiatek 12 Slonce: 100%   Wilg: 100%   Zas: 2.80V
+13:07 -----> ODEBRANO: 
+13:07 -----> ODEBRANO: #03t0226274002000
+13:07    Sensor1 zewnetrzny Temp: 22.6*C   Wilg: 27.4%   Wiatr: 0.2m/s   Kier:0

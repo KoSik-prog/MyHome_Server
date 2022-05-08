@@ -14,8 +14,10 @@ from lib_nrf24 import NRF24
 from numpy.random import randint
 
 from libraries.infoStrip import *
+from libraries.weatherForecast import *
 from devicesList import *
-from log import *
+from libraries.log import *
+from libraries.displayItems import *
 #from display import *
 
 AddrOut = 2222
@@ -160,8 +162,8 @@ def wysw_init():
 
     pygame.init()
     resolution = 800, 480
-    screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
-    #screen = pygame.display.set_mode(resolution,1)
+    #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(resolution,1)
     pygame.display.set_caption('MojDom')
     screen.fill(bgcolor)
     pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
@@ -218,7 +220,7 @@ def obraz_glowny():
         if czujnikZew.noc_flaga==True:
             kolorczcionki3=(190,190,190,255)
             kolorczcionki4=(250,250,250,200)
-    pogoda.ikonka(pozX,0,255,True,czujnikZew.noc_flaga,pogoda.Pogoda.IkonaDzis)
+    wysw.display_picture(screen, pozX , 0, 255, weather.get_icon(True, czujnikZew.noc_flaga, pogoda.Pogoda.IkonaDzis)) 
     if(tapeta.find('01') != -1):  #CLEAR SKY
         if czujnikZew.noc_flaga==True:
             kolorczcionki2=(180,180,180,255)
@@ -236,12 +238,8 @@ def obraz_glowny():
     elif(tapeta.find('09') != -1 or tapeta.find('10') != -1):  #RAIN
         kolorczcionki3=(255,255,155,255)
         kolorczcionki4=(255,255,200,255)
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
+        for i in range(6):
+            wysw.display_picture(screen, randint(30, 750), randint(70, 300), 255, pictures.get_icon("anim")) 
     if(tapeta.find('11') != -1): #THUNDERSTORM
         kolorczcionki3=(255,255,155,255)
         kolorczcionki4=(255,215,0,255)
@@ -1330,7 +1328,7 @@ security_user=""
 #pobranie adresu IP z serwera
 #hubip = ikea.ikea_get_ip(MACaddress)
 log.delete_log()
-log.add_log("START")
+weather.get_forecast("Frankfurt")
 try:
     security_user, user_id =(ikea.tradfri_login(hubip, securityid))
     log.add_log("Ikea Tradfri -> id: {}    pass: {}".format(user_id, security_user))

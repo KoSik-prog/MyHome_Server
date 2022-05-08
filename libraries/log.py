@@ -25,7 +25,7 @@ class LOG_CL:
             time.sleep(0.001)
         self.busyFlag = True
         actFile = open('Desktop/Home/log.txt', 'w')
-        actFile.write(self.actualDate() + "  " + self.actualTime())
+        actFile.write(self.actualDate() + "  " + self.actualTime() + " LOG:\n")
         actFile.close()
         self.busyFlag = False
 
