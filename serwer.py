@@ -13,7 +13,7 @@ from lib_nrf24 import NRF24
 
 from numpy.random import randint
 
-from infoStrip import *
+from libraries.infoStrip import *
 from devicesList import *
 from log import *
 #from display import *
@@ -32,23 +32,23 @@ def sprawdzCzujniki():
     minimalneNapiecieBaterii=2.55
     minimalnaWilgotnosc = 10
     if((datetime.datetime.now() - czujnikZew.czas)>(datetime.timedelta(minutes=18))):
-        infoStrip.dodajUsunBlad(0,True)
+        infoStrip.set_error(0,True)
     if((datetime.datetime.now() - czujnikPok1.czas)>(datetime.timedelta(minutes=23))):
-        infoStrip.dodajUsunBlad(1,True)
+        infoStrip.set_error(1,True)
     if((datetime.datetime.now() - czujnikPok2.czas)>(datetime.timedelta(minutes=23))):
-        infoStrip.dodajUsunBlad(2,True)
+        infoStrip.set_error(2,True)
     if((datetime.datetime.now() - czujnikKwiatek.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(3,True)
+        infoStrip.set_error(3,True)
     if((datetime.datetime.now() - czujnikKwiatek2.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(4,True)
+        infoStrip.set_error(4,True)
     if((datetime.datetime.now() - czujnikKwiatek3.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(5,True)
+        infoStrip.set_error(5,True)
     if((datetime.datetime.now() - czujnikKwiatek4.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(6,True)
+        infoStrip.set_error(6,True)
     if((datetime.datetime.now() - czujnikKwiatek5.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(16,True)
+        infoStrip.set_error(16,True)
     if((datetime.datetime.now() - czujnikKwiatek6.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.dodajUsunBlad(19,True)
+        infoStrip.set_error(19,True)
     #sprawdzenie budy
     if((datetime.datetime.now() - buda.czas)>(datetime.timedelta(minutes=2))):
         buda.temp1=0.0
@@ -58,49 +58,49 @@ def sprawdzCzujniki():
         buda.czujnikZajetosciRaw=0
     #sprawdzenie stanu baterii
     if(czujnikKwiatek.zasilanie <= 5):
-        infoStrip.dodajUsunBlad(7,True)
+        infoStrip.set_error(7,True)
     else:
-        infoStrip.dodajUsunBlad(7,False)
+        infoStrip.set_error(7,False)
     if(czujnikKwiatek2.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.dodajUsunBlad(8,True)
+        infoStrip.set_error(8,True)
     else:
-        infoStrip.dodajUsunBlad(8,False)
+        infoStrip.set_error(8,False)
     if(czujnikKwiatek3.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.dodajUsunBlad(9,True)
+        infoStrip.set_error(9,True)
     else:
-        infoStrip.dodajUsunBlad(9,False)
+        infoStrip.set_error(9,False)
     if(czujnikKwiatek4.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.dodajUsunBlad(10,True)
+        infoStrip.set_error(10,True)
     else:
-        infoStrip.dodajUsunBlad(10,False)
+        infoStrip.set_error(10,False)
     if(czujnikKwiatek2.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek2.slonce < 60):
-        infoStrip.dodajUsunBlad(11,True)
+        infoStrip.set_error(11,True)
     else:
-        infoStrip.dodajUsunBlad(11,False)
+        infoStrip.set_error(11,False)
     if(czujnikKwiatek3.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek3.slonce < 60):
-        infoStrip.dodajUsunBlad(12,True)
+        infoStrip.set_error(12,True)
     else:
-        infoStrip.dodajUsunBlad(12,False)
+        infoStrip.set_error(12,False)
     if(czujnikKwiatek4.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek4.slonce < 60):
-        infoStrip.dodajUsunBlad(13,True)
+        infoStrip.set_error(13,True)
     else:
-        infoStrip.dodajUsunBlad(13,False)
+        infoStrip.set_error(13,False)
     if(czujnikKwiatek5.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.dodajUsunBlad(14,True)
+        infoStrip.set_error(14,True)
     else:
-        infoStrip.dodajUsunBlad(14,False)
+        infoStrip.set_error(14,False)
     if(czujnikKwiatek5.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek5.slonce < 60):
-        infoStrip.dodajUsunBlad(15,True)
+        infoStrip.set_error(15,True)
     else:
-        infoStrip.dodajUsunBlad(15,False)
+        infoStrip.set_error(15,False)
     if(czujnikKwiatek6.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.dodajUsunBlad(17,True)
+        infoStrip.set_error(17,True)
     else:
-        infoStrip.dodajUsunBlad(17,False)
+        infoStrip.set_error(17,False)
     if(czujnikKwiatek6.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek6.slonce < 60):
-        infoStrip.dodajUsunBlad(18,True)
+        infoStrip.set_error(18,True)
     else:
-        infoStrip.dodajUsunBlad(18,False)
+        infoStrip.set_error(18,False)
 
 
 
@@ -323,27 +323,27 @@ def obraz_glowny():
     dlugosc=wysw.napis2(screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,kolorczcionki3,255)
 
     # PASEK INFORMACYJNY
-    infoStrip.aktualnaInformacja=infoStrip.odczytajInfo()
-    if (infoStrip.aktualnaInformacja != ""):
-        infoStrip.wyswietlanaInformacja=infoStrip.aktualnaInformacja
+    infoStrip.actualInformation=infoStrip.read_info()
+    if (infoStrip.actualInformation != ""):
+        infoStrip.displayedInformation=infoStrip.actualInformation
         kolorPaskaInfo=(190,255,190,255)
-        infoStrip.czas=60
-        infoStrip.pozycja=3
+        infoStrip.time=60
+        infoStrip.position=3
     else:
-        if(infoStrip.czas==0):
-            infoStrip.wyswietlanaInformacja=infoStrip.odczytajBlad()
-            if (infoStrip.wyswietlanaInformacja != ""):
-                 infoStrip.czas=120
-                 infoStrip.pozycja=3
+        if(infoStrip.time==0):
+            infoStrip.displayedInformation=infoStrip.read_error()
+            if (infoStrip.displayedInformation != ""):
+                 infoStrip.time=120
+                 infoStrip.position=3
                  kolorPaskaInfo=(255,100,100,255)
 
-    if(infoStrip.czas>0):
-        infoStrip.czas-=1
-    if(infoStrip.czas>=0 and infoStrip.czas<=3):
-        infoStrip.pozycja=infoStrip.czas
+    if(infoStrip.time>0):
+        infoStrip.time-=1
+    if(infoStrip.time>=0 and infoStrip.time<=3):
+        infoStrip.position=infoStrip.time
 
-    if(infoStrip.wyswietlanaInformacja != ""):
-        wysw.napis2(screen, infoStrip.wyswietlanaInformacja,"Nimbus Sans L",46,70,480-(infoStrip.pozycja*13),kolorPaskaInfo,255)
+    if(infoStrip.displayedInformation != ""):
+        wysw.napis2(screen, infoStrip.displayedInformation,"Nimbus Sans L",46,70,480-(infoStrip.position*13),kolorPaskaInfo,255)
 
 
 def obraz_nocny():
@@ -475,9 +475,9 @@ def NRFread( stringNRF ):
                       czujnikKwiatek.zasilanie=str(string5)
                       sql_baza.dodajRekordKwiatek(czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie)
                       czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(3,False)
+                      infoStrip.set_error(3,False)
                       if(czujnikKwiatek.woda < 10):
-                        infoStrip.dodajUsunBlad(20,False)
+                        infoStrip.set_error(20,False)
                       log.add_log(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
                   if stringNRF[3]== "P":
                       sql_baza.dodajRekordKwiatekPodlanie()
@@ -495,7 +495,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordTempSyp(czujnikPok2.temp,czujnikPok2.humi)
                       czujnikPok2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok2.blad=False #kasowanie bledu
-                      infoStrip.dodajUsunBlad(2,False)
+                      infoStrip.set_error(2,False)
                       log.add_log(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                    if stringNRF[3]== "?":
                       string2=(stringNRF[4:7])
@@ -536,7 +536,7 @@ def NRFread( stringNRF ):
                       czujnikZew.kierunekWiatru=int(string5)
                       czujnikZew.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikZew.blad=False #kasowanie bledu
-                      infoStrip.dodajUsunBlad(0,False)
+                      infoStrip.set_error(0,False)
                       log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
@@ -553,7 +553,7 @@ def NRFread( stringNRF ):
                       czujnikPok1.batt=int(string4)
                       czujnikPok1.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok1.blad=False #kasowanie bledu
-                      infoStrip.dodajUsunBlad(1,False)
+                      infoStrip.set_error(1,False)
                       log.add_log(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
              #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "05":  #LED - tv
@@ -641,7 +641,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek2.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek2(czujnikKwiatek2.wilgotnosc,czujnikKwiatek2.slonce,czujnikKwiatek2.zasilanie,czujnikKwiatek2.wilgotnosc_raw)
                       czujnikKwiatek2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(4,False)
+                      infoStrip.set_error(4,False)
                       log.add_log(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
@@ -657,7 +657,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek3.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek3(czujnikKwiatek3.wilgotnosc,czujnikKwiatek3.slonce,czujnikKwiatek3.zasilanie, czujnikKwiatek3.wilgotnosc_raw)
                       czujnikKwiatek3.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(5,False)
+                      infoStrip.set_error(5,False)
                       log.add_log(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
@@ -673,7 +673,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek4.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek4(czujnikKwiatek4.wilgotnosc,czujnikKwiatek4.slonce,czujnikKwiatek4.zasilanie, czujnikKwiatek4.wilgotnosc_raw)
                       czujnikKwiatek4.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(6,False)
+                      infoStrip.set_error(6,False)
                       log.add_log(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "15":  #BUDA 15
@@ -703,7 +703,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek5.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek5(czujnikKwiatek5.wilgotnosc,czujnikKwiatek5.slonce,czujnikKwiatek5.zasilanie, czujnikKwiatek5.wilgotnosc_raw)
                       czujnikKwiatek5.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(16,False)
+                      infoStrip.set_error(16,False)
                       log.add_log(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
@@ -718,7 +718,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek6.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek6(czujnikKwiatek6.wilgotnosc,czujnikKwiatek6.slonce,czujnikKwiatek6.zasilanie, czujnikKwiatek6.wilgotnosc_raw)
                       czujnikKwiatek6.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      infoStrip.dodajUsunBlad(19,False)
+                      infoStrip.set_error(19,False)
                       log.add_log(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "99":  #testowy
@@ -950,7 +950,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#05K{}{:03d}".format(lampaTV.Ustawienie,int(ustawienie))
         if len(wiad)>=15:
             log.add_log("Ustawiono Led TV: {}".format(wiad))
-            infoStrip.dodajInfo("światło TV: {}".format(ustawienie))
+            infoStrip.add_info("światło TV: {}".format(ustawienie))
             NRFwyslij(AdresLedTV,wiad).start()
             lampaTV.blad+=1
         else:
@@ -959,7 +959,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#S{:03d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
-            infoStrip.dodajInfo("światło w sypialni: {}".format(ustawienie))
+            infoStrip.add_info("światło w sypialni: {}".format(ustawienie))
             NRFwyslij(AdresSypialnia,wiad).start()
             lampaPok2.blad+=1
         else:
@@ -968,7 +968,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#07T{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
-            infoStrip.dodajInfo("światło w kuchni: {}".format(ustawienie))
+            infoStrip.add_info("światło w kuchni: {}".format(ustawienie))
             NRFwyslij(AdresKuchnia,wiad).start()
             lampaKuch.blad+=1
         else:
@@ -978,7 +978,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         if len(wiad)>=5:
             lampa1Pok1.Jasnosc=int(ustawienie)
             log.add_log("Ustawiono Reflektor 1: {}".format(wiad))
-            infoStrip.dodajInfo("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
+            infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
             NRFwyslij(AdresLampa1,wiad).start()
             lampa1Pok1.blad+=1
             if(int(ustawienie) == 0):
@@ -991,7 +991,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#08T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Lampa 1: {}".format(wiad))
-            infoStrip.dodajInfo("dekoracje 1 w salonie: {}".format(ustawienie))
+            infoStrip.add_info("dekoracje 1 w salonie: {}".format(ustawienie))
             NRFwyslij(dekoPok1.Adres,wiad).start()
             lampa1Pok1.blad+=1
         else:
@@ -1000,7 +1000,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#09T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Lampa 2: {}".format(wiad))
-            infoStrip.dodajInfo("dekoracje 2 w salonie: {}".format(ustawienie))
+            infoStrip.add_info("dekoracje 2 w salonie: {}".format(ustawienie))
             NRFwyslij(deko2Pok1.Adres,wiad).start()
             dekoPok1.blad+=1
         else:
@@ -1009,7 +1009,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#10T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
-            infoStrip.dodajInfo("flaming: {}".format(ustawienie))
+            infoStrip.add_info("flaming: {}".format(ustawienie))
             NRFwyslij(AdresFlaming,wiad).start()
             dekoFlaming.blad+=1
         else:
@@ -1018,7 +1018,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#11T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
-            infoStrip.dodajInfo("uniwersalny USB: {}".format(ustawienie))
+            infoStrip.add_info("uniwersalny USB: {}".format(ustawienie))
             NRFwyslij(AdresUsb,wiad).start()
             dekoUsb.blad+=1
         else:
@@ -1029,7 +1029,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         log.add_log("Tradfri Salon ->: {}".format(ustawienie))
-        infoStrip.dodajInfo("oświetlenie w salonie: {}".format(ustawienie))
+        infoStrip.add_info("oświetlenie w salonie: {}".format(ustawienie))
     if adres==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, ustawienie)
@@ -1042,7 +1042,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         log.add_log("Tradfri Jadalnia ->: {}".format(ustawienie))
-        infoStrip.dodajInfo("oświetlenie w jadalni: {}".format(ustawienie))
+        infoStrip.add_info("oświetlenie w jadalni: {}".format(ustawienie))
     if adres==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
@@ -1053,7 +1053,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         else:
             lampaPrzedpokojTradfri.Status=0
         log.add_log("Tradfri Przedpokoj ->: {}".format(ustawienie))
-        infoStrip.dodajInfo("oświetlenie w przedpokoju: {}".format(ustawienie))
+        infoStrip.add_info("oświetlenie w przedpokoju: {}".format(ustawienie))
     if adres==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
         if len(str(ustawienie))==1:
             if int(ustawienie)==0 or int(ustawienie)==1:
@@ -1065,12 +1065,12 @@ def sterowanieOswietleniem(adres, ustawienie):
             chKolor3=int(ustawienie[6:9])
             ikea.ikea_RGB_lamp(hubip, user_id, securityid, security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
             log.add_log("Tradfri Lampa kolor ->: {}".format(ustawienie))
-            infoStrip.dodajInfo("lampa w salonie -> kolor: {}".format(ustawienie))
+            infoStrip.add_info("lampa w salonie -> kolor: {}".format(ustawienie))
         elif len(str(ustawienie))==2 or len(str(ustawienie))==3:
             if int(ustawienie)>1 and int(ustawienie)<=100:
                 ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
                 log.add_log("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
-                infoStrip.dodajInfo("lampa w salonie: {}".format(ustawienie))
+                infoStrip.add_info("lampa w salonie: {}".format(ustawienie))
         else:
             log.add_log("Tradfri blad skladni")
     if adres==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
@@ -1082,7 +1082,7 @@ def sterowanieOswietleniem(adres, ustawienie):
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, 1)
             lampaPok2Tradfri.Flaga = True
         log.add_log("Tradfri Sypialnia ->: {}".format(ustawienie))
-        infoStrip.dodajInfo("oświetlenie w sypialni: {}".format(ustawienie))
+        infoStrip.add_info("oświetlenie w sypialni: {}".format(ustawienie))
     if adres==hydroponika.Adres:   #Hydroponika
         if int(ustawienie) > 1:
             wiad="#17P1" #wlacz pompe
@@ -1090,7 +1090,7 @@ def sterowanieOswietleniem(adres, ustawienie):
             wiad="#17A{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
             log.add_log("Ustawiono Hydroponike: {}".format(wiad))
-            infoStrip.dodajInfo("Hydroponika: {}".format(ustawienie))
+            infoStrip.add_info("Hydroponika: {}".format(ustawienie))
             NRFwyslij(hydroponika.Adres,wiad).start()
         else:
             log.add_log("BLAD SKLADNI!: {}".format(wiad))

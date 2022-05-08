@@ -3,10 +3,10 @@
 from devicesList import *
 
 class INFO_STRIP_CL:
-    aktualnaInformacja=""
-    wyswietlanaInformacja=""
-    informacje=["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]
-    bledy=[[False,"blad czujnika zewnetrznego"],
+    actualInformation=""
+    displayedInformation=""
+    informations=["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]
+    errorsArray=[[False,"blad czujnika zewnetrznego"],
     [False,"blad czujnika salonu"],
     [False,"blad czujnika sypialni"],
     [False,"blad czujnika kwiatka (Konewka)"],
@@ -27,36 +27,36 @@ class INFO_STRIP_CL:
     [False,"wilgotnosc kwiatka 17 ponizej 5% (Szeflera)"],
     [False,"blad czujnika kwiatka 17 (Szeflera)"],
     [False,"mała ilosc wody dla kwiatka - konewka"]]
-    pozycjaOdczytuBledu=0
-    czas=0
-    pozycja=0
+    errorPosition=0
+    time=0
+    position=0
 
 
-    def dodajUsunBlad(self, numerBledu, aktywny):
-        self.bledy[numerBledu][0]=aktywny
+    def set_error(self, numerBledu, aktywny):
+        self.errorsArray[numerBledu][0]=aktywny
 
-    def odczytajBlad(self):
+    def read_error(self):
         blad=""
-        for x in range(len(self.bledy)):
-            self.pozycjaOdczytuBledu+=1
-            if self.pozycjaOdczytuBledu > len(self.bledy)-1:
-                self.pozycjaOdczytuBledu=0
-            if(self.bledy[self.pozycjaOdczytuBledu][0] == True):
-                blad=self.bledy[self.pozycjaOdczytuBledu][1]
+        for x in range(len(self.errorsArray)):
+            self.errorPosition+=1
+            if self.errorPosition > len(self.errorsArray)-1:
+                self.errorPosition=0
+            if(self.errorsArray[self.errorPosition][0] == True):
+                blad=self.errorsArray[self.errorPosition][1]
                 break
         return blad
 
-    def dodajInfo(self, informacja):
-        for i in range(len(self.informacje)):
-            if self.informacje[i]=="":
-                self.informacje[i]=informacja
+    def add_info(self, info):
+        for i in range(len(self.informations)):
+            if self.informations[i]=="":
+                self.informations[i]=info
                 break
 
-    def odczytajInfo(self):
-        informacja=""
-        informacja=self.informacje[0]
-        for i in range(len(self.informacje)-1):
-            self.informacje[i]=self.informacje[i+1]
-        return informacja
+    def read_info(self):
+        info=""
+        info=self.informations[0]
+        for i in range(len(self.informations)-1):
+            self.informations[i]=self.informations[i+1]
+        return info
 
 infoStrip=INFO_STRIP_CL()

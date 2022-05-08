@@ -78,9 +78,9 @@ def NRFread( stringNRF ):
                       czujnikKwiatek.zasilanie=str(string5)
                       sql_baza.dodajRekordKwiatek(czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie)
                       czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(3,False)
+                      set_error(3,False)
                       if(czujnikKwiatek.woda < 10):
-                        dodajUsunBlad(20,False)
+                        set_error(20,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
                   if stringNRF[3]== "P":
                       sql_baza.dodajRekordKwiatekPodlanie()
@@ -98,7 +98,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordTempSyp(czujnikPok2.temp,czujnikPok2.humi)
                       czujnikPok2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok2.blad=False #kasowanie bledu
-                      dodajUsunBlad(2,False)
+                      set_error(2,False)
                       dziennik.zapis_dziennika_zdarzen(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                    if stringNRF[3]== "?":
                       string2=(stringNRF[4:7])
@@ -139,7 +139,7 @@ def NRFread( stringNRF ):
                       czujnikZew.kierunekWiatru=int(string5)
                       czujnikZew.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikZew.blad=False #kasowanie bledu
-                      dodajUsunBlad(0,False)
+                      set_error(0,False)
                       dziennik.zapis_dziennika_zdarzen("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
@@ -156,7 +156,7 @@ def NRFread( stringNRF ):
                       czujnikPok1.batt=int(string4)
                       czujnikPok1.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok1.blad=False #kasowanie bledu
-                      dodajUsunBlad(1,False)
+                      set_error(1,False)
                       dziennik.zapis_dziennika_zdarzen(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
              #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "05":  #LED - tv
@@ -244,7 +244,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek2.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek2(czujnikKwiatek2.wilgotnosc,czujnikKwiatek2.slonce,czujnikKwiatek2.zasilanie,czujnikKwiatek2.wilgotnosc_raw)
                       czujnikKwiatek2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(4,False)
+                      set_error(4,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
@@ -260,7 +260,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek3.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek3(czujnikKwiatek3.wilgotnosc,czujnikKwiatek3.slonce,czujnikKwiatek3.zasilanie, czujnikKwiatek3.wilgotnosc_raw)
                       czujnikKwiatek3.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(5,False)
+                      set_error(5,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
@@ -276,7 +276,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek4.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek4(czujnikKwiatek4.wilgotnosc,czujnikKwiatek4.slonce,czujnikKwiatek4.zasilanie, czujnikKwiatek4.wilgotnosc_raw)
                       czujnikKwiatek4.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(6,False)
+                      set_error(6,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "15":  #BUDA 15
@@ -306,7 +306,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek5.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek5(czujnikKwiatek5.wilgotnosc,czujnikKwiatek5.slonce,czujnikKwiatek5.zasilanie, czujnikKwiatek5.wilgotnosc_raw)
                       czujnikKwiatek5.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(16,False)
+                      set_error(16,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
@@ -321,7 +321,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek6.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek6(czujnikKwiatek6.wilgotnosc,czujnikKwiatek6.slonce,czujnikKwiatek6.zasilanie, czujnikKwiatek6.wilgotnosc_raw)
                       czujnikKwiatek6.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(19,False)
+                      set_error(19,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "99":  #testowy

@@ -1,6 +1,9 @@
-08-05-2022  09:3709:37 START
-09:37 Ikea Tradfri -> id: 9    pass: VysK8wdxcYCgxwuV
-09:37 AUTO Hyroponika -> ON
-09:37 Ustawiono Hydroponike: #17A1
-09:37 -----> ODEBRANO: #18?1     333
-09:37    Hydroponika ON/OFF:1
+08-05-2022  09:5809:58 START
+09:58 Ikea Tradfri -> id: 10    pass: kEHtoOTO1LR1ZARr
+09:58 AUTO Hyroponika -> ON
+09:58 Ustawiono Hydroponike: #17A1
+09:58 -----> ODEBRANO: #18?1     333
+09:58    Hydroponika ON/OFF:1
+09:58 -----> ODEBRANO: #18?1     333
+09:58 -----> ODEBRANO: 
+09:58    Hydroponika ON/OFF:1
