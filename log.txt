@@ -1,18 +1,14 @@
-08-05-2022  13:49 LOG:
-13:49 Pobieram progrnoze pogody...
-13:49 Blad polaczenia z serwerem pogody
-13:49 Ikea Tradfri -> id: 9    pass: DGwW2ou3n2eiqmdH
-13:49 AUTO Hyroponika -> ON
-13:49 Ustawiono Hydroponike: #17A1
-13:49 -----> ODEBRANO: #18?1     333
-13:49    Hydroponika ON/OFF:1
-13:49 -----> ODEBRANO: #17k0200012680543
-13:49    Kwiatek 17 Slonce: 020%   Wilg: 100%   Zas: 2.68V
-13:49 -----> ODEBRANO: #02y2201094
-13:49    Sensor3 czujnikPok2.temp: 22.0*C   Wilg3: 109%
-13:50 -----> ODEBRANO: #03s37177186862110
-13:50 Swiatlo obliczone=  19588 / [2000, 2000, 2000, 2000, 37177]
-13:50 Obliczylem, ze swiatlo wynosci: 19588
-13:50    Sensor1 zewnetrzny ->   Lux: 37177    LuxIR: 18686    Bateria: 2110
-13:53 -----> ODEBRANO: #03t0239281006000
-13:53    Sensor1 zewnetrzny Temp: 23.9*C   Wilg: 28.1%   Wiatr: 0.6m/s   Kier:0
+08-05-2022  14:33 LOG:
+14:33 Ikea Tradfri -> id: 4    pass: 3QoMq245mEyqHAug
+14:33 AUTO Hyroponika -> ON
+14:33 Ustawiono Hydroponike: #17A1
+14:33 Pobieram progrnoze pogody...
+14:33 Blad polaczenia z serwerem pogody
+14:33 -----> ODEBRANO: #18?1     333
+14:33    Hydroponika ON/OFF:1
+14:34 -----> ODEBRANO: #04t0227541100
+14:34    Sensor2 czujnikPok1.temp: 22.7*C   Wilg2: 54.1%   Batt: 100
+14:34 -----> ODEBRANO: #03t0223318000000
+14:34    Sensor1 zewnetrzny Temp: 22.3*C   Wilg: 31.8%   Wiatr: 0.0m/s   Kier:0
+14:34 -----> ODEBRANO: #16k0000013040448
+14:34    Kwiatek 16 Slonce: 000%   Wilg: 32%   Zas: 3.04V
