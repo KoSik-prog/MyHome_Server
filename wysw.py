@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 try:
-    import select, time, datetime, pogoda
+    import select, time, datetime, random
 except ImportError:
     print "Blad importu"
 

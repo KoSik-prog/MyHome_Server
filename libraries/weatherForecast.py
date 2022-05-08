@@ -6,8 +6,24 @@ except ImportError:
     log.add_log("Modul Import Error")
 
 from pygame.compat import geterror
-from datetime import datetime, timedelta
 from libraries.log import *
+
+#initialize
+pygame.init()
+resolution = 800, 480
+screen = pygame.display.set_mode(resolution,1)
+
+''' ICONS NR
+01d - clear sky
+02d - few clouds
+03d - scattered clouds
+04d - broken clouds
+09d - shower rain
+10d - rain
+11d - thunderstorm
+13d - snow
+50d - mist
+'''
 
 class WEATHER_CL:
     tempMinToday=0.0
@@ -22,7 +38,7 @@ class WEATHER_CL:
         self.ClearSky = self.load_image('ikony', "Clear_Sky.gif")
         self.ClearSkyNight = self.load_image('ikony', "Clear_Sky_Night.gif")
         self.FewClouds = self.load_image('ikony', "Few_Clouds.gif")
-        self.Mist = self.load_image('ikony', "Mist.gif")
+        self.Fog = self.load_image('ikony', "Mist.gif")
         self.Rain = self.load_image('ikony', "Rain.gif")
         self.ScatteredClouds = self.load_image('ikony', "Scattered_Clouds.gif")
         self.ScatteredCloudsNight = self.load_image('ikony', "Scattered_Clouds_Night.gif")
@@ -60,7 +76,7 @@ class WEATHER_CL:
         flag=0
         select_data = forecastText['list']
 
-        d = datetime.today()
+        d = datetime.datetime.today()
         for box in select_data:
             if 'dt' in box:
                 if float(box['main']['temp_max'])>self.tempMaxToday:
@@ -71,9 +87,9 @@ class WEATHER_CL:
                     self.tempMinToday=float(box['main']['temp_min'])
                     if(self.tempMinToday > -1 and self.tempMinToday <= 0):
                         self.tempMinToday = 0.0
-                czas=datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
+                czas=datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
                 if flag==0:
-                    self.icoToday=box['weather'][0]['icon']
+                    self.iconToday=box['weather'][0]['icon']
                     flag=1
             else:
                 log.add_log('nie znaleziono pogody na dzis')
@@ -83,10 +99,10 @@ class WEATHER_CL:
         self.tempMaxTomorrow=-50
         self.tempMinTomorrow=50
         select_data = forecastText['list']
-        d = datetime.today() + timedelta(days=1)
+        d = datetime.datetime.today() + datetime.timedelta(days=1)
         for box in select_data:
             if 'dt_txt' in box:
-                data=datetime.strptime(box['dt_txt'], '%Y-%m-%d %H:%M:%S')
+                data=datetime.datetime.strptime(box['dt_txt'], '%Y-%m-%d %H:%M:%S')
                 if data.date()==d.date():
                     if float(box['main']['temp_max'])>self.tempMaxTomorrow:
                         self.tempMaxTomorrow=float(box['main']['temp_max'])
@@ -96,7 +112,7 @@ class WEATHER_CL:
                         self.tempMinTomorrow=float(box['main']['temp_min'])
                         if(self.tempMinTomorrow > -1 and self.tempMinTomorrow <= 0):
                             self.tempMinTomorrow = 0.0
-                    czas=datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
+                    czas=datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
                     if data.time()==czas.time():
                         self.iconTomorrow=box['weather'][0]['icon']
             else:
@@ -107,9 +123,9 @@ class WEATHER_CL:
         url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID=85b527bafdfc28a92672434b32ead750&units=metric'.format(miasto)
         try:
             json_data = requests.get(url).json()
-            forecastTextDzis(json_data)
-            forecastTextJutro(json_data)
-            log.add_log(time.strftime("%H:%M")+' Pobrano prognoze pogody dla miasta ' + miasto)
+            self.forecast_today(json_data)
+            self.forecast_tomorrow(json_data)
+            log.add_log(' Pobrano prognoze pogody dla miasta ' + miasto)
         except:
             log.add_log("Blad polaczenia z serwerem pogody")
 
@@ -118,83 +134,69 @@ class WEATHER_CL:
         file.write(error + '\n')
         file.close()
     
-    def get_icon(self, sizeBig, night, iconName):
+    def get_background(self, night, iconName):
         iconName=iconName.lower()
-        '''
-        01d - clear sky
-        02d - few clouds
-        03d - scattered clouds
-        04d - broken clouds
-        09d - shower rain
-        10d - rain
-        11d - thunderstorm
-        13d - snow
-        50d - mist
-        '''
         if(iconName.find('01') != -1):  #CLEAR SKY
-            if(sizeBig == True):
-                if(night == True):
-                    pic=self.DClearSkyNight.convert()
-                else:
-                    pic=self.DClearSky.convert()
+            if(night == True):
+                pic=self.DClearSkyNight.convert()
             else:
-                if(night==True):
-                    pic=self.ClearSkyNight.convert()
-                else:
-                    pic=self.ClearSky.convert()
+                pic=self.DClearSky.convert()
         elif(iconName.find('02') != -1):  # FEW CLOUDS
-            if(sizeBig==True):
-                if(night==True):
-                    pic=self.DFewCloudsNight.convert()
-                else:
-                    pic=self.DFewClouds.convert()
+            if(night==True):
+                pic=self.DFewCloudsNight.convert()
             else:
-                pic=self.FewClouds.convert()
+                pic=self.DFewClouds.convert()
         elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
-            if(sizeBig==True):
-                if(night==True):
-                    pic=self.DCloudyNight.convert()
-                else:
-                    pic=self.DCloudy.convert()
+            if(night==True):
+                pic=self.DCloudyNight.convert()
             else:
-                pic=self.ScatteredClouds.convert()
+                pic=self.DCloudy.convert()
         elif(iconName.find('04') != -1):  #BROKEN CLOUDS
-            if(sizeBig==True):
-                if(night==True):
-                    pic=self.DCloudyNight.convert()
-                else:
-                    pic=self.DCloudy.convert()
+            if(night==True):
+                pic=self.DCloudyNight.convert()
             else:
-                pic=self.BrokenClouds.convert()
+                pic=self.DCloudy.convert()
         elif(iconName.find('09') != -1): #SHOWER RAIN
-            if(sizeBig==True):
-                pic=self.DRain.convert()
-            else:
-                pic=self.ShowerRain.convert()
+            pic=self.DRain.convert()
         elif(iconName.find('10') != -1): #RAIN
-            if(sizeBig==True):
-                pic=self.DRain.convert()
-            else:
-                pic=self.Rain.convert()
+            pic=self.DRain.convert()
         elif(iconName.find('11') != -1):  #THUNDERSTORM
-            if(sizeBig==True):
-                pic=self.DTStorm.convert()
-            else:
-                pic=self.Thunderstorm.convert()
+            pic=self.DTStorm.convert()
         elif(iconName.find('13') != -1):  #SNOW
-            if(sizeBig==True):
-                if(night==True):
-                    pic=self.DSnowNight.convert()
-                else:
-                    pic=self.DSnow.convert()
+            if(night==True):
+                pic=self.DSnowNight.convert()
             else:
-                pic=self.Snow.convert()
+                pic=self.DSnow.convert()
         elif(iconName.find('50') != -1):  #mist - fog
-            if(sizeBig==True):
-                pic=self.DFog.convert()
+            pic=self.DFog.convert()
+        else:
+            self.save_error(iconName)
+            pic=self.NA.convert()
+        return pic
+
+    def get_icon(self, night, iconName):
+        iconName=iconName.lower()
+        if(iconName.find('01') != -1):  #CLEAR SKY
+            if(night==True):
+                pic=self.ClearSkyNight.convert()
             else:
-                pic=self.Fog.convert()
-        #---------------------------
+                pic=self.ClearSky.convert()
+        elif(iconName.find('02') != -1):  # FEW CLOUDS
+            pic=self.FewClouds.convert()
+        elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
+            pic=self.ScatteredClouds.convert()
+        elif(iconName.find('04') != -1):  #BROKEN CLOUDS
+            pic=self.BrokenClouds.convert()
+        elif(iconName.find('09') != -1): #SHOWER RAIN
+            pic=self.ShowerRain.convert()
+        elif(iconName.find('10') != -1): #RAIN
+            pic=self.Rain.convert()
+        elif(iconName.find('11') != -1):  #THUNDERSTORM
+            pic=self.Thunderstorm.convert()
+        elif(iconName.find('13') != -1):  #SNOW
+            pic=self.Snow.convert()
+        elif(iconName.find('50') != -1):  #mist - fog
+            pic=self.Fog.convert()
         else:
             self.save_error(iconName)
             pic=self.NA.convert()

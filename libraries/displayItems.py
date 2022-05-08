@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 try:
-    import select, time, datetime, pogoda
+    import select, time, datetime
 except ImportError:
     print "Blad importu"
 
@@ -26,6 +26,7 @@ class PICTURES_CL():
         self.snowflake5 = self.load_image('pic', "snowflake5.gif")
         self.snowflake6 = self.load_image('pic', "snowflake6.gif")
         self.RainAnim1 = self.load_image('pic', "rain_anim1.gif")
+        self.DTStorm2 = self.load_image('pic', "T-Storm2.jpg")
     
     def get_icon(self, iconName):
         if(iconName == "arrow_down"):
@@ -46,6 +47,8 @@ class PICTURES_CL():
             foto=self.snowflake5.convert()
         elif(iconName.find('snowflake6') != -1):
             foto=self.snowflake6.convert()
+        elif(iconName.find("DTStorm2")):
+            foto=self.DTStorm2.convert()
         else:
             foto=self.NA.convert()
         return foto

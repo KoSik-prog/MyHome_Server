@@ -1,14 +1,12 @@
-08-05-2022  14:33 LOG:
-14:33 Ikea Tradfri -> id: 4    pass: 3QoMq245mEyqHAug
-14:33 AUTO Hyroponika -> ON
-14:33 Ustawiono Hydroponike: #17A1
-14:33 Pobieram progrnoze pogody...
-14:33 Blad polaczenia z serwerem pogody
-14:33 -----> ODEBRANO: #18?1     333
-14:33    Hydroponika ON/OFF:1
-14:34 -----> ODEBRANO: #04t0227541100
-14:34    Sensor2 czujnikPok1.temp: 22.7*C   Wilg2: 54.1%   Batt: 100
-14:34 -----> ODEBRANO: #03t0223318000000
-14:34    Sensor1 zewnetrzny Temp: 22.3*C   Wilg: 31.8%   Wiatr: 0.0m/s   Kier:0
-14:34 -----> ODEBRANO: #16k0000013040448
-14:34    Kwiatek 16 Slonce: 000%   Wilg: 32%   Zas: 3.04V
+08-05-2022  17:33 LOG:
+17:33 Ikea Tradfri -> id: 3    pass: ya3dZtO4eFEBuvR6
+17:33 Pobieram progrnoze pogody...
+17:33 AUTO Hyroponika -> ON
+17:33 Ustawiono Hydroponike: #17A1
+17:33  Pobrano prognoze pogody dla miasta Rodgau
+17:33 -----> ODEBRANO: 
+17:33 -----> ODEBRANO: #18?1     333
+17:33    Hydroponika ON/OFF:1
+17:33 -----> ODEBRANO: #16k0000013030507
+17:33 -----> ODEBRANO: 
+17:33    Kwiatek 16 Slonce: 000%   Wilg: 71%   Zas: 3.03V

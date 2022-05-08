@@ -1,24 +1,23 @@
  # -*- coding: utf-8 -*-
-from time import sleep
+from libraries.gui import *
+from libraries.log import *
+from devicesList import *
+from libraries.displayItems import *
+from libraries.infoStrip import *
+from libraries.weatherForecast import *
 
 try:
-    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, wysw, threading, sys ,os, linecache, pogoda, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
+    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, wysw, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
 except ImportError:
     print "Blad importu"
 
+from time import sleep
 import rpi_backlight as bl
 import RPi.GPIO as GPIO
 import xml.etree.cElementTree as ET
 from lib_nrf24 import NRF24
 
 from numpy.random import randint
-
-from libraries.infoStrip import *
-from libraries.weatherForecast import *
-from devicesList import *
-from libraries.log import *
-from libraries.displayItems import *
-from libraries.gui import *
 
 AddrOut = 2222
 kasowanieSQL_flaga=False
@@ -1029,8 +1028,7 @@ def ODCZYT_USTAWIEN_WATEK():  #------WATEK ODCZYTUJACY USTAWIENIA Z XML
         if q>5:
             q=0
         if q==0:
-            pogoda.PrognozaPogody("Rodgau") #pobranie prognozy pogody poprawic
-            weather.get_forecast("Rodgau")
+            weather.get_forecast('Rodgau')
         odczyt_ustawien_xml()
         watchdog_reset()
         time.sleep(60)
@@ -1044,7 +1042,7 @@ def SPRAWDZENIE_TIMERA_WATEK():  #------WATEK SPRAWDZAJACY TIMER
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------------------------------------------------------------------------------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-print("Uruchamiam serwer MyHome...")
+log.add_log("Uruchamiam serwer MyHome...")
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22,GPIO.OUT)
