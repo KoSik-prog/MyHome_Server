@@ -37,6 +37,7 @@ class czujnikKwiatekCl:   #KWIATEK
     wilgotnosc=100
     zasilanie=100
     czas=datetime.datetime.now()
+    error = "blebleble"
 czujnikKwiatek=czujnikKwiatekCl
 
 class czujnikKwiatek2Cl:   #adres 12  KWIATEK _maly czujnik PALMA

@@ -2,7 +2,7 @@
 
 from devicesList import *
 
-class infoStripCl:
+class INFO_STRIP_CL:
     aktualnaInformacja=""
     wyswietlanaInformacja=""
     informacje=["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]
@@ -59,4 +59,4 @@ class infoStripCl:
             self.informacje[i]=self.informacje[i+1]
         return informacja
 
-infoStrip=infoStripCl()
+infoStrip=INFO_STRIP_CL()

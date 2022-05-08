@@ -1,26 +1,41 @@
 import sys, os, datetime, time
 
-czas=datetime.datetime.now()
 
+class LOG_CL:
+    busyFlag = False
 
-def czas():
-    return str(time.strftime("%H:%M"))
+    def actualTime(self):
+        return str(time.strftime("%H:%M"))
 
-def data():
-    return str(time.strftime("%d-%m-%Y"))
+    def actualDate(self):
+        return str(time.strftime("%d-%m-%Y"))
 
-def zapis_dziennika_zdarzen(dane):
-    plik = open('Desktop/Home/log.txt', 'a+')
-    plik.write(czas() + ' ' + dane+'\n')
-    plik.close()
-    print (czas() + ' ' + dane)
+    def add_log(self, information):
+        while self.busyFlag == True:
+            time.sleep(0.001)
+        self.busyFlag = True
+        actFile = open('Desktop/Home/log.txt', 'a+')
+        actFile.write(self.actualTime() + ' ' + information+'\n')
+        actFile.close()
+        self.busyFlag = False
+        print(self.actualTime() + ' ' + information)
 
-def kasowanie_dziennika_zdarzen():
-    plik = open('Desktop/Home/log.txt', 'w')
-    plik.write(data() + "  " +czas()+'\nDziennik zdarzen:\n\n')
-    plik.close()
+    def delete_log(self):
+        while self.busyFlag == True:
+            time.sleep(0.001)
+        self.busyFlag = True
+        actFile = open('Desktop/Home/log.txt', 'w')
+        actFile.write(self.actualDate() + "  " + self.actualTime())
+        actFile.close()
+        self.busyFlag = False
 
-def zapis_stuff(dane):
-    plik = open('Desktop/Home/stuff.txt', 'a+')
-    plik.write(czas() + ' ' + dane+'\n')
-    plik.close()
+    def add_stuff_log(self, information):
+        while self.busyFlag == True:
+            time.sleep(0.001)
+        self.busyFlag = True
+        actFile = open('Desktop/Home/stuff.txt', 'a+')
+        actFile.write(self.actualTime() + ' ' + information +'\n')
+        actFile.close()
+        self.busyFlag = False
+
+log = LOG_CL()

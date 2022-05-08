@@ -1,31 +1,6 @@
-08-05-2022  08:34
-Dziennik zdarzen:
-
-08:34 AUTO Hyroponika -> ON
-08:34 Ustawiono Hydroponike: #17A1
-08:34 -----> ODEBRANO: #18?1     333
-08:34    Hydroponika ON/OFF:1
-08:46 -----> ODEBRANO: #02y2201160
-08:46    Sensor3 czujnikPok2.temp: 22.0*C   Wilg3: 116%
-08:47 -----> ODEBRANO: #17k0180012650547
-08:47    Kwiatek 17 Slonce: 018%   Wilg: 100%   Zas: 2.65V
-08:47 -----> ODEBRANO: #17k0180012650547
-08:47    Kwiatek 17 Slonce: 018%   Wilg: 100%   Zas: 2.65V
-08:47 -----> ODEBRANO: #03s12413043572085
-08:47 Swiatlo obliczone=  7206 / [2000, 2000, 2000, 2000, 12413]
-08:47 Obliczylem, ze swiatlo wynosci: 7206
-08:47    Sensor1 zewnetrzny ->   Lux: 12413    LuxIR: 4357    Bateria: 2085
-08:50 -----> ODEBRANO: #03t0147614003000
-08:50    Sensor1 zewnetrzny Temp: 14.7*C   Wilg: 61.4%   Wiatr: 0.3m/s   Kier:0
-08:50 08-05-2022 Polaczenie ('192.168.0.98', 42861): terrarium.T:22.3/W: 94,t:21.2/w: 58/I:   0.0361
-08:50    Terrarium Temp1: 22.3*C, Wilg1: 94.0%  /  Temp2: 21.2*C, Wilg2: 58.0*C  /  UVI: 0.0361
-08:52 -----> ODEBRANO: #01k08600900307200406
-08:52    Kwiatek Slonce: 086%   Wilg: 009%   Woda: 003x10ml   Zas: 072%
-08:53 -----> ODEBRANO: #03s14252051542085
-08:53 Swiatlo obliczone=  9427 / [2000, 2000, 2000, 12413, 14252]
-08:53 Obliczylem, ze swiatlo wynosci: 9427
-08:53    Sensor1 zewnetrzny ->   Lux: 14252    LuxIR: 5154    Bateria: 2085
-08:54 -----> ODEBRANO: #04t0219554100
-08:54    Sensor2 czujnikPok1.temp: 21.9*C   Wilg2: 55.4%   Batt: 100
-08:54 -----> ODEBRANO: #02y2201160
-08:54    Sensor3 czujnikPok2.temp: 22.0*C   Wilg3: 116%
+08-05-2022  09:3709:37 START
+09:37 Ikea Tradfri -> id: 9    pass: VysK8wdxcYCgxwuV
+09:37 AUTO Hyroponika -> ON
+09:37 Ustawiono Hydroponike: #17A1
+09:37 -----> ODEBRANO: #18?1     333
+09:37    Hydroponika ON/OFF:1

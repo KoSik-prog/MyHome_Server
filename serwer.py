@@ -2,7 +2,7 @@
 from time import sleep
 
 try:
-    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, wysw, threading, sys ,os, linecache, pogoda, re, sql_baza, dziennik, pygame, pygame.mixer, pygame.gfxdraw, glob
+    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, wysw, threading, sys ,os, linecache, pogoda, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
 except ImportError:
     print "Blad importu"
 
@@ -15,6 +15,7 @@ from numpy.random import randint
 
 from infoStrip import *
 from devicesList import *
+from log import *
 #from display import *
 
 AddrOut = 2222
@@ -109,7 +110,7 @@ def sprawdzTimer():  #SPRAWDZENIE CO WYKONAC O DANEJ PORZE
     if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:00") and kasowanieSQL_flaga==False:
         sql_baza.kasujstaredane() #kasowanie starych rekordow z bazy danych
         kasowanieSQL_flaga=True
-        dziennik.zapis_dziennika_zdarzen("Skasowano stare dane z SQL")
+        log.add_log("Skasowano stare dane z SQL")
     if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:01") and kasowanieSQL_flaga==True:
         kasowanieSQL_flaga=False
     #------------------------------------------------------------------------------------------
@@ -142,11 +143,11 @@ def autoCzas(klasa):
         klasa.FlagaSterowanieManualne=False
     #------SPRAWDZENIE------------------------
     if(klasa.Flaga==0 and automatykaOswietlenia.swiatloObliczone<klasa.AutoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-        dziennik.zapis_dziennika_zdarzen("AUTO {} -> ON".format(klasa.Opis))
+        log.add_log("AUTO {} -> ON".format(klasa.Opis))
         sterowanieOswietleniem(klasa.Adres,klasa.AutoJasnosc)
         time.sleep(20)
     if(klasa.Flaga==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-        dziennik.zapis_dziennika_zdarzen("AUTO {} -> OFF".format(klasa.Opis))
+        log.add_log("AUTO {} -> OFF".format(klasa.Opis))
         sterowanieOswietleniem(klasa.Adres,0)
         time.sleep(20)
 
@@ -454,7 +455,7 @@ def NRFGet():
     for n in receivedMessage:
         if(n>=16 and n <=126):
             stringNRF +=chr(n)
-    dziennik.zapis_dziennika_zdarzen(("-----> ODEBRANO: {}".format(stringNRF)))
+    log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
     return stringNRF
 
 def NRFread( stringNRF ):
@@ -477,10 +478,10 @@ def NRFread( stringNRF ):
                       infoStrip.dodajUsunBlad(3,False)
                       if(czujnikKwiatek.woda < 10):
                         infoStrip.dodajUsunBlad(20,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
+                      log.add_log(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
                   if stringNRF[3]== "P":
                       sql_baza.dodajRekordKwiatekPodlanie()
-                      dziennik.zapis_dziennika_zdarzen("   Podlanie")
+                      log.add_log("   Podlanie")
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="02":  #czujnik temperatury 3 - sypialni
                    if stringNRF[3]== "y":
@@ -495,7 +496,7 @@ def NRFread( stringNRF ):
                       czujnikPok2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok2.blad=False #kasowanie bledu
                       infoStrip.dodajUsunBlad(2,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
+                      log.add_log(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                    if stringNRF[3]== "?":
                       string2=(stringNRF[4:7])
                       lampaPok2.Jasnosc=int(string2)
@@ -506,7 +507,7 @@ def NRFread( stringNRF ):
                       lampaPok2.FlagaSterowanieManualne=True
                       pipesTXflag[2]=False
                       lampaPok2.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Led Sypialni ON/OFF:{}".format(lampaPok2.Flaga)) + ("   PWM:{}".format(lampaPok2.Jasnosc)))
+                      log.add_log(("   Led Sypialni ON/OFF:{}".format(lampaPok2.Flaga)) + ("   PWM:{}".format(lampaPok2.Jasnosc)))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="03":  #czujnik  zewnetrzny
                   if stringNRF[3]== "s":
@@ -518,8 +519,8 @@ def NRFread( stringNRF ):
                       czujnikZew.batt=int(string3)
                       sql_baza.dodajRekordSwiatlo(czujnikZew.lux,czujnikZew.ir)
                       oblicz_swiatlo()
-                      dziennik.zapis_dziennika_zdarzen("Obliczylem, ze swiatlo wynosci: {}".format(automatykaOswietlenia.swiatloObliczone))
-                      dziennik.zapis_dziennika_zdarzen("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(czujnikZew.lux,czujnikZew.ir,czujnikZew.batt))
+                      log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(automatykaOswietlenia.swiatloObliczone))
+                      log.add_log("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(czujnikZew.lux,czujnikZew.ir,czujnikZew.batt))
                   if stringNRF[3]== "t":
                       if(stringNRF[4]=="1"):
                           string2=('-'+stringNRF[5:7]+"."+stringNRF[7])
@@ -536,7 +537,7 @@ def NRFread( stringNRF ):
                       czujnikZew.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikZew.blad=False #kasowanie bledu
                       infoStrip.dodajUsunBlad(0,False)
-                      dziennik.zapis_dziennika_zdarzen("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
+                      log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
                   if stringNRF[3]== "t":
@@ -553,7 +554,7 @@ def NRFread( stringNRF ):
                       czujnikPok1.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok1.blad=False #kasowanie bledu
                       infoStrip.dodajUsunBlad(1,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
+                      log.add_log(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
              #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "05":  #LED - tv
                   if stringNRF[3]== "?":
@@ -566,7 +567,7 @@ def NRFread( stringNRF ):
                           lampaTV.Jasnosc=int(string2)
                       pipesTXflag[1]=False
                       lampaTV.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Led TV ON/OFF:{}".format(lampaTV.Flaga)) + ("   Jasnosc:{}".format(lampaTV.Jasnosc)))
+                      log.add_log(("   Led TV ON/OFF:{}".format(lampaTV.Flaga)) + ("   Jasnosc:{}".format(lampaTV.Jasnosc)))
    #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "06":  #LED LAMPA
                   if stringNRF[3]== "?":
@@ -578,7 +579,7 @@ def NRFread( stringNRF ):
                       #lampa1Pok1.Jasnosc=int(string2)
                       pipesTXflag[3]=False
                       lampa1Pok1.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Led lampa ON/OFF:{}".format(lampa1Pok1.Flaga)) + ("   Jasnosc:{}".format(lampa1Pok1.Jasnosc)))
+                      log.add_log(("   Led lampa ON/OFF:{}".format(lampa1Pok1.Flaga)) + ("   Jasnosc:{}".format(lampa1Pok1.Jasnosc)))
     #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "07":  #LED KUCHNIA
                   if stringNRF[3]== "?":
@@ -588,35 +589,35 @@ def NRFread( stringNRF ):
                         lampaKuch.Flaga=0
                       pipesTXflag[4]=False
                       lampaKuch.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Led kuchnia TRYB:{}".format(lampaKuch.Flaga)))
+                      log.add_log(("   Led kuchnia TRYB:{}".format(lampaKuch.Flaga)))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "08":  #DEKORACJE POK 1
                   if stringNRF[3]== "?":
                       dekoPok1.Flaga=int(stringNRF[4])
                       pipesTXflag[AdresLampa2]=False
                       dekoPok1.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Dekoracje Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
+                      log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "09":  #DEKORACJE 2 POK 1
                   if stringNRF[3]== "?":
                       deko2Pok1.Flaga=int(stringNRF[4])
                       pipesTXflag[AdresLampa3]=False
                       deko2Pok1.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
+                      log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
     #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "10":  #FLAMING
                   if stringNRF[3]== "?":
                       dekoFlaming.Flaga=int(stringNRF[4])
                       pipesTXflag[AdresFlaming]=False
                       dekoFlaming.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Flaming ON/OFF:{}".format(dekoFlaming.Flaga)))
+                      log.add_log(("   Flaming ON/OFF:{}".format(dekoFlaming.Flaga)))
     #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "11":  #Uniwersalny modul USB
                   if stringNRF[3]== "?":
                       dekoUsb.Flaga=int(stringNRF[4])
                       pipesTXflag[AdresUsb]=False
                       dekoUsb.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Uniwersalny USB ON/OFF:{}".format(dekoUsb.Flaga)))
+                      log.add_log(("   Uniwersalny USB ON/OFF:{}".format(dekoUsb.Flaga)))
             zapis_danych_xml()
     #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "18":  #Hydroponika
@@ -624,7 +625,7 @@ def NRFread( stringNRF ):
                       hydroponika.Flaga=int(stringNRF[4])
                       pipesTXflag[hydroponika.Adres]=False
                       hydroponika.blad=0
-                      dziennik.zapis_dziennika_zdarzen(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
+                      log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
             zapis_danych_xml()
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "12":  #kwiatek 2  addres 12
@@ -641,7 +642,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordKwiatek2(czujnikKwiatek2.wilgotnosc,czujnikKwiatek2.slonce,czujnikKwiatek2.zasilanie,czujnikKwiatek2.wilgotnosc_raw)
                       czujnikKwiatek2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.dodajUsunBlad(4,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                      log.add_log(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
                   if stringNRF[3]== "k":
@@ -657,7 +658,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordKwiatek3(czujnikKwiatek3.wilgotnosc,czujnikKwiatek3.slonce,czujnikKwiatek3.zasilanie, czujnikKwiatek3.wilgotnosc_raw)
                       czujnikKwiatek3.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.dodajUsunBlad(5,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                      log.add_log(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
                   if stringNRF[3]== "k":
@@ -673,7 +674,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordKwiatek4(czujnikKwiatek4.wilgotnosc,czujnikKwiatek4.slonce,czujnikKwiatek4.zasilanie, czujnikKwiatek4.wilgotnosc_raw)
                       czujnikKwiatek4.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.dodajUsunBlad(6,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                      log.add_log(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "15":  #BUDA 15
                   if stringNRF[3]== "s":
@@ -688,7 +689,7 @@ def NRFread( stringNRF ):
                       string8=(stringNRF[14:16])
                       buda.czujnikZajetosciRaw=int(string8)
                       buda.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dziennik.zapis_dziennika_zdarzen(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
+                      log.add_log(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "16":  #kwiatek 5 adres 16
                   if stringNRF[3]== "k":
@@ -703,7 +704,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordKwiatek5(czujnikKwiatek5.wilgotnosc,czujnikKwiatek5.slonce,czujnikKwiatek5.zasilanie, czujnikKwiatek5.wilgotnosc_raw)
                       czujnikKwiatek5.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.dodajUsunBlad(16,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                      log.add_log(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
                   if stringNRF[3]== "k":
@@ -718,14 +719,14 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordKwiatek6(czujnikKwiatek6.wilgotnosc,czujnikKwiatek6.slonce,czujnikKwiatek6.zasilanie, czujnikKwiatek6.wilgotnosc_raw)
                       czujnikKwiatek6.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.dodajUsunBlad(19,False)
-                      dziennik.zapis_dziennika_zdarzen(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                      log.add_log(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "99":  #testowy
                   if stringNRF[3]== ".":
                         int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
                         int2 = ''.join(str(chr(e)) for e in stringNRF[9:])
                         fl1=(float(int1)/1000)
-                        dziennik.zapis_stuff('zasilanie: {:.3f}V  -> wilgotnosc: {}'.format(fl1,int2))
+                        log.add_stuff_log('zasilanie: {:.3f}V  -> wilgotnosc: {}'.format(fl1,int2))
             zapis_danych_xml()
 
 
@@ -748,7 +749,7 @@ def obliczFunkcje(wartoscMin, wartoscMax, pomiar):
 def server():
     try:
         message, address = s.recvfrom(1024)
-        dziennik.zapis_dziennika_zdarzen(dziennik.data() +" " + "Polaczenie %s: %s" % (address, message))
+        log.add_log(log.actualDate() +" " + "Polaczenie %s: %s" % (address, message))
         transmisja(message, address)
         return message
     except (KeyboardInterrupt, SystemExit):
@@ -764,14 +765,14 @@ def transmisja(messag, adres):
         if(chJasnosc>=0 and chJasnosc<=100):
             sterowanieOswietleniem(lampaPok1Tradfri.Adres, str(chJasnosc))
         else:
-            dziennik.zapis_dziennika_zdarzen("Blad danych! -> {}".format(chJasnosc))
+            log.add_log("Blad danych! -> {}".format(chJasnosc))
     if(messag.find('tradfriLampaJasn.') != -1):   # LAMPA W SALONIE
         pocz=messag.find(".")+1
         chJasnosc=int(messag[pocz:pocz+3])
         if(chJasnosc>=0 and chJasnosc<=100):
             sterowanieOswietleniem(lampaDuzaTradfri.Adres, str(chJasnosc))
         else:
-            dziennik.zapis_dziennika_zdarzen("Blad danych! -> {}".format(chJasnosc))
+            log.add_log("Blad danych! -> {}".format(chJasnosc))
     if(messag.find('tradfriLampaKol.') != -1):   # LAMPA W SALONIE
         pocz=messag.find(".")+1
         sterowanieOswietleniem(lampaDuzaTradfri.Adres, messag[pocz:pocz+9])
@@ -830,9 +831,9 @@ def transmisja(messag, adres):
     if(messag=='?m'):
         try:
             s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(czujnikZew.temp,czujnikZew.humi,czujnikPok1.temp,czujnikPok1.humi,czujnikPok2.temp,czujnikPok2.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.zasilanie))+'letv{}{}{}'.format(int(lampaTV.Flaga),lampaTV.Ustawienie,lampaTV.Jasnosc)+'lesy{}{:03d}'.format(int(lampaPok2.Flaga),lampaPok2.Jasnosc)+'lela{}{:03d}'.format(int(lampa1Pok1.Flaga),lampa1Pok1.Jasnosc), adres)
-            dziennik.zapis_dziennika_zdarzen("Wyslano dane UDP")
+            log.add_log("Wyslano dane UDP")
         except:
-            dziennik.zapis_dziennika_zdarzen("Blad danych dla UDP")
+            log.add_log("Blad danych dla UDP")
     if(messag.find('sterTV.') != -1):
         pocz=messag.find(".")+1
         if int(messag[(pocz+9):(pocz+12)])>=0:
@@ -857,16 +858,16 @@ def transmisja(messag, adres):
         terrarium.wilg2=float(messag[(pocz+2):(pocz+5)])
         pocz=messag.find("/I:")+1
         terrarium.UVI=float(messag[(pocz+2):(pocz+11)])
-        dziennik.zapis_dziennika_zdarzen("   Terrarium Temp1: {}*C, Wilg1: {}%  /  Temp2: {}*C, Wilg2: {}*C  /  UVI: {}".format(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI))
+        log.add_log("   Terrarium Temp1: {}*C, Wilg1: {}%  /  Temp2: {}*C, Wilg2: {}*C  /  UVI: {}".format(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI))
         sql_baza.dodajRekordTerrarium(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI)
     if(messag.find('ko2') != -1):
         wiad="#05L" + messag[3:15]
-        dziennik.zapis_dziennika_zdarzen(wiad)
+        log.add_log(wiad)
         NRFwyslij(1,wiad).start()
         lampaTV.FlagaSterowanieManualne=True
     if(messag.find('gra') != -1):
         wiad="#05G" + messag[3:6]
-        dziennik.zapis_dziennika_zdarzen(wiad)
+        log.add_log(wiad)
         NRFwyslij(1,wiad).start()
         lampaTV.FlagaSterowanieManualne=True
     if(messag.find('lelw')): # LAMPA LED BIALY
@@ -876,12 +877,12 @@ def transmisja(messag, adres):
         wiad="#05K255255255255"
         lampaTV.Ustawienie="255255255"
         lampaTV.Jasnosc=255
-        dziennik.zapis_dziennika_zdarzen(wiad)
-        dziennik.zapis_dziennika_zdarzen(wiad)
+        log.add_log(wiad)
+        log.add_log(wiad)
         NRFwyslij(1,wiad).start()
         ikea.ikea_dim_group(hubip, user_id, securityid, security_user, tradfriDev.salon, 100)
         lampaTV.FlagaSterowanieManualne=True
-        dziennik.zapis_dziennika_zdarzen("Tryb swiatel: Pokoj 1 max")
+        log.add_log("Tryb swiatel: Pokoj 1 max")
     if(messag.find('budaTryb.') != -1):
         pocz=messag.find(".")+1
         wiad="#15T" + messag[pocz]
@@ -906,7 +907,7 @@ def transmisja(messag, adres):
         #ustawSwiatloZeZwloka(lampaPrzedpokojTradfri.Adres, 0, 31).start()
         #ustawSwiatloZeZwloka(dekoFlaming.Adres, 0, 30*60).start()
         dekoFlaming.FlagaSterowanieManualne=True
-        dziennik.zapis_dziennika_zdarzen("Tryb swiatel: spij")
+        log.add_log("Tryb swiatel: spij")
     if(messag.find('romantyczny') != -1):
         if(random.randint(0, 1)==1):
             lampaTV.Ustawienie="255000{:03d}".format(random.randint(20, 120))
@@ -930,7 +931,7 @@ def transmisja(messag, adres):
         dekoPok1.FlagaSterowanieManualne=True
         sterowanieOswietleniem(deko2Pok1.Adres,1)
         deko2Pok1.FlagaSterowanieManualne=True
-        dziennik.zapis_dziennika_zdarzen("Tryb swiatel: romantyczny  --> "+wiad)
+        log.add_log("Tryb swiatel: romantyczny  --> "+wiad)
 class ustawSwiatloZeZwloka(threading.Thread): #------WATEK NADAWANIA NRF
     def __init__(self, adres, jasnosc, czas):
         threading.Thread.__init__(self)
@@ -942,41 +943,41 @@ class ustawSwiatloZeZwloka(threading.Thread): #------WATEK NADAWANIA NRF
         if self.jasnosc==0:
             sterowanieOswietleniem(self.adres,100)
         sterowanieOswietleniem(self.adres,self.jasnosc)
-        dziennik.zapis_dziennika_zdarzen("Funkacja spij wlaczona")
+        log.add_log("Funkacja spij wlaczona")
 
 def sterowanieOswietleniem(adres, ustawienie):
     if adres==lampaTV.Adres:   #TV
         wiad="#05K{}{:03d}".format(lampaTV.Ustawienie,int(ustawienie))
         if len(wiad)>=15:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Led TV: {}".format(wiad))
+            log.add_log("Ustawiono Led TV: {}".format(wiad))
             infoStrip.dodajInfo("światło TV: {}".format(ustawienie))
             NRFwyslij(AdresLedTV,wiad).start()
             lampaTV.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==lampaPok2.Adres:  #SYPIALNIA
         wiad="#S{:03d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Led Sypialni: {}".format(wiad))
+            log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
             infoStrip.dodajInfo("światło w sypialni: {}".format(ustawienie))
             NRFwyslij(AdresSypialnia,wiad).start()
             lampaPok2.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==lampaKuch.Adres:  #KUCHNIA
         wiad="#07T{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Led Kuchni: {}".format(wiad))
+            log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
             infoStrip.dodajInfo("światło w kuchni: {}".format(ustawienie))
             NRFwyslij(AdresKuchnia,wiad).start()
             lampaKuch.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==lampa1Pok1.Adres:  # LAMPA 1 w salonie
         wiad="#05K{}{:03d}".format(lampa1Pok1.Ustawienie, int(ustawienie))
         if len(wiad)>=5:
             lampa1Pok1.Jasnosc=int(ustawienie)
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Reflektor 1: {}".format(wiad))
+            log.add_log("Ustawiono Reflektor 1: {}".format(wiad))
             infoStrip.dodajInfo("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
             NRFwyslij(AdresLampa1,wiad).start()
             lampa1Pok1.blad+=1
@@ -985,62 +986,62 @@ def sterowanieOswietleniem(adres, ustawienie):
             else:
                 lampa1Pok1.Flaga = 1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==dekoPok1.Adres:  # dekoracje pok 1 / Reka
         wiad="#08T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa 1: {}".format(wiad))
+            log.add_log("Ustawiono Lampa 1: {}".format(wiad))
             infoStrip.dodajInfo("dekoracje 1 w salonie: {}".format(ustawienie))
             NRFwyslij(dekoPok1.Adres,wiad).start()
             lampa1Pok1.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==deko2Pok1.Adres:  # dekoracje pok 1 / Eifla i inne
         wiad="#09T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa 2: {}".format(wiad))
+            log.add_log("Ustawiono Lampa 2: {}".format(wiad))
             infoStrip.dodajInfo("dekoracje 2 w salonie: {}".format(ustawienie))
             NRFwyslij(deko2Pok1.Adres,wiad).start()
             dekoPok1.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==dekoFlaming.Adres:  # FLAMING
         wiad="#10T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa Flaming: {}".format(wiad))
+            log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
             infoStrip.dodajInfo("flaming: {}".format(ustawienie))
             NRFwyslij(AdresFlaming,wiad).start()
             dekoFlaming.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==dekoUsb.Adres:  # Dekoracje - uniwersalny modul USB
         wiad="#11T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Uniwersalny USB: {}".format(wiad))
+            log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
             infoStrip.dodajInfo("uniwersalny USB: {}".format(ustawienie))
             NRFwyslij(AdresUsb,wiad).start()
             dekoUsb.blad+=1
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==lampaPok1Tradfri.Adres:  # Tradfri Salon
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
-        dziennik.zapis_dziennika_zdarzen("Tradfri Salon ->: {}".format(ustawienie))
+        log.add_log("Tradfri Salon ->: {}".format(ustawienie))
         infoStrip.dodajInfo("oświetlenie w salonie: {}".format(ustawienie))
     if adres==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, ustawienie)
         elif ustawienie>1:
             ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, ustawienie)
-        dziennik.zapis_dziennika_zdarzen("Tradfri Salon-Zarowka ->: {}".format(ustawienie))
+        log.add_log("Tradfri Salon-Zarowka ->: {}".format(ustawienie))
     if adres==lampaJadalniaTradfri.Adres:  # Tradfri Jadalnia
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
-        dziennik.zapis_dziennika_zdarzen("Tradfri Jadalnia ->: {}".format(ustawienie))
+        log.add_log("Tradfri Jadalnia ->: {}".format(ustawienie))
         infoStrip.dodajInfo("oświetlenie w jadalni: {}".format(ustawienie))
     if adres==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
         if ustawienie==0 or ustawienie==1:
@@ -1051,27 +1052,27 @@ def sterowanieOswietleniem(adres, ustawienie):
             lampaPrzedpokojTradfri.Status=1
         else:
             lampaPrzedpokojTradfri.Status=0
-        dziennik.zapis_dziennika_zdarzen("Tradfri Przedpokoj ->: {}".format(ustawienie))
+        log.add_log("Tradfri Przedpokoj ->: {}".format(ustawienie))
         infoStrip.dodajInfo("oświetlenie w przedpokoju: {}".format(ustawienie))
     if adres==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
         if len(str(ustawienie))==1:
             if int(ustawienie)==0 or int(ustawienie)==1:
                 ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
-                dziennik.zapis_dziennika_zdarzen("Tradfri Lampa ON/OFF ->: {}".format(ustawienie))
+                log.add_log("Tradfri Lampa ON/OFF ->: {}".format(ustawienie))
         elif len(str(ustawienie))==9:
             chKolor1=int(ustawienie[0:3])
             chKolor2=int(ustawienie[3:6])
             chKolor3=int(ustawienie[6:9])
             ikea.ikea_RGB_lamp(hubip, user_id, securityid, security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
-            dziennik.zapis_dziennika_zdarzen("Tradfri Lampa kolor ->: {}".format(ustawienie))
+            log.add_log("Tradfri Lampa kolor ->: {}".format(ustawienie))
             infoStrip.dodajInfo("lampa w salonie -> kolor: {}".format(ustawienie))
         elif len(str(ustawienie))==2 or len(str(ustawienie))==3:
             if int(ustawienie)>1 and int(ustawienie)<=100:
                 ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
-                dziennik.zapis_dziennika_zdarzen("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
+                log.add_log("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
                 infoStrip.dodajInfo("lampa w salonie: {}".format(ustawienie))
         else:
-            dziennik.zapis_dziennika_zdarzen("Tradfri blad skladni")
+            log.add_log("Tradfri blad skladni")
     if adres==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, ustawienie)
@@ -1080,7 +1081,7 @@ def sterowanieOswietleniem(adres, ustawienie):
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, ustawienie)
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, 1)
             lampaPok2Tradfri.Flaga = True
-        dziennik.zapis_dziennika_zdarzen("Tradfri Sypialnia ->: {}".format(ustawienie))
+        log.add_log("Tradfri Sypialnia ->: {}".format(ustawienie))
         infoStrip.dodajInfo("oświetlenie w sypialni: {}".format(ustawienie))
     if adres==hydroponika.Adres:   #Hydroponika
         if int(ustawienie) > 1:
@@ -1088,11 +1089,11 @@ def sterowanieOswietleniem(adres, ustawienie):
         else:
             wiad="#17A{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
-            dziennik.zapis_dziennika_zdarzen("Ustawiono Hydroponike: {}".format(wiad))
+            log.add_log("Ustawiono Hydroponike: {}".format(wiad))
             infoStrip.dodajInfo("Hydroponika: {}".format(ustawienie))
             NRFwyslij(hydroponika.Adres,wiad).start()
         else:
-            dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
+            log.add_log("BLAD SKLADNI!: {}".format(wiad))
 
 
 
@@ -1140,7 +1141,7 @@ def zapis_danych_xml():
 
     tree = ET.ElementTree(root)
     tree.write('/var/www/html/homevariables.xml')
-    #dziennik.zapis_dziennika_zdarzen("Zapisano dane")
+    #log.add_log("Zapisano dane")
 
 def zapis_ustawien_xml():
     setings = ET.Element("settings")
@@ -1164,7 +1165,7 @@ def zapis_ustawien_xml():
 
     tree2 = ET.ElementTree(setings)
     tree2.write('/var/www/html/ustawienia.xml')
-    dziennik.zapis_dziennika_zdarzen("Zapisano ustawienia")
+    log.add_log("Zapisano ustawienia")
 
 def odczyt_ustawien_xml():
     tree = ET.ElementTree(file='/var/www/html/ustawienia.xml')
@@ -1215,7 +1216,7 @@ def oblicz_swiatlo():
             czujnikZew.noc_flaga=True
         else:
             czujnikZew.noc_flaga=False
-        dziennik.zapis_dziennika_zdarzen("Swiatlo obliczone=  {}".format(automatykaOswietlenia.swiatloObliczone) + " / {}".format(automatykaOswietlenia.wartosciLux))
+        log.add_log("Swiatlo obliczone=  {}".format(automatykaOswietlenia.swiatloObliczone) + " / {}".format(automatykaOswietlenia.wartosciLux))
 
 def jasnosc_wyswietlacza(): #----STEROWANIE WYSWIETLACZEM - WATEK!!!!!!!!!! ----------------------------------------------------
     global swiatlo
@@ -1232,7 +1233,7 @@ def jasnosc_wyswietlacza(): #----STEROWANIE WYSWIETLACZEM - WATEK!!!!!!!!!! ----
             elif swiatlo>=1000:
                 jasnoscwysw=255
             bl.set_brightness(jasnoscwysw, smooth=True, duration=2)  # ustawienie jasnosci LCD
-            #dziennik.zapis_dziennika_zdarzen("Jasnosc wyswietlacza:{}   / old:{}, new:{}".format(jasnoscwysw,swiatlo_old,swiatlo))
+            #log.add_log("Jasnosc wyswietlacza:{}   / old:{}, new:{}".format(jasnoscwysw,swiatlo_old,swiatlo))
             swiatlo_old=swiatlo
         time.sleep(5)
 
@@ -1328,12 +1329,13 @@ user_id=""
 security_user=""
 #pobranie adresu IP z serwera
 #hubip = ikea.ikea_get_ip(MACaddress)
-dziennik.zapis_dziennika_zdarzen("START")
+log.delete_log()
+log.add_log("START")
 try:
     security_user, user_id =(ikea.tradfri_login(hubip, securityid))
-    dziennik.zapis_dziennika_zdarzen("Ikea Tradfri -> id: {}    pass: {}".format(user_id, security_user))
+    log.add_log("Ikea Tradfri -> id: {}    pass: {}".format(user_id, security_user))
 except:
-    dziennik.zapis_dziennika_zdarzen("Ikea Tradfri -> nie dziala")
+    log.add_log("Ikea Tradfri -> nie dziala")
 #--------------INNE--------------------------
 #sql_baza.kasujstaredane()  # test, sprawdzic, dziala wolno
 #-------------WATKI--------------------------
@@ -1346,7 +1348,6 @@ o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
 o.start()
 ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
 ti.start()
-dziennik.kasowanie_dziennika_zdarzen()
 #--------------------------------------------
 while(1):
     if ready[0]:
