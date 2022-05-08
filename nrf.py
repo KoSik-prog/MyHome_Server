@@ -1,6 +1,10 @@
+from serwer import *
+from devicesList import *
+
 NRFtx_tablicaAdresow=[0,0,0,0,0,0,0,0,0,0]
 NRFtx_tablicaDanych=["","","","","","","","","",""]
 
+#-------------------NRF24L01------------------------------------------------------------
 class NRFwyslij(threading.Thread): #------WATEK NADAWANIA NRF
     def __init__(self, adres, dane):
         threading.Thread.__init__(self)
@@ -320,7 +324,7 @@ def NRFread( stringNRF ):
                       dodajUsunBlad(19,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
-            if stringNRF[1:3]== "99":  #moduł testowy
+            if stringNRF[1:3]== "99":  #testowy
                   if stringNRF[3]== ".":
                         int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
                         int2 = ''.join(str(chr(e)) for e in stringNRF[9:])

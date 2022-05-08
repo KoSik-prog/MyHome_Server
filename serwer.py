@@ -10,45 +10,44 @@ import rpi_backlight as bl
 import RPi.GPIO as GPIO
 import xml.etree.cElementTree as ET
 from lib_nrf24 import NRF24
-from pygame.locals import *
-from pygame.compat import unichr_, unicode_
-from pygame.locals import *
-from pygame.compat import geterror
+
 from numpy.random import randint
 
+from infoStrip import *
 from devicesList import *
+#from display import *
 
 AddrOut = 2222
 kasowanieSQL_flaga=False
 
 #+++++ZWLOKA CZASOWA +++++++++++++++++++
-time.sleep(15)
+time.sleep(5)
 
 swiatlo=0
 flaga_odczyt_ustawien=False
-obraz=0
+
 
 def sprawdzCzujniki():
     minimalneNapiecieBaterii=2.55
     minimalnaWilgotnosc = 10
     if((datetime.datetime.now() - czujnikZew.czas)>(datetime.timedelta(minutes=18))):
-        dodajUsunBlad(0,True)
+        infoStrip.dodajUsunBlad(0,True)
     if((datetime.datetime.now() - czujnikPok1.czas)>(datetime.timedelta(minutes=23))):
-        dodajUsunBlad(1,True)
+        infoStrip.dodajUsunBlad(1,True)
     if((datetime.datetime.now() - czujnikPok2.czas)>(datetime.timedelta(minutes=23))):
-        dodajUsunBlad(2,True)
+        infoStrip.dodajUsunBlad(2,True)
     if((datetime.datetime.now() - czujnikKwiatek.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(3,True)
+        infoStrip.dodajUsunBlad(3,True)
     if((datetime.datetime.now() - czujnikKwiatek2.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(4,True)
+        infoStrip.dodajUsunBlad(4,True)
     if((datetime.datetime.now() - czujnikKwiatek3.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(5,True)
+        infoStrip.dodajUsunBlad(5,True)
     if((datetime.datetime.now() - czujnikKwiatek4.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(6,True)
+        infoStrip.dodajUsunBlad(6,True)
     if((datetime.datetime.now() - czujnikKwiatek5.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(16,True)
+        infoStrip.dodajUsunBlad(16,True)
     if((datetime.datetime.now() - czujnikKwiatek6.czas)>(datetime.timedelta(minutes=63))):
-        dodajUsunBlad(19,True)
+        infoStrip.dodajUsunBlad(19,True)
     #sprawdzenie budy
     if((datetime.datetime.now() - buda.czas)>(datetime.timedelta(minutes=2))):
         buda.temp1=0.0
@@ -58,49 +57,49 @@ def sprawdzCzujniki():
         buda.czujnikZajetosciRaw=0
     #sprawdzenie stanu baterii
     if(czujnikKwiatek.zasilanie <= 5):
-        dodajUsunBlad(7,True)
+        infoStrip.dodajUsunBlad(7,True)
     else:
-        dodajUsunBlad(7,False)
+        infoStrip.dodajUsunBlad(7,False)
     if(czujnikKwiatek2.zasilanie <= minimalneNapiecieBaterii):
-        dodajUsunBlad(8,True)
+        infoStrip.dodajUsunBlad(8,True)
     else:
-        dodajUsunBlad(8,False)
+        infoStrip.dodajUsunBlad(8,False)
     if(czujnikKwiatek3.zasilanie <= minimalneNapiecieBaterii):
-        dodajUsunBlad(9,True)
+        infoStrip.dodajUsunBlad(9,True)
     else:
-        dodajUsunBlad(9,False)
+        infoStrip.dodajUsunBlad(9,False)
     if(czujnikKwiatek4.zasilanie <= minimalneNapiecieBaterii):
-        dodajUsunBlad(10,True)
+        infoStrip.dodajUsunBlad(10,True)
     else:
-        dodajUsunBlad(10,False)
+        infoStrip.dodajUsunBlad(10,False)
     if(czujnikKwiatek2.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek2.slonce < 60):
-        dodajUsunBlad(11,True)
+        infoStrip.dodajUsunBlad(11,True)
     else:
-        dodajUsunBlad(11,False)
+        infoStrip.dodajUsunBlad(11,False)
     if(czujnikKwiatek3.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek3.slonce < 60):
-        dodajUsunBlad(12,True)
+        infoStrip.dodajUsunBlad(12,True)
     else:
-        dodajUsunBlad(12,False)
+        infoStrip.dodajUsunBlad(12,False)
     if(czujnikKwiatek4.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek4.slonce < 60):
-        dodajUsunBlad(13,True)
+        infoStrip.dodajUsunBlad(13,True)
     else:
-        dodajUsunBlad(13,False)
+        infoStrip.dodajUsunBlad(13,False)
     if(czujnikKwiatek5.zasilanie <= minimalneNapiecieBaterii):
-        dodajUsunBlad(14,True)
+        infoStrip.dodajUsunBlad(14,True)
     else:
-        dodajUsunBlad(14,False)
+        infoStrip.dodajUsunBlad(14,False)
     if(czujnikKwiatek5.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek5.slonce < 60):
-        dodajUsunBlad(15,True)
+        infoStrip.dodajUsunBlad(15,True)
     else:
-        dodajUsunBlad(15,False)
+        infoStrip.dodajUsunBlad(15,False)
     if(czujnikKwiatek6.zasilanie <= minimalneNapiecieBaterii):
-        dodajUsunBlad(17,True)
+        infoStrip.dodajUsunBlad(17,True)
     else:
-        dodajUsunBlad(17,False)
+        infoStrip.dodajUsunBlad(17,False)
     if(czujnikKwiatek6.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek6.slonce < 60):
-        dodajUsunBlad(18,True)
+        infoStrip.dodajUsunBlad(18,True)
     else:
-        dodajUsunBlad(18,False)
+        infoStrip.dodajUsunBlad(18,False)
 
 
 
@@ -152,66 +151,256 @@ def autoCzas(klasa):
         time.sleep(20)
 
 
-class pasekInfoCl:
-    aktualnaInformacja=""
-    wyswietlanaInformacja=""
-    informacje=["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""]
-    bledy=[[False,"blad czujnika zewnetrznego"],
-    [False,"blad czujnika salonu"],
-    [False,"blad czujnika sypialni"],
-    [False,"blad czujnika kwiatka (Konewka)"],
-    [False,"blad czujnika kwiatka 12 (" + czujnikKwiatek2.nazwa + ")"],
-    [False,"blad czujnika kwiatka 13 (Pachira)"],
-    [False,"blad czujnika kwiatka 14 (Pokrzywa)"],
-    [False,"minimalny poziom baterii kwiatka (konewka)"],
-    [False,"minimalny poziom baterii kwiatka 12 (Palma)"],
-    [False,"minimalny poziom baterii kwiatka 13 (Pachira)"],
-    [False,"minimalny poziom baterii kwiatka 14 (Pokrzywa)"],
-    [False,"wilgotnosc kwiatka 12 (Palma) ponizej 5%"],
-    [False,"wilgotnosc kwiatka 13 (Pachira) ponizej 5%"],
-    [False,"wilgotnosc kwiatka 14 (Pokrzywa) ponizej 5%"],
-    [False,"minimalny poziom baterii kwiatka 16 (Benjamin)"],
-    [False,"wilgotnosc kwiatka 16 (Benjamin) ponizej 5%"],
-    [False,"blad czujnika kwiatka 16 (Benjamin)"],
-    [False,"minimalny poziom baterii kwiatka 17 (Szeflera)"],
-    [False,"wilgotnosc kwiatka 17 ponizej 5% (Szeflera)"],
-    [False,"blad czujnika kwiatka 17 (Szeflera)"],
-    [False,"mała ilosc wody dla kwiatka - konewka"]]
-    pozycjaOdczytuBledu=0
-    czas=0
-    pozycja=0
-pasekInfo=pasekInfoCl()
+########################################################################################
+#++++++++++++++++++++++++++++++ WYSWIETLANIE ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+def wysw_init():
+    bgcolor=(255,255,255,255)
+    global screen, obrazek, czaspogody
 
-def dodajUsunBlad(numerBledu,aktywny):
-    pasekInfo.bledy[numerBledu][0]=aktywny
+    pygame.init()
+    resolution = 800, 480
+    screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
+    #screen = pygame.display.set_mode(resolution,1)
+    pygame.display.set_caption('MojDom')
+    screen.fill(bgcolor)
+    pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
+    czaspogody=datetime.datetime.utcnow()
 
-def odczytajBlad():
-    blad=""
-    for x in range(len(pasekInfo.bledy)):
-        pasekInfo.pozycjaOdczytuBledu+=1
-        if pasekInfo.pozycjaOdczytuBledu > len(pasekInfo.bledy)-1:
-            pasekInfo.pozycjaOdczytuBledu=0
-        if(pasekInfo.bledy[pasekInfo.pozycjaOdczytuBledu][0] == True):
-            blad=pasekInfo.bledy[pasekInfo.pozycjaOdczytuBledu][1]
-            break
-    return blad
+pozycja_animacji = [[0,0],[60,-42],[120,-135],[160,-225],[180,-275],[190,-367],[230,-13],[350,-89],[390,-247],[430,-198],[500,-400],[560,-163],[620,-200],[650,-50],[700,-31],[750,-7],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
+kolorPaskaInfo=(50,100,10,255)
 
-def dodajInfo(informacja):
-    for i in range(len(pasekInfo.informacje)):
-        if pasekInfo.informacje[i]=="":
-            pasekInfo.informacje[i]=informacja
-            break
+def obraz_glowny():
+    global screen, licznik, pozycja_animacji
+    global czasodswpogody,ledtvjasnosc, czaspogody, kolorPaskaInfo
+    tfps=0
+    pozX=0
 
-def odczytajInfo():
-    informacja=""
-    informacja=pasekInfo.informacje[0]
-    for i in range(len(pasekInfo.informacje)-1):
-        pasekInfo.informacje[i]=pasekInfo.informacje[i+1]
-    return informacja
-#-------------------NRF24L01------------------------------------------------------------
+    kolor=(0,0,0,250)
+    kolorczcionki1=(255,255,255,255)
+    kolorczcionki2=(255,200,100,255)
+    kolorczcionki3=(0,0,0,255)
+    kolorczcionki4=(60,60,60,200)
+    kolorczcionki5=(255,255,255,255)
+
+    #---ANIMACJA TAPETY -----
+    #pogoda.Pogoda.IkonaDzis="02"
+    #czujnikZew.noc_flaga=False
+    '''
+    01d - clear sky
+    02d - few clouds
+    03d - scattered clouds
+    04d - broken clouds
+    09d - shower rain
+    10d - rain
+    11d - thunderstorm
+    13d - snow
+    50d - mist - fog
+    '''
+    tapeta=pogoda.Pogoda.IkonaDzis
+    tapeta=tapeta.lower()
+
+    if(tapeta.find('02') != -1 or tapeta.find('03') != -1 or tapeta.find('04') != -1): #CLOUDS
+        if pozycja_animacji[16][1]==0: #dla zmiany kierunku
+            if pozycja_animacji[16][0]>300:
+                pozycja_animacji[16][1]=1
+            else:
+                pozycja_animacji[16][0]=pozycja_animacji[16][0]+1
+        else: #dla zmiany kierunku
+            if pozycja_animacji[16][0]<0:
+                pozycja_animacji[16][1]=0
+            else:
+                pozycja_animacji[16][0]=pozycja_animacji[16][0]-1
+        pozX=(-600)+pozycja_animacji[16][0]
+        if(tapeta.find('02') != -1 and czujnikZew.noc_flaga==False):
+            kolorczcionki3=(185,242,107,255)
+            kolorczcionki4=(235,255,187,255)
+        if czujnikZew.noc_flaga==True:
+            kolorczcionki3=(190,190,190,255)
+            kolorczcionki4=(250,250,250,200)
+    pogoda.ikonka(pozX,0,255,True,czujnikZew.noc_flaga,pogoda.Pogoda.IkonaDzis)
+    if(tapeta.find('01') != -1):  #CLEAR SKY
+        if czujnikZew.noc_flaga==True:
+            kolorczcionki2=(180,180,180,255)
+        else:
+            kolorczcionki2=(100,40,20,255)
+        kolorczcionki3=(255,255,155,255)
+        kolorczcionki4=(255,215,0,255)
+        kolorczcionki5=(255,82,0,255)
+    elif(tapeta.find('50') != -1):
+        kolorczcionki1=(0,105,56,255)
+        kolorczcionki2=(100,40,20,255)
+        kolorczcionki3=(95,103,56,255)
+        kolorczcionki4=(255,215,0,255)
+        kolorczcionki5=(255,82,0,255)
+    elif(tapeta.find('09') != -1 or tapeta.find('10') != -1):  #RAIN
+        kolorczcionki3=(255,255,155,255)
+        kolorczcionki4=(255,255,200,255)
+        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
+        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
+        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
+        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
+        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
+        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
+    if(tapeta.find('11') != -1): #THUNDERSTORM
+        kolorczcionki3=(255,255,155,255)
+        kolorczcionki4=(255,215,0,255)
+        kolorczcionki5=(255,82,0,255)
+        if pozycja_animacji[17][0]<0:
+            pogoda.icons(0,0,255,"DTStorm2")
+            pozycja_animacji[17][0]=randint(7, 70)
+        else:
+            pozycja_animacji[17][0]=pozycja_animacji[17][0]-1
+    elif(tapeta.find('13') != -1): #SNOW
+        tfps=0.0
+        pogoda.icons(pozycja_animacji[0][0],pozycja_animacji[0][1],255,"snowflake1")
+        pozycja_animacji[0][1]=pozycja_animacji[0][1]+1
+        pogoda.icons(pozycja_animacji[1][0],pozycja_animacji[1][1],255,"snowflake2")
+        pozycja_animacji[1][1]=pozycja_animacji[1][1]+2
+        pogoda.icons(pozycja_animacji[2][0],pozycja_animacji[2][1],255,"snowflake3")
+        pozycja_animacji[2][1]=pozycja_animacji[2][1]+4
+        pogoda.icons(pozycja_animacji[3][0],pozycja_animacji[3][1],255,"snowflake3")
+        pozycja_animacji[3][1]=pozycja_animacji[3][1]+4
+        pogoda.icons(pozycja_animacji[4][0],pozycja_animacji[4][1],255,"snowflake3")
+        pozycja_animacji[4][1]=pozycja_animacji[4][1]+4
+        pogoda.icons(pozycja_animacji[5][0],pozycja_animacji[5][1],255,"snowflake3")
+        pozycja_animacji[5][1]=pozycja_animacji[5][1]+4
+        pogoda.icons(pozycja_animacji[6][0],pozycja_animacji[6][1],255,"snowflake3")
+        pozycja_animacji[6][1]=pozycja_animacji[6][1]+4
+        pogoda.icons(pozycja_animacji[7][0],pozycja_animacji[7][1],255,"snowflake4")
+        pozycja_animacji[7][1]=pozycja_animacji[7][1]+1
+        pogoda.icons(pozycja_animacji[8][0],pozycja_animacji[8][1],255,"snowflake5")
+        pozycja_animacji[8][1]=pozycja_animacji[8][1]+3
+        pogoda.icons(pozycja_animacji[9][0],pozycja_animacji[9][1],255,"snowflake5")
+        pozycja_animacji[9][1]=pozycja_animacji[9][1]+3
+        pogoda.icons(pozycja_animacji[10][0],pozycja_animacji[10][1],255,"snowflake5")
+        pozycja_animacji[10][1]=pozycja_animacji[10][1]+3
+        pogoda.icons(pozycja_animacji[11][0],pozycja_animacji[11][1],255,"snowflake6")
+        pozycja_animacji[11][1]=pozycja_animacji[11][1]+4
+        pogoda.icons(pozycja_animacji[12][0],pozycja_animacji[12][1],255,"snowflake6")
+        pozycja_animacji[12][1]=pozycja_animacji[12][1]+4
+        pogoda.icons(pozycja_animacji[13][0],pozycja_animacji[13][1],255,"snowflake3")
+        pozycja_animacji[13][1]=pozycja_animacji[13][1]+5
+        pogoda.icons(pozycja_animacji[14][0],pozycja_animacji[14][1],255,"snowflake6")
+        pozycja_animacji[14][1]=pozycja_animacji[14][1]+4
+        pogoda.icons(pozycja_animacji[15][0],pozycja_animacji[15][1],255,"snowflake6")
+        pozycja_animacji[15][1]=pozycja_animacji[15][1]+4
+        for px in range(16):
+            if pozycja_animacji[px][1]>randint(480, 500):
+                pozycja_animacji[px][0]=randint(10, 780)
+                pozycja_animacji[px][1]=0
+        kolorczcionki4=(160,180,160,255)
+        kolorczcionki3=(220,220,250,255)
+    #------------------------
+    d = datetime.datetime.today()
+    dzienTygodnia=wysw.dzien(d.weekday())
+
+    wysw.napis_centralny(screen, str(time.strftime("%H:%M")),"Nimbus Sans L",190,295,90,kolorczcionki1,255) #czas
+    wysw.napis_centralny(screen, dzienTygodnia,"Nimbus Sans L",56,620,80,kolorczcionki2,255)  #dzien tygodnia
+    wysw.napis_centralny(screen, str(int(time.strftime("%d")))+" "+wysw.miesiac(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,kolorczcionki2,255)  #dzien tygodnia
+
+    wysw.napis2(screen, "dziś","Nimbus Sans L",56,50,170,kolorczcionki3,255)
+    pogoda.ikonka(30,210,255,False,czujnikZew.noc_flaga,pogoda.Pogoda.IkonaDzis)
+    pogoda.icons(20,330,255,"arrow_down")
+    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMinDzis),"Nimbus Sans L",54,70,330,kolorczcionki3,255)
+    pogoda.icons(20,380,255,"arrow_up")
+    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMaxDzis),"Nimbus Sans L",54,70,380,kolorczcionki4,255)
+    wysw.napis2(screen, "jutro","Nimbus Sans L",56,230,170,kolorczcionki3,255)
+    pogoda.ikonka(220,210,255,False,False,pogoda.Pogoda.IkonaJutro)
+    pogoda.icons(205,330,255,"arrow_down")
+    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMinJutro),"Nimbus Sans L",54,245,330,kolorczcionki3,255)
+    pogoda.icons(205,380,255,"arrow_up")
+    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMaxJutro),"Nimbus Sans L",54,245,380,kolorczcionki4,255)
+
+    wysw.obraz(screen, 390,170,255,"temp_out")
+    dlugosc=wysw.napis2(screen, "{:.1f}°C".format(czujnikZew.temp),"Nimbus Sans L",68,485,190,kolorczcionki5,255)
+    wysw.napis2(screen, "{:.0f}%".format(czujnikZew.humi),"Nimbus Sans L",48,505+dlugosc,200,kolorczcionki4,255)
+    wysw.obraz(screen, 390,258,255,"temp_in")
+    dlugosc=wysw.napis2(screen, "{:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",68,485,280,kolorczcionki4,255)
+    wysw.napis2(screen, "{:.0f}%".format(czujnikPok1.humi),"Nimbus Sans L",48,505+dlugosc,290,kolorczcionki4,255)
+
+    wysw.obraz(screen, 390,350,255,"wind")
+    dlugosc=wysw.napis2(screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,kolorczcionki3,255)
+
+    # PASEK INFORMACYJNY
+    infoStrip.aktualnaInformacja=infoStrip.odczytajInfo()
+    if (infoStrip.aktualnaInformacja != ""):
+        infoStrip.wyswietlanaInformacja=infoStrip.aktualnaInformacja
+        kolorPaskaInfo=(190,255,190,255)
+        infoStrip.czas=60
+        infoStrip.pozycja=3
+    else:
+        if(infoStrip.czas==0):
+            infoStrip.wyswietlanaInformacja=infoStrip.odczytajBlad()
+            if (infoStrip.wyswietlanaInformacja != ""):
+                 infoStrip.czas=120
+                 infoStrip.pozycja=3
+                 kolorPaskaInfo=(255,100,100,255)
+
+    if(infoStrip.czas>0):
+        infoStrip.czas-=1
+    if(infoStrip.czas>=0 and infoStrip.czas<=3):
+        infoStrip.pozycja=infoStrip.czas
+
+    if(infoStrip.wyswietlanaInformacja != ""):
+        wysw.napis2(screen, infoStrip.wyswietlanaInformacja,"Nimbus Sans L",46,70,480-(infoStrip.pozycja*13),kolorPaskaInfo,255)
+
+
+def obraz_nocny():
+    global screen, licznik
+    global czasodswpogody,ledtvjasnosc, czaspogody
+    kolor=(0,0,0,250)
+    kolorczcionki3=(180,180,180,255)
+
+    wysw.napis_centralny_tlo(screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210,kolorczcionki3,255,(0,0,0,255)) #czas
+    wysw.napis_tlo(screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410,kolorczcionki3,255,(0,0,0,255))
+
+def LCD():  #----WYSWIETLANIE - WATEK!!!!!!!!!! ------------------------------------------------------------------------------------------------------
+    bgcolor=(255,255,255,255)
+    obraz=0
+    tfps=0.2
+    tryb_nocny=False
+
+    wysw_init()
+    while(1):
+        for event in pygame.event.get():
+            if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                px=event.pos[0]
+                py=event.pos[1]
+                print ("You pressed the left mouse button at ({}, {})".format(px,py))
+                if(px>750 and px<800 and py>0 and py<50):
+                    pygame.quit()
+                    sys.exit()
+                if(px>17 and px<284 and py>15 and py<227):
+                    screen.fill(bgcolor)
+                    obraz=0
+        #flaga_odczyt_ustawien=wysw.odswiez(czujnikZew.temp,czujnikPok1.temp,czujnikPok2.temp,czujnikZew.humi,czujnikPok1.humi,czujnikPok2.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie, swiatlo, int(lampa1Pok1.Flaga), int(lampa1Pok1.Jasnosc), int(lampa1Pok1.Ustawienie), int(lampaTV.Flaga), int(lampaTV.Jasnosc), int(lampaPok2.Flaga), int(lampaPok2.Jasnosc), int(lampaKuch.Flaga),czujnikZew.czas,czujnikZew.blad,czujnikPok1.blad,czujnikPok2.blad)
+        if(obraz==0):
+            if tryb_nocny==False:
+                obraz_glowny()
+            else:
+                obraz_nocny()
+
+        if tryb_nocny==False and swiatlo<2:
+            tryb_nocny=True
+            screen.fill((0,0,0,255))
+        elif tryb_nocny==True and swiatlo>5:
+            tryb_nocny=False
+            screen.fill(bgcolor)
+        pygame.display.update()
+        time.sleep(tfps)
+
+
+def LCD_thread_init():
+    t=threading.Thread(target=LCD)
+    t.start()
+########################################################################################
+
 NRFtx_tablicaAdresow=[0,0,0,0,0,0,0,0,0,0]
 NRFtx_tablicaDanych=["","","","","","","","","",""]
-
+#-------------------NRF24L01------------------------------------------------------------
 class NRFwyslij(threading.Thread): #------WATEK NADAWANIA NRF
     def __init__(self, adres, dane):
         threading.Thread.__init__(self)
@@ -285,9 +474,9 @@ def NRFread( stringNRF ):
                       czujnikKwiatek.zasilanie=str(string5)
                       sql_baza.dodajRekordKwiatek(czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie)
                       czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(3,False)
+                      infoStrip.dodajUsunBlad(3,False)
                       if(czujnikKwiatek.woda < 10):
-                        dodajUsunBlad(20,False)
+                        infoStrip.dodajUsunBlad(20,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
                   if stringNRF[3]== "P":
                       sql_baza.dodajRekordKwiatekPodlanie()
@@ -305,7 +494,7 @@ def NRFread( stringNRF ):
                       sql_baza.dodajRekordTempSyp(czujnikPok2.temp,czujnikPok2.humi)
                       czujnikPok2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok2.blad=False #kasowanie bledu
-                      dodajUsunBlad(2,False)
+                      infoStrip.dodajUsunBlad(2,False)
                       dziennik.zapis_dziennika_zdarzen(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                    if stringNRF[3]== "?":
                       string2=(stringNRF[4:7])
@@ -346,7 +535,7 @@ def NRFread( stringNRF ):
                       czujnikZew.kierunekWiatru=int(string5)
                       czujnikZew.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikZew.blad=False #kasowanie bledu
-                      dodajUsunBlad(0,False)
+                      infoStrip.dodajUsunBlad(0,False)
                       dziennik.zapis_dziennika_zdarzen("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
             #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
@@ -363,7 +552,7 @@ def NRFread( stringNRF ):
                       czujnikPok1.batt=int(string4)
                       czujnikPok1.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       czujnikPok1.blad=False #kasowanie bledu
-                      dodajUsunBlad(1,False)
+                      infoStrip.dodajUsunBlad(1,False)
                       dziennik.zapis_dziennika_zdarzen(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
              #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "05":  #LED - tv
@@ -451,7 +640,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek2.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek2(czujnikKwiatek2.wilgotnosc,czujnikKwiatek2.slonce,czujnikKwiatek2.zasilanie,czujnikKwiatek2.wilgotnosc_raw)
                       czujnikKwiatek2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(4,False)
+                      infoStrip.dodajUsunBlad(4,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
@@ -467,7 +656,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek3.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek3(czujnikKwiatek3.wilgotnosc,czujnikKwiatek3.slonce,czujnikKwiatek3.zasilanie, czujnikKwiatek3.wilgotnosc_raw)
                       czujnikKwiatek3.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(5,False)
+                      infoStrip.dodajUsunBlad(5,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
@@ -483,7 +672,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek4.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek4(czujnikKwiatek4.wilgotnosc,czujnikKwiatek4.slonce,czujnikKwiatek4.zasilanie, czujnikKwiatek4.wilgotnosc_raw)
                       czujnikKwiatek4.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(6,False)
+                      infoStrip.dodajUsunBlad(6,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
 #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "15":  #BUDA 15
@@ -513,7 +702,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek5.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek5(czujnikKwiatek5.wilgotnosc,czujnikKwiatek5.slonce,czujnikKwiatek5.zasilanie, czujnikKwiatek5.wilgotnosc_raw)
                       czujnikKwiatek5.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(16,False)
+                      infoStrip.dodajUsunBlad(16,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
@@ -528,16 +717,17 @@ def NRFread( stringNRF ):
                       czujnikKwiatek6.zasilanie=str(string4)
                       sql_baza.dodajRekordKwiatek6(czujnikKwiatek6.wilgotnosc,czujnikKwiatek6.slonce,czujnikKwiatek6.zasilanie, czujnikKwiatek6.wilgotnosc_raw)
                       czujnikKwiatek6.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dodajUsunBlad(19,False)
+                      infoStrip.dodajUsunBlad(19,False)
                       dziennik.zapis_dziennika_zdarzen(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
  #------------------------------------------------------------------------------------------------------------
-            if stringNRF[1:3]== "99":  #moduł testowy
+            if stringNRF[1:3]== "99":  #testowy
                   if stringNRF[3]== ".":
                         int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
                         int2 = ''.join(str(chr(e)) for e in stringNRF[9:])
                         fl1=(float(int1)/1000)
                         dziennik.zapis_stuff('zasilanie: {:.3f}V  -> wilgotnosc: {}'.format(fl1,int2))
             zapis_danych_xml()
+
 
 def obliczFunkcje(wartoscMin, wartoscMax, pomiar):
     obliczenia=0.0
@@ -759,7 +949,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#05K{}{:03d}".format(lampaTV.Ustawienie,int(ustawienie))
         if len(wiad)>=15:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Led TV: {}".format(wiad))
-            dodajInfo("światło TV: {}".format(ustawienie))
+            infoStrip.dodajInfo("światło TV: {}".format(ustawienie))
             NRFwyslij(AdresLedTV,wiad).start()
             lampaTV.blad+=1
         else:
@@ -768,7 +958,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#S{:03d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Led Sypialni: {}".format(wiad))
-            dodajInfo("światło w sypialni: {}".format(ustawienie))
+            infoStrip.dodajInfo("światło w sypialni: {}".format(ustawienie))
             NRFwyslij(AdresSypialnia,wiad).start()
             lampaPok2.blad+=1
         else:
@@ -777,7 +967,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#07T{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Led Kuchni: {}".format(wiad))
-            dodajInfo("światło w kuchni: {}".format(ustawienie))
+            infoStrip.dodajInfo("światło w kuchni: {}".format(ustawienie))
             NRFwyslij(AdresKuchnia,wiad).start()
             lampaKuch.blad+=1
         else:
@@ -787,7 +977,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         if len(wiad)>=5:
             lampa1Pok1.Jasnosc=int(ustawienie)
             dziennik.zapis_dziennika_zdarzen("Ustawiono Reflektor 1: {}".format(wiad))
-            dodajInfo("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
+            infoStrip.dodajInfo("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
             NRFwyslij(AdresLampa1,wiad).start()
             lampa1Pok1.blad+=1
             if(int(ustawienie) == 0):
@@ -800,7 +990,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#08T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa 1: {}".format(wiad))
-            dodajInfo("dekoracje 1 w salonie: {}".format(ustawienie))
+            infoStrip.dodajInfo("dekoracje 1 w salonie: {}".format(ustawienie))
             NRFwyslij(dekoPok1.Adres,wiad).start()
             lampa1Pok1.blad+=1
         else:
@@ -809,7 +999,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#09T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa 2: {}".format(wiad))
-            dodajInfo("dekoracje 2 w salonie: {}".format(ustawienie))
+            infoStrip.dodajInfo("dekoracje 2 w salonie: {}".format(ustawienie))
             NRFwyslij(deko2Pok1.Adres,wiad).start()
             dekoPok1.blad+=1
         else:
@@ -818,7 +1008,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#10T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Lampa Flaming: {}".format(wiad))
-            dodajInfo("flaming: {}".format(ustawienie))
+            infoStrip.dodajInfo("flaming: {}".format(ustawienie))
             NRFwyslij(AdresFlaming,wiad).start()
             dekoFlaming.blad+=1
         else:
@@ -827,7 +1017,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         wiad="#11T{:1d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Uniwersalny USB: {}".format(wiad))
-            dodajInfo("uniwersalny USB: {}".format(ustawienie))
+            infoStrip.dodajInfo("uniwersalny USB: {}".format(ustawienie))
             NRFwyslij(AdresUsb,wiad).start()
             dekoUsb.blad+=1
         else:
@@ -838,7 +1028,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         dziennik.zapis_dziennika_zdarzen("Tradfri Salon ->: {}".format(ustawienie))
-        dodajInfo("oświetlenie w salonie: {}".format(ustawienie))
+        infoStrip.dodajInfo("oświetlenie w salonie: {}".format(ustawienie))
     if adres==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, ustawienie)
@@ -851,7 +1041,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         elif ustawienie>1:
             ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
         dziennik.zapis_dziennika_zdarzen("Tradfri Jadalnia ->: {}".format(ustawienie))
-        dodajInfo("oświetlenie w jadalni: {}".format(ustawienie))
+        infoStrip.dodajInfo("oświetlenie w jadalni: {}".format(ustawienie))
     if adres==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
         if ustawienie==0 or ustawienie==1:
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
@@ -862,7 +1052,7 @@ def sterowanieOswietleniem(adres, ustawienie):
         else:
             lampaPrzedpokojTradfri.Status=0
         dziennik.zapis_dziennika_zdarzen("Tradfri Przedpokoj ->: {}".format(ustawienie))
-        dodajInfo("oświetlenie w przedpokoju: {}".format(ustawienie))
+        infoStrip.dodajInfo("oświetlenie w przedpokoju: {}".format(ustawienie))
     if adres==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
         if len(str(ustawienie))==1:
             if int(ustawienie)==0 or int(ustawienie)==1:
@@ -874,12 +1064,12 @@ def sterowanieOswietleniem(adres, ustawienie):
             chKolor3=int(ustawienie[6:9])
             ikea.ikea_RGB_lamp(hubip, user_id, securityid, security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
             dziennik.zapis_dziennika_zdarzen("Tradfri Lampa kolor ->: {}".format(ustawienie))
-            dodajInfo("lampa w salonie -> kolor: {}".format(ustawienie))
+            infoStrip.dodajInfo("lampa w salonie -> kolor: {}".format(ustawienie))
         elif len(str(ustawienie))==2 or len(str(ustawienie))==3:
             if int(ustawienie)>1 and int(ustawienie)<=100:
                 ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
                 dziennik.zapis_dziennika_zdarzen("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
-                dodajInfo("lampa w salonie: {}".format(ustawienie))
+                infoStrip.dodajInfo("lampa w salonie: {}".format(ustawienie))
         else:
             dziennik.zapis_dziennika_zdarzen("Tradfri blad skladni")
     if adres==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
@@ -891,7 +1081,7 @@ def sterowanieOswietleniem(adres, ustawienie):
             ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, 1)
             lampaPok2Tradfri.Flaga = True
         dziennik.zapis_dziennika_zdarzen("Tradfri Sypialnia ->: {}".format(ustawienie))
-        dodajInfo("oświetlenie w sypialni: {}".format(ustawienie))
+        infoStrip.dodajInfo("oświetlenie w sypialni: {}".format(ustawienie))
     if adres==hydroponika.Adres:   #Hydroponika
         if int(ustawienie) > 1:
             wiad="#17P1" #wlacz pompe
@@ -899,7 +1089,7 @@ def sterowanieOswietleniem(adres, ustawienie):
             wiad="#17A{:01d}".format(int(ustawienie))
         if len(wiad)>=5:
             dziennik.zapis_dziennika_zdarzen("Ustawiono Hydroponike: {}".format(wiad))
-            dodajInfo("Hydroponika: {}".format(ustawienie))
+            infoStrip.dodajInfo("Hydroponika: {}".format(ustawienie))
             NRFwyslij(hydroponika.Adres,wiad).start()
         else:
             dziennik.zapis_dziennika_zdarzen("BLAD SKLADNI!: {}".format(wiad))
@@ -1046,245 +1236,7 @@ def jasnosc_wyswietlacza(): #----STEROWANIE WYSWIETLACZEM - WATEK!!!!!!!!!! ----
             swiatlo_old=swiatlo
         time.sleep(5)
 
-#++++++++++++++++++++++++++++++ WYSWIETLANIE ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-bgcolor=(255,255,255,255)
-tfps=0.2
 
-def wysw_init():
-    global screen, obrazek, czaspogody
-
-    pygame.init()
-    resolution = 800, 480
-    screen = pygame.display.set_mode(resolution,FULLSCREEN)
-    #screen = pygame.display.set_mode(resolution,1)
-    pygame.display.set_caption('MojDom')
-    screen.fill(bgcolor)
-    pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
-    czaspogody=datetime.datetime.utcnow()
-
-pozycja_animacji = [[0,0],[60,-42],[120,-135],[160,-225],[180,-275],[190,-367],[230,-13],[350,-89],[390,-247],[430,-198],[500,-400],[560,-163],[620,-200],[650,-50],[700,-31],[750,-7],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
-kolorPaskaInfo=(50,100,10,255)
-
-def obraz_glowny():
-    global screen, licznik, pozycja_animacji
-    global czasodswpogody,ledtvjasnosc, czaspogody, kolorPaskaInfo
-    tfps=0
-    pozX=0
-
-    kolor=(0,0,0,250)
-    kolorczcionki1=(255,255,255,255)
-    kolorczcionki2=(255,200,100,255)
-    kolorczcionki3=(0,0,0,255)
-    kolorczcionki4=(60,60,60,200)
-    kolorczcionki5=(255,255,255,255)
-
-    #---ANIMACJA TAPETY -----
-    #pogoda.Pogoda.IkonaDzis="02"
-    #czujnikZew.noc_flaga=False
-    '''
-    01d - clear sky
-    02d - few clouds
-    03d - scattered clouds
-    04d - broken clouds
-    09d - shower rain
-    10d - rain
-    11d - thunderstorm
-    13d - snow
-    50d - mist - fog
-    '''
-    tapeta=pogoda.Pogoda.IkonaDzis
-    tapeta=tapeta.lower()
-
-    if(tapeta.find('02') != -1 or tapeta.find('03') != -1 or tapeta.find('04') != -1): #CLOUDS
-        if pozycja_animacji[16][1]==0: #dla zmiany kierunku
-            if pozycja_animacji[16][0]>300:
-                pozycja_animacji[16][1]=1
-            else:
-                pozycja_animacji[16][0]=pozycja_animacji[16][0]+1
-        else: #dla zmiany kierunku
-            if pozycja_animacji[16][0]<0:
-                pozycja_animacji[16][1]=0
-            else:
-                pozycja_animacji[16][0]=pozycja_animacji[16][0]-1
-        pozX=(-600)+pozycja_animacji[16][0]
-        if(tapeta.find('02') != -1 and czujnikZew.noc_flaga==False):
-            kolorczcionki3=(185,242,107,255)
-            kolorczcionki4=(235,255,187,255)
-        if czujnikZew.noc_flaga==True:
-            kolorczcionki3=(190,190,190,255)
-            kolorczcionki4=(250,250,250,200)
-    pogoda.ikonka(pozX,0,255,True,czujnikZew.noc_flaga,pogoda.Pogoda.IkonaDzis)
-    if(tapeta.find('01') != -1):  #CLEAR SKY
-        if czujnikZew.noc_flaga==True:
-            kolorczcionki2=(180,180,180,255)
-        else:
-            kolorczcionki2=(100,40,20,255)
-        kolorczcionki3=(255,255,155,255)
-        kolorczcionki4=(255,215,0,255)
-        kolorczcionki5=(255,82,0,255)
-    elif(tapeta.find('50') != -1):
-        kolorczcionki1=(0,105,56,255)
-        kolorczcionki2=(100,40,20,255)
-        kolorczcionki3=(95,103,56,255)
-        kolorczcionki4=(255,215,0,255)
-        kolorczcionki5=(255,82,0,255)
-    elif(tapeta.find('09') != -1 or tapeta.find('10') != -1):  #RAIN
-        kolorczcionki3=(255,255,155,255)
-        kolorczcionki4=(255,255,200,255)
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(70, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
-        pogoda.icons(randint(30, 750),randint(30, 300),255,"anim")
-    if(tapeta.find('11') != -1): #THUNDERSTORM
-        kolorczcionki3=(255,255,155,255)
-        kolorczcionki4=(255,215,0,255)
-        kolorczcionki5=(255,82,0,255)
-        if pozycja_animacji[17][0]<0:
-            pogoda.icons(0,0,255,"DTStorm2")
-            pozycja_animacji[17][0]=randint(7, 70)
-        else:
-            pozycja_animacji[17][0]=pozycja_animacji[17][0]-1
-    elif(tapeta.find('13') != -1): #SNOW
-        tfps=0.0
-        pogoda.icons(pozycja_animacji[0][0],pozycja_animacji[0][1],255,"snowflake1")
-        pozycja_animacji[0][1]=pozycja_animacji[0][1]+1
-        pogoda.icons(pozycja_animacji[1][0],pozycja_animacji[1][1],255,"snowflake2")
-        pozycja_animacji[1][1]=pozycja_animacji[1][1]+2
-        pogoda.icons(pozycja_animacji[2][0],pozycja_animacji[2][1],255,"snowflake3")
-        pozycja_animacji[2][1]=pozycja_animacji[2][1]+4
-        pogoda.icons(pozycja_animacji[3][0],pozycja_animacji[3][1],255,"snowflake3")
-        pozycja_animacji[3][1]=pozycja_animacji[3][1]+4
-        pogoda.icons(pozycja_animacji[4][0],pozycja_animacji[4][1],255,"snowflake3")
-        pozycja_animacji[4][1]=pozycja_animacji[4][1]+4
-        pogoda.icons(pozycja_animacji[5][0],pozycja_animacji[5][1],255,"snowflake3")
-        pozycja_animacji[5][1]=pozycja_animacji[5][1]+4
-        pogoda.icons(pozycja_animacji[6][0],pozycja_animacji[6][1],255,"snowflake3")
-        pozycja_animacji[6][1]=pozycja_animacji[6][1]+4
-        pogoda.icons(pozycja_animacji[7][0],pozycja_animacji[7][1],255,"snowflake4")
-        pozycja_animacji[7][1]=pozycja_animacji[7][1]+1
-        pogoda.icons(pozycja_animacji[8][0],pozycja_animacji[8][1],255,"snowflake5")
-        pozycja_animacji[8][1]=pozycja_animacji[8][1]+3
-        pogoda.icons(pozycja_animacji[9][0],pozycja_animacji[9][1],255,"snowflake5")
-        pozycja_animacji[9][1]=pozycja_animacji[9][1]+3
-        pogoda.icons(pozycja_animacji[10][0],pozycja_animacji[10][1],255,"snowflake5")
-        pozycja_animacji[10][1]=pozycja_animacji[10][1]+3
-        pogoda.icons(pozycja_animacji[11][0],pozycja_animacji[11][1],255,"snowflake6")
-        pozycja_animacji[11][1]=pozycja_animacji[11][1]+4
-        pogoda.icons(pozycja_animacji[12][0],pozycja_animacji[12][1],255,"snowflake6")
-        pozycja_animacji[12][1]=pozycja_animacji[12][1]+4
-        pogoda.icons(pozycja_animacji[13][0],pozycja_animacji[13][1],255,"snowflake3")
-        pozycja_animacji[13][1]=pozycja_animacji[13][1]+5
-        pogoda.icons(pozycja_animacji[14][0],pozycja_animacji[14][1],255,"snowflake6")
-        pozycja_animacji[14][1]=pozycja_animacji[14][1]+4
-        pogoda.icons(pozycja_animacji[15][0],pozycja_animacji[15][1],255,"snowflake6")
-        pozycja_animacji[15][1]=pozycja_animacji[15][1]+4
-        for px in range(16):
-            if pozycja_animacji[px][1]>randint(480, 500):
-                pozycja_animacji[px][0]=randint(10, 780)
-                pozycja_animacji[px][1]=0
-        kolorczcionki4=(160,180,160,255)
-        kolorczcionki3=(220,220,250,255)
-    #------------------------
-    d = datetime.datetime.today()
-    dzienTygodnia=wysw.dzien(d.weekday())
-
-    wysw.napis_centralny(screen, str(time.strftime("%H:%M")),"Nimbus Sans L",190,295,90,kolorczcionki1,255) #czas
-    wysw.napis_centralny(screen, dzienTygodnia,"Nimbus Sans L",56,620,80,kolorczcionki2,255)  #dzien tygodnia
-    wysw.napis_centralny(screen, str(int(time.strftime("%d")))+" "+wysw.miesiac(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,kolorczcionki2,255)  #dzien tygodnia
-
-    wysw.napis2(screen, "dziś","Nimbus Sans L",56,50,170,kolorczcionki3,255)
-    pogoda.ikonka(30,210,255,False,czujnikZew.noc_flaga,pogoda.Pogoda.IkonaDzis)
-    pogoda.icons(20,330,255,"arrow_down")
-    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMinDzis),"Nimbus Sans L",54,70,330,kolorczcionki3,255)
-    pogoda.icons(20,380,255,"arrow_up")
-    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMaxDzis),"Nimbus Sans L",54,70,380,kolorczcionki4,255)
-    wysw.napis2(screen, "jutro","Nimbus Sans L",56,230,170,kolorczcionki3,255)
-    pogoda.ikonka(220,210,255,False,False,pogoda.Pogoda.IkonaJutro)
-    pogoda.icons(205,330,255,"arrow_down")
-    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMinJutro),"Nimbus Sans L",54,245,330,kolorczcionki3,255)
-    pogoda.icons(205,380,255,"arrow_up")
-    wysw.napis2(screen, "{:.0f}°C".format(pogoda.Pogoda.TempMaxJutro),"Nimbus Sans L",54,245,380,kolorczcionki4,255)
-
-    wysw.obraz(screen, 390,170,255,"temp_out")
-    dlugosc=wysw.napis2(screen, "{:.1f}°C".format(czujnikZew.temp),"Nimbus Sans L",68,485,190,kolorczcionki5,255)
-    wysw.napis2(screen, "{:.0f}%".format(czujnikZew.humi),"Nimbus Sans L",48,505+dlugosc,200,kolorczcionki4,255)
-    wysw.obraz(screen, 390,258,255,"temp_in")
-    dlugosc=wysw.napis2(screen, "{:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",68,485,280,kolorczcionki4,255)
-    wysw.napis2(screen, "{:.0f}%".format(czujnikPok1.humi),"Nimbus Sans L",48,505+dlugosc,290,kolorczcionki4,255)
-
-    wysw.obraz(screen, 390,350,255,"wind")
-    dlugosc=wysw.napis2(screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,kolorczcionki3,255)
-
-    # PASEK INFORMACYJNY
-    pasekInfo.aktualnaInformacja=odczytajInfo()
-    if (pasekInfo.aktualnaInformacja != ""):
-        pasekInfo.wyswietlanaInformacja=pasekInfo.aktualnaInformacja
-        kolorPaskaInfo=(190,255,190,255)
-        pasekInfo.czas=60
-        pasekInfo.pozycja=3
-    else:
-        if(pasekInfo.czas==0):
-            pasekInfo.wyswietlanaInformacja=odczytajBlad()
-            if (pasekInfo.wyswietlanaInformacja != ""):
-                 pasekInfo.czas=120
-                 pasekInfo.pozycja=3
-                 kolorPaskaInfo=(255,100,100,255)
-
-    if(pasekInfo.czas>0):
-        pasekInfo.czas-=1
-    if(pasekInfo.czas>=0 and pasekInfo.czas<=3):
-        pasekInfo.pozycja=pasekInfo.czas
-
-    if(pasekInfo.wyswietlanaInformacja != ""):
-        wysw.napis2(screen, pasekInfo.wyswietlanaInformacja,"Nimbus Sans L",46,70,480-(pasekInfo.pozycja*13),kolorPaskaInfo,255)
-
-
-def obraz_nocny():
-    global screen, licznik
-    global czasodswpogody,ledtvjasnosc, czaspogody
-    kolor=(0,0,0,250)
-    kolorczcionki3=(180,180,180,255)
-
-    wysw.napis_centralny_tlo(screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210,kolorczcionki3,255,(0,0,0,255)) #czas
-    wysw.napis_tlo(screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410,kolorczcionki3,255,(0,0,0,255))
-
-def LCD():  #----WYSWIETLANIE - WATEK!!!!!!!!!! ------------------------------------------------------------------------------------------------------
-    global obraz, tfps
-    tryb_nocny=False
-
-    wysw_init()
-    while(1):
-        for event in pygame.event.get():
-            if event.type==pygame.KEYDOWN and event.key==pygame.K_SPACE:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                px=event.pos[0]
-                py=event.pos[1]
-                print ("You pressed the left mouse button at ({}, {})".format(px,py))
-                if(px>750 and px<800 and py>0 and py<50):
-                    pygame.quit()
-                    sys.exit()
-                if(px>17 and px<284 and py>15 and py<227):
-                    screen.fill(bgcolor)
-                    obraz=0
-        #flaga_odczyt_ustawien=wysw.odswiez(czujnikZew.temp,czujnikPok1.temp,czujnikPok2.temp,czujnikZew.humi,czujnikPok1.humi,czujnikPok2.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie, swiatlo, int(lampa1Pok1.Flaga), int(lampa1Pok1.Jasnosc), int(lampa1Pok1.Ustawienie), int(lampaTV.Flaga), int(lampaTV.Jasnosc), int(lampaPok2.Flaga), int(lampaPok2.Jasnosc), int(lampaKuch.Flaga),czujnikZew.czas,czujnikZew.blad,czujnikPok1.blad,czujnikPok2.blad)
-        if(obraz==0):
-            if tryb_nocny==False:
-                obraz_glowny()
-            else:
-                obraz_nocny()
-
-        if tryb_nocny==False and swiatlo<2:
-            tryb_nocny=True
-            screen.fill((0,0,0,255))
-        elif tryb_nocny==True and swiatlo>5:
-            tryb_nocny=False
-            screen.fill(bgcolor)
-        pygame.display.update()
-        time.sleep(tfps)
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -1383,10 +1335,9 @@ try:
 except:
     dziennik.zapis_dziennika_zdarzen("Ikea Tradfri -> nie dziala")
 #--------------INNE--------------------------
-sql_baza.kasujstaredane()
+#sql_baza.kasujstaredane()  # test, sprawdzic, dziala wolno
 #-------------WATKI--------------------------
-t=threading.Thread(target=LCD)
-t.start()
+LCD_thread_init()
 l=threading.Thread(target=jasnosc_wyswietlacza)
 l.start()
 n=threading.Thread(target=NRF_SERWER)
