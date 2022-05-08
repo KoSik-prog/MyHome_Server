@@ -29,25 +29,25 @@ class PICTURES_CL():
     
     def get_icon(self, iconName):
         if(iconName == "arrow_down"):
-            foto=ikona.arrow_down.convert()
+            foto=self.arrow_down.convert()
         elif(iconName == "arrow_up"):
-            foto=ikona.arrow_up.convert()
+            foto=self.arrow_up.convert()
         elif(iconName.find('anim') != -1):
-            foto=ikona.RainAnim1.convert()
+            foto=self.RainAnim1.convert()
         elif(iconName.find('snowflake1') != -1):
-            foto=ikona.snowflake1.convert()
+            foto=self.snowflake1.convert()
         elif(iconName.find('snowflake2') != -1):
-            foto=ikona.snowflake2.convert()
+            foto=self.snowflake2.convert()
         elif(iconName.find('snowflake3') != -1):
-            foto=ikona.snowflake3.convert()
+            foto=self.snowflake3.convert()
         elif(iconName.find('snowflake4') != -1):
-            foto=ikona.snowflake4.convert()
+            foto=self.snowflake4.convert()
         elif(iconName.find('snowflake5') != -1):
-            foto=ikona.snowflake5.convert()
+            foto=self.snowflake5.convert()
         elif(iconName.find('snowflake6') != -1):
-            foto=ikona.snowflake6.convert()
+            foto=self.snowflake6.convert()
         else:
-            foto=ikona.NA.convert()
+            foto=self.NA.convert()
         return foto
 
     def load_image(self, folder, name):   # ZALADOWANIE IKONY
