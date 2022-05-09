@@ -1,14 +1,7 @@
-09-05-2022  20:37 LOG:
-21:03 Ikea Tradfri -> id: 8    pass: xvjJBicqTjh2wc57
-21:03 Pobieram progrnoze pogody...
-21:03  Pobrano prognoze pogody dla miasta Rodgau
-21:04 -----> ODEBRANO: #17k0000012670554
-21:04    Kwiatek 17 Slonce: 000%   Wilg: 100%   Zas: 2.67V
-21:04 -----> ODEBRANO: #04t0228531100
-21:04    Sensor2 czujnikPok1.temp: 22.8*C   Wilg2: 53.1%   Batt: 100
-21:06 -----> ODEBRANO: #13k0000012740564
-21:06    Kwiatek 13 Slonce: 000%   Wilg: 100%   Zas: 2.74V
-21:06 -----> ODEBRANO: #03t0200321000000
-21:06    Sensor1 zewnetrzny Temp: 20.0*C   Wilg: 32.1%   Wiatr: 0.0m/s   Kier:0
-21:07 -----> ODEBRANO: #02y2291034
-21:07    Sensor3 czujnikPok2.temp: 22.9*C   Wilg3: 103%
+09-05-2022  21:08 LOG:
+21:08 Ikea Tradfri -> id: 9    pass: DK2vHuN6uVNCKpvf
+21:08 Pobieram progrnoze pogody...
+21:08  Pobrano prognoze pogody dla miasta Rodgau
+21:08 -----> ODEBRANO: 
+21:08 -----> ODEBRANO: #01k00000000307400395
+21:08    Kwiatek Slonce: 000%   Wilg: 000%   Woda: 003x10ml   Zas: 074%
