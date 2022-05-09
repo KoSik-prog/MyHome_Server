@@ -1,7 +1,0 @@
-09-05-2022  21:08 LOG:
-21:08 Ikea Tradfri -> id: 9    pass: DK2vHuN6uVNCKpvf
-21:08 Pobieram progrnoze pogody...
-21:08  Pobrano prognoze pogody dla miasta Rodgau
-21:08 -----> ODEBRANO: 
-21:08 -----> ODEBRANO: #01k00000000307400395
-21:08    Kwiatek Slonce: 000%   Wilg: 000%   Woda: 003x10ml   Zas: 074%
