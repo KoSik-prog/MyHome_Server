@@ -2,7 +2,6 @@
 from libraries.gui import *
 from libraries.log import *
 from devicesList import *
-from libraries.displayItems import *
 from libraries.infoStrip import *
 from libraries.weatherForecast import *
 

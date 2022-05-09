@@ -1,12 +1,6 @@
-08-05-2022  17:33 LOG:
-17:33 Ikea Tradfri -> id: 3    pass: ya3dZtO4eFEBuvR6
-17:33 Pobieram progrnoze pogody...
-17:33 AUTO Hyroponika -> ON
-17:33 Ustawiono Hydroponike: #17A1
-17:33  Pobrano prognoze pogody dla miasta Rodgau
-17:33 -----> ODEBRANO: 
-17:33 -----> ODEBRANO: #18?1     333
-17:33    Hydroponika ON/OFF:1
-17:33 -----> ODEBRANO: #16k0000013030507
-17:33 -----> ODEBRANO: 
-17:33    Kwiatek 16 Slonce: 000%   Wilg: 71%   Zas: 3.03V
+09-05-2022  20:01 LOG:
+20:01 Ikea Tradfri -> id: 9    pass: uynFLCmztKDErD1Y
+20:01 Pobieram progrnoze pogody...
+20:01  Pobrano prognoze pogody dla miasta Rodgau
+20:02 Pobieram progrnoze pogody...
+20:02  Pobrano prognoze pogody dla miasta Rodgau

@@ -19,15 +19,14 @@ from libraries.log import *
 from libraries.weatherForecast import *
 from devicesList import *
 from libraries.infoStrip import *
-from libraries.displayItems import *
 
 import wysw #tymczasowe
 
 class GUI_CL:
     bgcolor=(255,255,255,255)
     resolution = 800, 480
-    screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
-    #screen = pygame.display.set_mode(resolution,1)
+    #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(resolution,1)
     pozycja_animacji = [[0,0],[60,-42],[120,-135],[160,-225],[180,-275],[190,-367],[230,-13],[350,-89],[390,-247],[430,-198],[500,-400],[560,-163],[620,-200],[650,-50],[700,-31],[750,-7],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     kolorPaskaInfo=(50,100,10,255)
 
@@ -49,6 +48,42 @@ class GUI_CL:
         pygame.display.set_caption('MojDom')
         self.screen.fill(self.bgcolor)
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
+
+        self.BrokenClouds = self.load_image('ikony', "Broken_Clouds.gif")
+        self.ClearSky = self.load_image('ikony', "Clear_Sky.gif")
+        self.ClearSkyNight = self.load_image('ikony', "Clear_Sky_Night.gif")
+        self.FewClouds = self.load_image('ikony', "Few_Clouds.gif")
+        self.Fog = self.load_image('ikony', "Mist.gif")
+        self.Rain = self.load_image('ikony', "Rain.gif")
+        self.ScatteredClouds = self.load_image('ikony', "Scattered_Clouds.gif")
+        self.ScatteredCloudsNight = self.load_image('ikony', "Scattered_Clouds_Night.gif")
+        self.ShowerRain = self.load_image('ikony', "Shower_Rain.gif")
+        self.Snow = self.load_image('ikony', "Snow.gif")
+        self.Thunderstorm = self.load_image('ikony', "Thunderstorm.gif")
+        #---
+        self.DCloudy = self.load_image('pic', "Cloudy.jpg")
+        self.DCloudyNight = self.load_image('pic', "Cloudy_Night.jpg")
+        self.DFewClouds = self.load_image('pic', "Few_Clouds.jpg")
+        self.DFewCloudsNight = self.load_image('pic', "Few_Clouds_Night.jpg")
+        self.DFog = self.load_image('pic', "Fog.jpg")
+        self.DRain = self.load_image('pic', "Rain.jpg")
+        self.DSnow = self.load_image('pic', "Snow.jpg")
+        self.DSnowNight = self.load_image('pic', "Snow_Night.jpg")
+        self.DTStorm = self.load_image('pic', "T-Storm.jpg")
+        self.DTStorm2 = self.load_image('pic', "T-Storm2.jpg")
+        self.DClearSky = self.load_image('pic', "Sun.jpg")
+        self.DClearSkyNight = self.load_image('pic', "Clear_Night.jpg")
+        #---
+        self.NA = self.load_image('ikony', "na.gif")
+        self.arrow_down = self.load_image('ikony', "arrow_down.gif")
+        self.arrow_up = self.load_image('ikony', "arrow_up.gif")
+        self.snowflake1 = self.load_image('pic', "snowflake1.gif")
+        self.snowflake2 = self.load_image('pic', "snowflake2.gif")
+        self.snowflake3 = self.load_image('pic', "snowflake3.gif")
+        self.snowflake4 = self.load_image('pic', "snowflake4.gif")
+        self.snowflake5 = self.load_image('pic', "snowflake5.gif")
+        self.snowflake6 = self.load_image('pic', "snowflake6.gif")
+        self.RainAnim1 = self.load_image('pic', "rain_anim1.gif")
 
     def lcd(self):  #----WYSWIETLANIE - WATEK!!!!!!!!!! ------------------------------------------------------------------------------------------------------
         obraz=0
@@ -118,7 +153,7 @@ class GUI_CL:
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)
-        wysw.display_picture(self.screen, self.posX , 0, 255, weather.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
+        wysw.display_picture(self.screen, self.posX , 0, 255, self.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
         if(tapeta.find('01') != -1):  #CLEAR SKY
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki2=(180,180,180,255)
@@ -137,13 +172,13 @@ class GUI_CL:
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,255,200,255)
             for i in range(6):
-                wysw.display_picture(self.screen, randint(30, 750), randint(70, 300), 255, pictures.get_icon("anim")) 
+                wysw.display_picture(self.screen, randint(30, 750), randint(70, 300), 255, gui.get_picture("anim")) 
         if(tapeta.find('11') != -1): #THUNDERSTORM
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
             if self.pozycja_animacji[17][0]<0:
-                wysw.display_picture(self.screen,0, 0, 255, pictures.get_icon("DTStorm2"))
+                wysw.display_picture(self.screen,0, 0, 255, gui.get_picture("DTStorm2"))
                 self.pozycja_animacji[17][0]=randint(7, 70)
             else:
                 self.pozycja_animacji[17][0]=self.pozycja_animacji[17][0]-1
@@ -151,7 +186,7 @@ class GUI_CL:
             self.tfps=0.0
             flakesArray=[["snowflake1", 1], ["snowflake2", 2], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake4", 1], ["snowflake5", 3], ["snowflake5", 3], ["snowflake5", 3], ["snowflake6", 4], ["snowflake6", 4], ["snowflake3", 5], ["snowflake6", 4], ["snowflake6", 4]]
             for i in range(15):
-                wysw.display_picture(self.screen, self.pozycja_animacji[i][0], self.pozycja_animacji[i][1], 255, pictures.get_icon(flakesArray[i][0]))
+                wysw.display_picture(self.screen, self.pozycja_animacji[i][0], self.pozycja_animacji[i][1], 255, gui.get_picture(flakesArray[i][0]))
                 self.pozycja_animacji[i][1]=self.pozycja_animacji[i][1]+flakesArray[i][1]
             for px in range(16):
                 if self.pozycja_animacji[px][1]>randint(480, 500):
@@ -168,16 +203,16 @@ class GUI_CL:
         wysw.napis_centralny(self.screen, str(int(time.strftime("%d")))+" "+wysw.miesiac(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,self.kolorczcionki2,255)  #dzien tygodnia
 
         wysw.napis2(self.screen, "dziś","Nimbus Sans L",56,50,170,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 30, 210, 255, weather.get_icon(czujnikZew.noc_flaga, weather.iconToday))
-        wysw.display_picture(self.screen, 20, 330, 255, pictures.get_icon("arrow_down"))
+        wysw.display_picture(self.screen, 30, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconToday))
+        wysw.display_picture(self.screen, 20, 330, 255, gui.get_picture("arrow_down"))
         wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMinToday),"Nimbus Sans L",54,70,330,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 20, 380, 255, pictures.get_icon("arrow_up"))
+        wysw.display_picture(self.screen, 20, 380, 255, gui.get_picture("arrow_up"))
         wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMaxToday),"Nimbus Sans L",54,70,380,self.kolorczcionki4,255)
         wysw.napis2(self.screen, "jutro","Nimbus Sans L",56,230,170,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 220, 210, 255, weather.get_icon(czujnikZew.noc_flaga, weather.iconTomorrow))
-        wysw.display_picture(self.screen, 205, 330, 255, pictures.get_icon("arrow_down"))
+        wysw.display_picture(self.screen, 220, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconTomorrow))
+        wysw.display_picture(self.screen, 205, 330, 255, gui.get_picture("arrow_down"))
         wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMinTomorrow),"Nimbus Sans L",54,245,330,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 205, 380, 255, pictures.get_icon("arrow_up"))
+        wysw.display_picture(self.screen, 205, 380, 255, gui.get_picture("arrow_up"))
         wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMaxTomorrow),"Nimbus Sans L",54,245,380,self.kolorczcionki4,255)
 
         wysw.obraz(self.screen, 390,170,255,"temp_out")
@@ -218,4 +253,110 @@ class GUI_CL:
 
         wysw.napis_centralny_tlo(self.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210, self.kolorczcionki3,255,(0,0,0,255)) #czas
         wysw.napis_tlo(self.screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
+
+    def get_background(self, night, iconName):
+        iconName=iconName.lower()
+        if(iconName.find('01') != -1):  #CLEAR SKY
+            if(night == True):
+                pic=self.DClearSkyNight.convert()
+            else:
+                pic=self.DClearSky.convert()
+        elif(iconName.find('02') != -1):  # FEW CLOUDS
+            if(night==True):
+                pic=self.DFewCloudsNight.convert()
+            else:
+                pic=self.DFewClouds.convert()
+        elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
+            if(night==True):
+                pic=self.DCloudyNight.convert()
+            else:
+                pic=self.DCloudy.convert()
+        elif(iconName.find('04') != -1):  #BROKEN CLOUDS
+            if(night==True):
+                pic=self.DCloudyNight.convert()
+            else:
+                pic=self.DCloudy.convert()
+        elif(iconName.find('09') != -1): #SHOWER RAIN
+            pic=self.DRain.convert()
+        elif(iconName.find('10') != -1): #RAIN
+            pic=self.DRain.convert()
+        elif(iconName.find('11') != -1):  #THUNDERSTORM
+            pic=self.DTStorm.convert()
+        elif(iconName.find('13') != -1):  #SNOW
+            if(night==True):
+                pic=self.DSnowNight.convert()
+            else:
+                pic=self.DSnow.convert()
+        elif(iconName.find('50') != -1):  #mist - fog
+            pic=self.DFog.convert()
+        else:
+            self.save_error(iconName)
+            pic=self.NA.convert()
+        return pic
+
+    def get_icon(self, night, iconName):
+        iconName=iconName.lower()
+        if(iconName.find('01') != -1):  #CLEAR SKY
+            if(night==True):
+                pic=self.ClearSkyNight.convert()
+            else:
+                pic=self.ClearSky.convert()
+        elif(iconName.find('02') != -1):  # FEW CLOUDS
+            pic=self.FewClouds.convert()
+        elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
+            pic=self.ScatteredClouds.convert()
+        elif(iconName.find('04') != -1):  #BROKEN CLOUDS
+            pic=self.BrokenClouds.convert()
+        elif(iconName.find('09') != -1): #SHOWER RAIN
+            pic=self.ShowerRain.convert()
+        elif(iconName.find('10') != -1): #RAIN
+            pic=self.Rain.convert()
+        elif(iconName.find('11') != -1):  #THUNDERSTORM
+            pic=self.Thunderstorm.convert()
+        elif(iconName.find('13') != -1):  #SNOW
+            pic=self.Snow.convert()
+        elif(iconName.find('50') != -1):  #mist - fog
+            pic=self.Fog.convert()
+        else:
+            self.save_error(iconName)
+            pic=self.NA.convert()
+        return pic
+
+    def get_picture(self, iconName):
+        if(iconName == "arrow_down"):
+            foto=self.arrow_down.convert()
+        elif(iconName == "arrow_up"):
+            foto=self.arrow_up.convert()
+        elif(iconName.find('anim') != -1):
+            foto=self.RainAnim1.convert()
+        elif(iconName.find('snowflake1') != -1):
+            foto=self.snowflake1.convert()
+        elif(iconName.find('snowflake2') != -1):
+            foto=self.snowflake2.convert()
+        elif(iconName.find('snowflake3') != -1):
+            foto=self.snowflake3.convert()
+        elif(iconName.find('snowflake4') != -1):
+            foto=self.snowflake4.convert()
+        elif(iconName.find('snowflake5') != -1):
+            foto=self.snowflake5.convert()
+        elif(iconName.find('snowflake6') != -1):
+            foto=self.snowflake6.convert()
+        elif(iconName.find("DTStorm2")):
+            foto=self.DTStorm2.convert()
+        else:
+            foto=self.NA.convert()
+        return foto
+
+    def load_image(self, folder, name):   # ZALADOWANIE IKONY
+        main_dir = os.path.split(os.path.abspath(__file__))[0]
+        data_dir = os.path.join(main_dir, '../' + folder)
+        fullname = os.path.join(data_dir, name)
+        try:
+            image = pygame.image.load(fullname)
+        except pygame.error:
+            log.add_log('Cannot load image:', fullname)
+            raise SystemExit(str(geterror()))
+        image = image.convert()
+        return image
+
 gui = GUI_CL()
