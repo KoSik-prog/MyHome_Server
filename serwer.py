@@ -6,7 +6,7 @@ from libraries.infoStrip import *
 from libraries.weatherForecast import *
 
 try:
-    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, wysw, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
+    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
 except ImportError:
     print "Blad importu"
 

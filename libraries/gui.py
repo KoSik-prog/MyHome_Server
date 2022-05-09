@@ -19,14 +19,16 @@ from libraries.log import *
 from libraries.weatherForecast import *
 from devicesList import *
 from libraries.infoStrip import *
+from libraries.dateDecode import *
 
-import wysw #tymczasowe
+pygame.init()
 
 class GUI_CL:
-    bgcolor=(255,255,255,255)
+    pygame.display.set_caption('MojDom')
     resolution = 800, 480
     #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
     screen = pygame.display.set_mode(resolution,1)
+    bgcolor=(255,255,255,255)
     pozycja_animacji = [[0,0],[60,-42],[120,-135],[160,-225],[180,-275],[190,-367],[230,-13],[350,-89],[390,-247],[430,-198],[500,-400],[560,-163],[620,-200],[650,-50],[700,-31],[750,-7],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     kolorPaskaInfo=(50,100,10,255)
 
@@ -44,8 +46,6 @@ class GUI_CL:
     tryb_nocny=False
 
     def __init__(self):
-        pygame.init()
-        pygame.display.set_caption('MojDom')
         self.screen.fill(self.bgcolor)
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
 
@@ -84,6 +84,10 @@ class GUI_CL:
         self.snowflake5 = self.load_image('pic', "snowflake5.gif")
         self.snowflake6 = self.load_image('pic', "snowflake6.gif")
         self.RainAnim1 = self.load_image('pic', "rain_anim1.gif")
+        #---
+        self.tempin = self.load_image('ikony', "temp_in.gif")
+        self.tempout = self.load_image('ikony', "temp_out.gif")
+        self.wind = self.load_image('ikony', "wind.gif")
 
     def lcd(self):  #----WYSWIETLANIE - WATEK!!!!!!!!!! ------------------------------------------------------------------------------------------------------
         obraz=0
@@ -153,7 +157,7 @@ class GUI_CL:
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)
-        wysw.display_picture(self.screen, self.posX , 0, 255, self.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
+        self.display_picture(self.screen, self.posX , 0, 255, self.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
         if(tapeta.find('01') != -1):  #CLEAR SKY
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki2=(180,180,180,255)
@@ -172,13 +176,13 @@ class GUI_CL:
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,255,200,255)
             for i in range(6):
-                wysw.display_picture(self.screen, randint(30, 750), randint(70, 300), 255, gui.get_picture("anim")) 
+                self.display_picture(self.screen, randint(30, 750), randint(70, 300), 255, self.get_picture("anim")) 
         if(tapeta.find('11') != -1): #THUNDERSTORM
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
             if self.pozycja_animacji[17][0]<0:
-                wysw.display_picture(self.screen,0, 0, 255, gui.get_picture("DTStorm2"))
+                self.display_picture(self.screen,0, 0, 255, self.get_picture("DTStorm2"))
                 self.pozycja_animacji[17][0]=randint(7, 70)
             else:
                 self.pozycja_animacji[17][0]=self.pozycja_animacji[17][0]-1
@@ -186,7 +190,7 @@ class GUI_CL:
             self.tfps=0.0
             flakesArray=[["snowflake1", 1], ["snowflake2", 2], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake4", 1], ["snowflake5", 3], ["snowflake5", 3], ["snowflake5", 3], ["snowflake6", 4], ["snowflake6", 4], ["snowflake3", 5], ["snowflake6", 4], ["snowflake6", 4]]
             for i in range(15):
-                wysw.display_picture(self.screen, self.pozycja_animacji[i][0], self.pozycja_animacji[i][1], 255, gui.get_picture(flakesArray[i][0]))
+                self.display_picture(self.screen, self.pozycja_animacji[i][0], self.pozycja_animacji[i][1], 255, self.get_picture(flakesArray[i][0]))
                 self.pozycja_animacji[i][1]=self.pozycja_animacji[i][1]+flakesArray[i][1]
             for px in range(16):
                 if self.pozycja_animacji[px][1]>randint(480, 500):
@@ -196,34 +200,34 @@ class GUI_CL:
             self.kolorczcionki3=(220,220,250,255)
         #------------------------
         d = datetime.datetime.today()
-        dzienTygodnia=wysw.dzien(d.weekday())
+        dzienTygodnia=dateDec.day(d.weekday())
 
-        wysw.napis_centralny(self.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",190,295,90,self.kolorczcionki1,255) #czas
-        wysw.napis_centralny(self.screen, dzienTygodnia,"Nimbus Sans L",56,620,80,self.kolorczcionki2,255)  #dzien tygodnia
-        wysw.napis_centralny(self.screen, str(int(time.strftime("%d")))+" "+wysw.miesiac(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,self.kolorczcionki2,255)  #dzien tygodnia
+        self.text_center(self.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",190,295,90,self.kolorczcionki1,255) #czas
+        self.text_center(self.screen, dzienTygodnia,"Nimbus Sans L",56,620,80,self.kolorczcionki2,255)  #dzien tygodnia
+        self.text_center(self.screen, str(int(time.strftime("%d")))+" "+dateDec.month(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,self.kolorczcionki2,255)  #dzien tygodnia
 
-        wysw.napis2(self.screen, "dziś","Nimbus Sans L",56,50,170,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 30, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconToday))
-        wysw.display_picture(self.screen, 20, 330, 255, gui.get_picture("arrow_down"))
-        wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMinToday),"Nimbus Sans L",54,70,330,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 20, 380, 255, gui.get_picture("arrow_up"))
-        wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMaxToday),"Nimbus Sans L",54,70,380,self.kolorczcionki4,255)
-        wysw.napis2(self.screen, "jutro","Nimbus Sans L",56,230,170,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 220, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconTomorrow))
-        wysw.display_picture(self.screen, 205, 330, 255, gui.get_picture("arrow_down"))
-        wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMinTomorrow),"Nimbus Sans L",54,245,330,self.kolorczcionki3,255)
-        wysw.display_picture(self.screen, 205, 380, 255, gui.get_picture("arrow_up"))
-        wysw.napis2(self.screen, "{:.0f}°C".format(weather.tempMaxTomorrow),"Nimbus Sans L",54,245,380,self.kolorczcionki4,255)
+        self.text2(self.screen, "dziś","Nimbus Sans L",56,50,170,self.kolorczcionki3,255)
+        self.display_picture(self.screen, 30, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconToday))
+        self.display_picture(self.screen, 20, 330, 255, self.get_picture("arrow_down"))
+        self.text2(self.screen, "{:.0f}°C".format(weather.tempMinToday),"Nimbus Sans L",54,70,330,self.kolorczcionki3,255)
+        self.display_picture(self.screen, 20, 380, 255, self.get_picture("arrow_up"))
+        self.text2(self.screen, "{:.0f}°C".format(weather.tempMaxToday),"Nimbus Sans L",54,70,380,self.kolorczcionki4,255)
+        self.text2(self.screen, "jutro","Nimbus Sans L",56,230,170,self.kolorczcionki3,255)
+        self.display_picture(self.screen, 220, 210, 255, self.get_icon(czujnikZew.noc_flaga, weather.iconTomorrow))
+        self.display_picture(self.screen, 205, 330, 255, self.get_picture("arrow_down"))
+        self.text2(self.screen, "{:.0f}°C".format(weather.tempMinTomorrow),"Nimbus Sans L",54,245,330,self.kolorczcionki3,255)
+        self.display_picture(self.screen, 205, 380, 255, self.get_picture("arrow_up"))
+        self.text2(self.screen, "{:.0f}°C".format(weather.tempMaxTomorrow),"Nimbus Sans L",54,245,380,self.kolorczcionki4,255)
 
-        wysw.obraz(self.screen, 390,170,255,"temp_out")
-        dlugosc=wysw.napis2(self.screen, "{:.1f}°C".format(czujnikZew.temp),"Nimbus Sans L",68,485,190,self.kolorczcionki5,255)
-        wysw.napis2(self.screen, "{:.0f}%".format(czujnikZew.humi),"Nimbus Sans L",48,505+dlugosc,200,self.kolorczcionki4,255)
-        wysw.obraz(self.screen, 390,258,255,"temp_in")
-        dlugosc=wysw.napis2(self.screen, "{:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",68,485,280,self.kolorczcionki4,255)
-        wysw.napis2(self.screen, "{:.0f}%".format(czujnikPok1.humi),"Nimbus Sans L",48,505+dlugosc,290,self.kolorczcionki4,255)
+        self.display_picture(self.screen, 390, 170, 255, self.get_picture("temp_out"))
+        dlugosc=self.text2(self.screen, "{:.1f}°C".format(czujnikZew.temp),"Nimbus Sans L",68,485,190,self.kolorczcionki5,255)
+        self.text2(self.screen, "{:.0f}%".format(czujnikZew.humi),"Nimbus Sans L",48,505+dlugosc,200,self.kolorczcionki4,255)
+        self.display_picture(self.screen, 390, 258, 255, self.get_picture("temp_in"))
+        dlugosc=self.text2(self.screen, "{:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",68,485,280,self.kolorczcionki4,255)
+        self.text2(self.screen, "{:.0f}%".format(czujnikPok1.humi),"Nimbus Sans L",48,505+dlugosc,290,self.kolorczcionki4,255)
 
-        wysw.obraz(self.screen, 390,350,255,"wind")
-        dlugosc=wysw.napis2(self.screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,self.kolorczcionki3,255)
+        self.display_picture(self.screen, 390, 350, 255, self.get_picture("wind"))
+        dlugosc=self.text2(self.screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,self.kolorczcionki3,255)
 
         # PASEK INFORMACYJNY
         infoStrip.actualInformation=infoStrip.read_info()
@@ -246,13 +250,13 @@ class GUI_CL:
             infoStrip.position=infoStrip.time
 
         if(infoStrip.displayedInformation != ""):
-            wysw.napis2(self.screen, infoStrip.displayedInformation,"Nimbus Sans L",46,70,480-(infoStrip.position*13),self.kolorPaskaInfo,255)
+            self.text2(self.screen, infoStrip.displayedInformation,"Nimbus Sans L",46,70,480-(infoStrip.position*13),self.kolorPaskaInfo,255)
 
     def obraz_nocny(self):
         self.kolorczcionki3=(180,180,180,255)
 
-        wysw.napis_centralny_tlo(self.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210, self.kolorczcionki3,255,(0,0,0,255)) #czas
-        wysw.napis_tlo(self.screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
+        self.text_center_background(self.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210, self.kolorczcionki3,255,(0,0,0,255)) #czas
+        self.text_background(self.screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
 
     def get_background(self, night, iconName):
         iconName=iconName.lower()
@@ -341,8 +345,14 @@ class GUI_CL:
             foto=self.snowflake5.convert()
         elif(iconName.find('snowflake6') != -1):
             foto=self.snowflake6.convert()
-        elif(iconName.find("DTStorm2")):
+        elif(iconName.find("DTStorm2") != -1):
             foto=self.DTStorm2.convert()
+        elif(iconName.find("temp_out") != -1):
+            foto=self.tempout.convert()
+        elif(iconName.find("temp_in") != -1):
+            foto=self.tempin.convert()
+        elif(iconName.find("wind") != -1):
+            foto=self.wind.convert()
         else:
             foto=self.NA.convert()
         return foto
@@ -358,5 +368,40 @@ class GUI_CL:
             raise SystemExit(str(geterror()))
         image = image.convert()
         return image
+
+    def display_picture(self, screen, osx, osy, alpha, picture):
+        picture = picture.convert_alpha()
+        picture.set_alpha(alpha)
+        screen.blit(picture, (osx, osy))
+
+    def box(self, screen, x, y, w, h, color):
+        pygame.gfxdraw.box(screen, Rect((x, y),(w, h)), color)
+
+    def text_center(self, screen, tekst, font, rozmiar, x, y, color, alpha):
+        a_sys_font = pygame.font.SysFont(font, rozmiar)
+        ren = a_sys_font.render(unicode(tekst,'utf-8'), True, color)
+        ren.set_alpha(alpha)
+        screen.blit(ren, (x - ren.get_width() // 2, y - ren.get_height() // 2))
+    
+    def text_center_background(self, screen, tekst, font, rozmiar, x, y, color, alpha, bgcolor):
+        a_sys_font = pygame.font.SysFont(font, rozmiar)
+        ren = a_sys_font.render(unicode(tekst,'utf-8'), True, color)
+        ren.set_alpha(alpha)
+        self.box(screen, x - ren.get_width() // 2,y - ren.get_height() // 2,ren.get_width()+30,ren.get_height(),bgcolor)
+        screen.blit(ren, (x - ren.get_width() // 2, y - ren.get_height() // 2))
+
+    def text_background(self, screen, tekst, font, rozmiar, x, y, color, alpha,bgcolor):
+        a_sys_font = pygame.font.SysFont(font, rozmiar)
+        text = a_sys_font.render(unicode(tekst,'utf-8'),True, color)
+        text.set_alpha(alpha)
+        self.box(screen, x,y,text.get_width()+30,text.get_height(),bgcolor)
+        screen.blit(text, (x, y))
+
+    def text2(self, screen, tekst, font, rozmiar, x, y, color, alpha):
+        a_sys_font = pygame.font.SysFont(font, rozmiar)
+        text = a_sys_font.render(unicode(tekst,'utf-8'),True, color)
+        text.set_alpha(alpha)
+        screen.blit(text, (x, y))
+        return text.get_width()
 
 gui = GUI_CL()

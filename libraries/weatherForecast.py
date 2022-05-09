@@ -8,11 +8,6 @@ except ImportError:
 from pygame.compat import geterror
 from libraries.log import *
 
-#initialize
-pygame.init()
-resolution = 800, 480
-screen = pygame.display.set_mode(resolution,1)
-
 ''' ICONS NR
 01d - clear sky
 02d - few clouds
