@@ -4,6 +4,9 @@ import sys, os, datetime, time
 class LOG_CL:
     busyFlag = False
 
+    def __init__(self):
+        self.delete_log()
+
     def actualTime(self):
         return str(time.strftime("%H:%M"))
 

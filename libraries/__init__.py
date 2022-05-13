@@ -1,3 +1,3 @@
 #!/usr/bin/env python
 
-__all__ = ['webServices', 'infoStrip']
+__all__ = ['dateDecode', 'display', 'gui', 'ikea', 'infoStrip', 'log', 'weatherForecast', 'webServices']

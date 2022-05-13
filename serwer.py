@@ -1,12 +1,13 @@
  # -*- coding: utf-8 -*-
-from libraries.gui import *
 from libraries.log import *
+from libraries.gui import *
 from devicesList import *
 from libraries.infoStrip import *
 from libraries.weatherForecast import *
+from libraries.ikea import *
 
 try:
-    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, ikea, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
+    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
 except ImportError:
     print "Blad importu"
 
@@ -1079,22 +1080,10 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 s.bind(('', AddrOut))
 s.setblocking(0)
 ready=select.select([s],[],[],1)
-#-------------LOGOWANIE DO TRADFRI ----------------
-MACaddress='44:91:60:2c:b3:6f'          # ADRES MAC BRAMY
-hubip='192.168.0.100' #podstawowy adres ip (gdy nie można odczytac)
-securityid = "B5dyJuhKqdgfDdkA"   # HASLO BRAMY
-user_id=""
-security_user=""
-#pobranie adresu IP z serwera
-#hubip = ikea.ikea_get_ip(MACaddress)
-log.delete_log()
-try:
-    security_user, user_id =(ikea.tradfri_login(hubip, securityid))
-    log.add_log("Ikea Tradfri -> id: {}    pass: {}".format(user_id, security_user))
-except:
-    log.add_log("Ikea Tradfri -> nie dziala")
 #--------------INNE--------------------------
 #sql_baza.kasujstaredane()  # test, sprawdzic, dziala wolno
+#-------------LOGOWANIE DO TRADFRI ----------------
+#ikea.connect()
 #-------------WATKI--------------------------
 LCD_thread_init()
 l=threading.Thread(target=jasnosc_wyswietlacza)
