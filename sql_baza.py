@@ -4,14 +4,14 @@ except ImportError:
     print "Blad importu"
 
 #-------------------BAZA DANYCH--------- SQL ---------------------------------------
-def dodajRekordTempZew (temp,wilg,wiatr,kierunek):
+def addRecordSensorOutdoorTemp (temp,wilg,wiatr,kierunek):
     conn=sqlite3.connect('/var/www/html/home_database.db')
     curs=conn.cursor()
     curs.execute("INSERT INTO tempzewnetrzna values(datetime('now','localtime'),?,?,?,?)",[temp,wilg,wiatr,kierunek])
     conn.commit()
     conn.close()
 
-def dodajRekordSwiatlo (lux1,ir1):
+def addRecordSensorOutdoorLight (lux1,ir1):
     conn=sqlite3.connect('/var/www/html/home_database.db')
     curs=conn.cursor()
     try:

@@ -21,6 +21,7 @@ class czujnikPok1Cl:  #SALON
     batt=2.2
     czas=datetime.datetime.now()
     blad=False
+    sqlRoom = 'temppokoju'
 czujnikPok1=czujnikPok1Cl
 
 class czujnikPok2Cl:   #SYPIALNIA
@@ -29,6 +30,7 @@ class czujnikPok2Cl:   #SYPIALNIA
     batt=3.3
     czas=datetime.datetime.now()
     blad=False
+    sqlRoom = 'tempsypialni'
 czujnikPok2=czujnikPok2Cl
 
 class czujnikKwiatekCl:   #KWIATEK
