@@ -132,7 +132,7 @@ def NRFread( stringNRF ):
                       czujnikZew.temp=float(string2)
                       string3=(stringNRF[8:10]+"."+stringNRF[10])
                       czujnikZew.humi=float(string3)
-                      sql_baza.addRecordSensorOutdoorTemp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
+                      sql_baza.add_record_sensor_outdoor_temp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
                       string4=stringNRF[11:13]+'.'+stringNRF[13]
                       czujnikZew.predkoscWiatru=float(string4)
                       string5=stringNRF[14:17]

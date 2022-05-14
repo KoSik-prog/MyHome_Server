@@ -45,7 +45,6 @@ class IKEA_CL:
         for i in range(ipRetData.count('\n')):
             pos = ipRetData.find('\n')
             ipData, ipRetData = ipRetData[:pos], ipRetData[pos+1:]
-            print("-> {}".format(ipData))
             if ipData.find(MACaddress) != -1:
                 ipAddress = ipData[ipData.find('(')+1 : ipData.find(')')]
                 return ipAddress
@@ -83,16 +82,7 @@ class IKEA_CL:
             user_id=list[1]
             security_user=list[0]
             log.add_log("Ikea Tradfri -> haslo wygaslo - nowe id: {}".format(user_id))
-            return security_user, user_id
-            
-    #def ikea_get_ip(self, MACaddress):
-    #    mac_results = [re.findall('^[\w\?\.]+|(?<=\s)\([\d\.]+\)|(?<=at\s)[\w\:]+', i) for i in os.popen('arp -a')]
-    #    ipAddress = ""
-    #    for i in range(len(mac_results)):
-    #        if mac_results[i][2] == MACaddress:
-    #            IPaddress=mac_results[i][1]
-    #            ipAddress=IPaddress[1:IPaddress.find(')')]
-    #    return ipAddress        
+            return security_user, user_id       
 
     def ikea_power_light(self, ipAddress, user_id, securityid, security_user, lightid, value):
         result = tradfriActions.tradfri_power_light(ipAddress, user_id, security_user, lightid, value)

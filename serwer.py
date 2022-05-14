@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 try:
-    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, threading, sys ,os, linecache, re, sql_baza, pygame, pygame.mixer, pygame.gfxdraw, glob
+    import select, time, socket, traceback, sqlite3, spidev, smbus, datetime, random, threading, sys ,os, linecache, re, pygame, pygame.mixer, pygame.gfxdraw, glob, sql_baza
 except ImportError:
     print "Blad importu"
 
@@ -111,7 +111,7 @@ def sprawdzCzujniki():
 def sprawdzTimer():  #SPRAWDZENIE CO WYKONAC O DANEJ PORZE
     #----------------------SPRAWDZENIE BAZY DANYCH SQL-----------------------kasowanie starych rekordow------------
     if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:00") and kasowanieSQL_flaga==False:
-        sql_baza.kasujstaredane() #kasowanie starych rekordow z bazy danych
+        sql.delete_records() #kasowanie starych rekordow z bazy danych
         kasowanieSQL_flaga=True
         log.add_log("Skasowano stare dane z SQL")
     if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:01") and kasowanieSQL_flaga==True:
@@ -236,7 +236,7 @@ def NRFread( stringNRF ):
                       czujnikKwiatek.woda=str(string4)
                       string5=(stringNRF[13:16])
                       czujnikKwiatek.zasilanie=str(string5)
-                      sql.addRecordFlower(1, czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.zasilanie)
+                      sql.addRecordWateringCan(czujnikKwiatek.wilgotnosc, czujnikKwiatek.slonce, czujnikKwiatek.woda, czujnikKwiatek.zasilanie, 0, 0) #ostatni parametr to podlanie poprawic!!!
                       czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                       infoStrip.set_error(3,False)
                       if(czujnikKwiatek.woda < 10):
@@ -280,7 +280,6 @@ def NRFread( stringNRF ):
                       czujnikZew.ir=int(string2)
                       string3=(stringNRF[14:18])
                       czujnikZew.batt=int(string3)
-                      #sql_baza.addRecordSensorOutdoorLight(czujnikZew.lux,czujnikZew.ir)
                       sql.addRecordSensorOutdoorLight(czujnikZew.lux,czujnikZew.ir)
                       oblicz_swiatlo()
                       log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(automatykaOswietlenia.swiatloObliczone))
@@ -293,8 +292,7 @@ def NRFread( stringNRF ):
                       czujnikZew.temp=float(string2)
                       string3=(stringNRF[8:10]+"."+stringNRF[10])
                       czujnikZew.humi=float(string3)
-                      #sql_baza.addRecordSensorOutdoorTemp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
-                      sql.addRecordSensorOutdoorTemp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
+                      sql.add_record_sensor_outdoor_temp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
                       string4=stringNRF[11:13]+'.'+stringNRF[13]
                       czujnikZew.predkoscWiatru=float(string4)
                       string5=stringNRF[14:17]
@@ -624,7 +622,7 @@ def transmisja(messag, adres):
         pocz=messag.find("/I:")+1
         terrarium.UVI=float(messag[(pocz+2):(pocz+11)])
         log.add_log("   Terrarium Temp1: {}*C, Wilg1: {}%  /  Temp2: {}*C, Wilg2: {}*C  /  UVI: {}".format(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI))
-        sql_baza.dodajRekordTerrarium(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI)
+        sql.addRecordTerrarium(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI)
     if(messag.find('ko2') != -1):
         wiad="#05L" + messag[3:15]
         log.add_log(wiad)
@@ -1084,11 +1082,6 @@ s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 s.bind(('', AddrOut))
 s.setblocking(0)
 ready=select.select([s],[],[],1)
-#--------------INNE--------------------------
-#sql_baza.kasujstaredane()  # test, sprawdzic, dziala wolno
-sql.delete_records(10)
-#-------------LOGOWANIE DO TRADFRI ----------------
-#ikea.connect()
 #-------------WATKI--------------------------
 LCD_thread_init()
 l=threading.Thread(target=jasnosc_wyswietlacza)

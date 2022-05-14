@@ -4,7 +4,7 @@ except ImportError:
     print "Blad importu"
 
 #-------------------BAZA DANYCH--------- SQL ---------------------------------------
-def addRecordSensorOutdoorTemp (temp,wilg,wiatr,kierunek):
+def add_record_sensor_outdoor_temp (temp,wilg,wiatr,kierunek):
     conn=sqlite3.connect('/var/www/html/home_database.db')
     curs=conn.cursor()
     curs.execute("INSERT INTO tempzewnetrzna values(datetime('now','localtime'),?,?,?,?)",[temp,wilg,wiatr,kierunek])
@@ -119,6 +119,7 @@ def kasujstaredane():
 def dodajTabele():
     conn=sqlite3.connect('/var/www/html/home_database.db')
     curs=conn.cursor()
-    curs.execute("CREATE TABLE IF NOT EXISTS kwiatek6 (timestamp DATETIME PRIMARY KEY, wilgotnosc INTEGER,slonce INTEGER,zasilanie INTEGER,wilgotnosc_raw INTEGER);")
+    curs.execute("DROP TABLE kwiatek1;")
+    curs.execute("CREATE TABLE IF NOT EXISTS kwiatek1 (timestamp DATETIME PRIMARY KEY, wilgotnosc INTEGER, slonce INTEGER, zasilanie INTEGER, wilgotnosc_raw INTEGER, podlanie INTEGER);")
     conn.commit()
     conn.close()
