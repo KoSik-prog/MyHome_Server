@@ -49,14 +49,14 @@ class IKEA_CL:
             if ipData.find(MACaddress) != -1:
                 ipAddress = ipData[ipData.find('(')+1 : ipData.find(')')]
                 return ipAddress
-            else 
+            else: 
                 return -1
         
 
     def connect(self):
         try:
             self.security_user, self.user_id =(self.tradfri_login(self.ipAddress, self.securityid))
-            log.add_log("Ikea Tradfri polaczono -> id: {}    pass: {}".format(self.user_id, self.security_user))
+            log.add_log("Ikea Tradfri -> polaczono id: {}    pass: {}".format(self.user_id, self.security_user))
         except:
             log.add_log("Ikea Tradfri -> nie mozna polaczyc z bramka")
 
