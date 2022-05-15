@@ -93,17 +93,17 @@ def transmisja(messag, adres):
         lampaTV.FlagaSterowanieManualne=True
     if(messag.find('terrarium.') != -1):
         pocz=messag.find(".T:")+1
-        terrarium.temp1=float(messag[(pocz+2):(pocz+6)])
+        terrarium.tempUP=float(messag[(pocz+2):(pocz+6)])
         pocz=messag.find("/W:")+1
-        terrarium.wilg1=float(messag[(pocz+2):(pocz+5)])
+        terrarium.wilgDN=float(messag[(pocz+2):(pocz+5)])
         pocz=messag.find(",t:")+1
-        terrarium.temp2=float(messag[(pocz+2):(pocz+6)])
+        terrarium.tempDN=float(messag[(pocz+2):(pocz+6)])
         pocz=messag.find("/w:")+1
         terrarium.wilg2=float(messag[(pocz+2):(pocz+5)])
         pocz=messag.find("/I:")+1
         terrarium.UVI=float(messag[(pocz+2):(pocz+11)])
-        dziennik.zapis_dziennika_zdarzen("   Terrarium Temp1: {}*C, Wilg1: {}%  /  Temp2: {}*C, Wilg2: {}*C  /  UVI: {}".format(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI))
-        sql.addRecordTerrarium(terrarium.temp1,terrarium.wilg1,terrarium.temp2,terrarium.wilg2,terrarium.UVI)
+        dziennik.zapis_dziennika_zdarzen("   Terrarium tempUP: {}*C, wilgDN: {}%  /  tempDN: {}*C, Wilg2: {}*C  /  UVI: {}".format(terrarium.tempUP,terrarium.wilgDN,terrarium.tempDN,terrarium.wilg2,terrarium.UVI))
+        sql.addRecordTerrarium(terrarium.tempUP,terrarium.wilgDN,terrarium.tempDN,terrarium.wilg2,terrarium.UVI)
     if(messag.find('ko2') != -1):
         wiad="#05L" + messag[3:15]
         dziennik.zapis_dziennika_zdarzen(wiad)

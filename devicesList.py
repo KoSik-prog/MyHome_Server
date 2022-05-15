@@ -94,10 +94,10 @@ class czujnikKwiatek6Cl:   #adres 17  KWIATEK _maly czujnik  SZEFLERA
 czujnikKwiatek6=czujnikKwiatek6Cl
 
 class terrariumCl:   #TERRARIUM
-    temp1=0.0
-    wilg1=0.0
-    temp2=0.0
-    wilg2=0.0
+    tempUP=0.0
+    wilgUP=0.0
+    tempDN=0.0
+    wilgDN=0.0
     UVI=0.0
 terrarium=terrariumCl
 

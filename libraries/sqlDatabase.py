@@ -24,7 +24,7 @@ class SQL_CL:
             curs.execute("INSERT INTO zewTemp values(datetime('now','localtime'),?,?,?,?)",[temp, humi, wiatr, kierunek])
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")    
+            log.add_log("SQL record exist")    
         conn.close()
         self.flagBusy = False
 
@@ -40,7 +40,7 @@ class SQL_CL:
             curs.execute("INSERT INTO zewSwiatlo values(datetime('now','localtime'),?,?)",[lux1, ir1])
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")
+            log.add_log("SQL record exist")
         conn.close()
         self.flagBusy = False
 
@@ -57,7 +57,7 @@ class SQL_CL:
             curs.execute(query)
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")
+            log.add_log("SQL record exist")
         conn.close()
         self.flagBusy = False
 
@@ -73,7 +73,7 @@ class SQL_CL:
             curs.execute("INSERT INTO kwiatek1 values(datetime('now','localtime'), ?, ?, ?, ?, ?, ?)",[humidity, sun, water, power, humidity_raw, watering])
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")
+            log.add_log("SQL record exist")
         conn.close()
         self.flagBusy = False
 
@@ -90,11 +90,11 @@ class SQL_CL:
             curs.execute(query)
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")
+            log.add_log("SQL record exist")
         conn.close()
         self.flagBusy = False
 
-    def addRecordTerrarium(self, temp1, humi1, temp2, humi2, uvi):
+    def addRecordTerrarium(self, tempUP, humi1, tempDN, humi2, uvi):
         for i in range(100):
             if self.flagBusy == False:
                 break
@@ -103,10 +103,10 @@ class SQL_CL:
         conn=sqlite3.connect(self.databaseLoc)
         curs=conn.cursor()
         try:
-            curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[temp1, humi1, temp2, humi2, uvi])
+            curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[tempUP, humi1, tempDN, humi2, uvi])
             conn.commit()
         except sqlite3.IntegrityError:
-            print("SQL record exist")
+            log.add_log("SQL record exist")
         conn.close()
         self.flagBusy = False
 
@@ -119,20 +119,15 @@ class SQL_CL:
         conn=sqlite3.connect(self.databaseLoc)
         curs=conn.cursor()
         try:
-            curs.execute("DELETE FROM pok1Temp WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM Pok2Temp WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM zewSwiatlo WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM zewTemp WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM terrarium WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek1 WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek2 WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek3 WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek4 WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek5 WHERE timestamp < datetime('now', '30 days')")
-            curs.execute("DELETE FROM kwiatek6 WHERE timestamp < datetime('now', '30 days')")
+            databases = ["pok1Temp", "Pok2Temp", "zewSwiatlo", "zewTemp", "terrarium", "kwiatek1", "kwiatek2", "kwiatek3", "kwiatek4", "kwiatek5", "kwiatek6"]
+            for i in range(11):
+                request = "DELETE FROM {} WHERE timestamp < datetime('now', '-{} days')".format(databases[i], days)
+                curs.execute(request)
+            curs.execute("VACUUM;")
             conn.commit()
+            log.add_log("SQL {} days old records are deleted".format(days))
         except sqlite3.IntegrityError:
-            print("SQL error")
+            log.add_log("SQL error")
         conn.close()
 
     def addTable():

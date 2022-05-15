@@ -282,9 +282,9 @@ def NRFread( stringNRF ):
             if stringNRF[1:3]== "15":  #BUDA 15
                   if stringNRF[3]== "s":
                       string2=(stringNRF[4:7])
-                      buda.temp1=float(string2)/10
+                      buda.tempUP=float(string2)/10
                       string5=(stringNRF[7:10])
-                      buda.temp2=float(string5)/10
+                      buda.tempDN=float(string5)/10
                       string6=(stringNRF[10:13])
                       buda.temp3=float(string6)/10
                       string7=(stringNRF[13])
@@ -292,7 +292,7 @@ def NRFread( stringNRF ):
                       string8=(stringNRF[14:16])
                       buda.czujnikZajetosciRaw=int(string8)
                       buda.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                      dziennik.zapis_dziennika_zdarzen(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
+                      dziennik.zapis_dziennika_zdarzen(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.tempUP,buda.tempDN,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
  #------------------------------------------------------------------------------------------------------------
             if stringNRF[1:3]== "16":  #kwiatek 5 adres 16
                   if stringNRF[3]== "k":

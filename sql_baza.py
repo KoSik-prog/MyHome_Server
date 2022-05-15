@@ -99,10 +99,10 @@ def dodajRekordKwiatekPodlanie():
     conn.commit()
     conn.close()
 
-def dodajRekordTerrarium(temp1,wilg1,temp2,wilg2,uvi):
+def dodajRekordTerrarium(tempUP,wilgDN,tempDN,wilg2,uvi):
     conn=sqlite3.connect('/var/www/html/home_database.db')
     curs=conn.cursor()
-    curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[temp1,wilg1,temp2,wilg2,uvi])
+    curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[tempUP,wilgDN,tempDN,wilg2,uvi])
     conn.commit()
     conn.close()
 
