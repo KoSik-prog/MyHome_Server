@@ -643,7 +643,7 @@ def transmisja(messag, adres):
         log.add_log(wiad)
         log.add_log(wiad)
         NRFwyslij(1,wiad).start()
-        ikea.ikea_dim_group(hubip, user_id, securityid, security_user, tradfriDev.salon, 100)
+        ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, tradfriDev.salon, 100)
         lampaTV.FlagaSterowanieManualne=True
         log.add_log("Tryb swiatel: Pokoj 1 max")
     if(messag.find('budaTryb.') != -1):
@@ -788,29 +788,29 @@ def sterowanieOswietleniem(adres, ustawienie):
             log.add_log("BLAD SKLADNI!: {}".format(wiad))
     if adres==lampaPok1Tradfri.Adres:  # Tradfri Salon
         if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_power_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, adres, ustawienie)
         elif ustawienie>1:
-            ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, adres, ustawienie)
         log.add_log("Tradfri Salon ->: {}".format(ustawienie))
         infoStrip.add_info("oświetlenie w salonie: {}".format(ustawienie))
     if adres==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
         if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         elif ustawienie>1:
-            ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         log.add_log("Tradfri Salon-Zarowka ->: {}".format(ustawienie))
     if adres==lampaJadalniaTradfri.Adres:  # Tradfri Jadalnia
         if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         elif ustawienie>1:
-            ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         log.add_log("Tradfri Jadalnia ->: {}".format(ustawienie))
         infoStrip.add_info("oświetlenie w jadalni: {}".format(ustawienie))
     if adres==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
         if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         elif ustawienie>1:
-            ikea.ikea_dim_group(hubip, user_id, securityid, security_user, adres, ustawienie)
+            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
         if(ustawienie>0):
             lampaPrzedpokojTradfri.Status=1
         else:
@@ -820,29 +820,29 @@ def sterowanieOswietleniem(adres, ustawienie):
     if adres==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
         if len(str(ustawienie))==1:
             if int(ustawienie)==0 or int(ustawienie)==1:
-                ikea.ikea_power_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
+                ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, int(ustawienie))
                 log.add_log("Tradfri Lampa ON/OFF ->: {}".format(ustawienie))
         elif len(str(ustawienie))==9:
             chKolor1=int(ustawienie[0:3])
             chKolor2=int(ustawienie[3:6])
             chKolor3=int(ustawienie[6:9])
-            ikea.ikea_RGB_lamp(hubip, user_id, securityid, security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
+            ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
             log.add_log("Tradfri Lampa kolor ->: {}".format(ustawienie))
             infoStrip.add_info("lampa w salonie -> kolor: {}".format(ustawienie))
         elif len(str(ustawienie))==2 or len(str(ustawienie))==3:
             if int(ustawienie)>1 and int(ustawienie)<=100:
-                ikea.ikea_dim_light(hubip, user_id, securityid, security_user, adres, int(ustawienie))
+                ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, int(ustawienie))
                 log.add_log("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
                 infoStrip.add_info("lampa w salonie: {}".format(ustawienie))
         else:
             log.add_log("Tradfri blad skladni")
     if adres==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
         if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, ustawienie)
+            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, ustawienie)
             lampaPok2Tradfri.Flaga = False
         elif ustawienie>1:
-            ikea.ikea_dim_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, ustawienie)
-            ikea.ikea_power_group(hubip, user_id, securityid, security_user, lampaPok2Tradfri.Adres, 1)
+            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, ustawienie)
+            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, 1)
             lampaPok2Tradfri.Flaga = True
         log.add_log("Tradfri Sypialnia ->: {}".format(ustawienie))
         infoStrip.add_info("oświetlenie w sypialni: {}".format(ustawienie))

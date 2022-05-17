@@ -86,7 +86,7 @@ class IKEA_CL:
 
     def ikea_power_light(self, ipAddress, user_id, securityid, security_user, lightid, value):
         result = tradfriActions.tradfri_power_light(ipAddress, user_id, security_user, lightid, value)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -97,7 +97,7 @@ class IKEA_CL:
 
     def ikea_dim_light(self, ipAddress, user_id, securityid, security_user, lightid,value):
         result = tradfriActions.tradfri_dim_light(ipAddress, user_id, security_user, lightid, value)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -108,7 +108,7 @@ class IKEA_CL:
 
     def ikea_color_light(self, ipAddress, user_id, securityid, security_user, lightid,value):    # VALUE COLD/WARM/NORMAL
         result = tradfriActions.tradfri_color_light(ipAddress, user_id, security_user, lightid, value)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -119,7 +119,7 @@ class IKEA_CL:
 
     def ikea_light_brightness(self, ipAddress, user_id, securityid, security_user, lightid, value):
         result = tradfriActions.tradfri_dim_light(ipAddress, user_id, security_user, lightid, value)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -130,7 +130,7 @@ class IKEA_CL:
 
     def ikea_light_color(self, ipAddress, user_id, securityid, lightbulbid, value):  # raczej nie dziala - do poprawy security_user
         result = tradfriActions.tradfri_light_color(ipAddress, user_id, securityid, lightbulbid, value)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -141,7 +141,7 @@ class IKEA_CL:
 
     def ikea_color_lamp(self, ipAddress, user_id, securityid, security_user, lightid,value1, value2):    # VALUE COLD/WARM/NORMAL
         result = tradfriActions.tradfri_color_lamp(ipAddress, user_id, security_user, lightid, value1, value2)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -152,7 +152,7 @@ class IKEA_CL:
 
     def ikea_RGB_lamp(self, ipAddress, user_id, securityid, security_user, lightid, red, green, blue):    # VALUE COLD/WARM/NORMAL
         result = tradfriActions.tradfri_RGB_lamp(ipAddress, user_id, security_user, lightid, red, green, blue)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -164,7 +164,7 @@ class IKEA_CL:
     def ikea_power_group(self, ipAddress, user_id, securityid, security_user, groupid, value):
         result = tradfriActions.tradfri_power_group(ipAddress, user_id, security_user, groupid, value)
         log.add_log("rezultat power:  " + result)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id
@@ -176,7 +176,7 @@ class IKEA_CL:
     def ikea_dim_group(self, ipAddress, user_id, securityid, security_user, groupid,value):
         result = tradfriActions.tradfri_dim_group(ipAddress, user_id, security_user, groupid, value)
         log.add_log("rezultat dim:  " + result)
-        new_pass, new_id = ikea_check(ipAddress, securityid, result)
+        new_pass, new_id = self.ikea_check(ipAddress, securityid, result)
         if(new_id != "0"):
             security_user=new_pass
             user_id = new_id

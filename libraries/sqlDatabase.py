@@ -94,7 +94,7 @@ class SQL_CL:
         conn.close()
         self.flagBusy = False
 
-    def addRecordTerrarium(self, tempUP, humi1, tempDN, humi2, uvi):
+    def addRecordTerrarium(self, tempUP, humiUP, tempDN, humiDN, uvi):
         for i in range(100):
             if self.flagBusy == False:
                 break
@@ -103,7 +103,7 @@ class SQL_CL:
         conn=sqlite3.connect(self.databaseLoc)
         curs=conn.cursor()
         try:
-            curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[tempUP, humi1, tempDN, humi2, uvi])
+            curs.execute("INSERT INTO terrarium values(datetime('now','localtime'),?,?,?,?,?)",[tempUP, humiUP, tempDN, humiDN, uvi])
             conn.commit()
         except sqlite3.IntegrityError:
             log.add_log("SQL record exist")
@@ -120,7 +120,7 @@ class SQL_CL:
         curs=conn.cursor()
         try:
             databases = ["pok1Temp", "Pok2Temp", "zewSwiatlo", "zewTemp", "terrarium", "kwiatek1", "kwiatek2", "kwiatek3", "kwiatek4", "kwiatek5", "kwiatek6"]
-            for i in range(11):
+            for i in range(len(databases)):
                 request = "DELETE FROM {} WHERE timestamp < datetime('now', '-{} days')".format(databases[i], days)
                 curs.execute(request)
             curs.execute("VACUUM;")
