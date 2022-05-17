@@ -8,8 +8,11 @@
 # Copyright:   (c) kosik 2020
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
+from libraries.log import *
+
 import xml.etree.cElementTree as ET
 import time, os
+
 watchdogFlag=0
 
 
@@ -28,17 +31,17 @@ def watchdog_set():
 
 def main():
     global watchdogFlag
-    print("Uruchamiam watchdog...")
+    log.add_watchdog_log("Uruchamiam watchdog...")
     time.sleep(1200)
-    print("watchdog uruchomiony")
+    log.add_watchdog_log("watchdog uruchomiony")
     while(1):
         watchdog_set()
         time.sleep(120)
         watchdog_read()
-        print('Flaga watchdog = {}'.format(watchdogFlag))
+        log.add_watchdog_log('Flaga watchdog = {}'.format(watchdogFlag))
         sys.stdout.flush()
         if(watchdogFlag == 0):
-            print('RESET!')
+            log.add_watchdog_log('RESET!')
             os.system('sudo shutdown -r now')
     pass
 
