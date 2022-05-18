@@ -13,6 +13,7 @@ from libraries.nrfConnect import *
 from libraries.udpServer import *
 from libraries.settings import *
 from libraries.displayBrightness import *
+from libraries.watchdog import *
 from sensors import *
 
 from time import sleep
@@ -74,14 +75,6 @@ def autoCzas(klasa):
         sterowanieOswietleniem(klasa.Adres,0)
         time.sleep(20)
 
-def watchdog_reset():
-    setings = ET.Element("settings")
-    ET.SubElement(setings, "watchdogFlag").text = str(1)
-    tree2 = ET.ElementTree(setings)
-    tree2.write('Desktop/Home/watchdog.xml')
-
-
-
 #=====================================================
 #Adresy  ==>>
 AdresLedTV = 1
@@ -107,7 +100,7 @@ def ODCZYT_USTAWIEN_WATEK():  #------WATEK ODCZYTUJACY USTAWIENIA Z XML
         if q==0:
             weather.get_forecast('Rodgau')
         settings.read()
-        watchdog_reset()
+        watchdog.reset()
         time.sleep(60)
         q=q+1
 
@@ -132,27 +125,30 @@ def display_brightness_thread_init():
 def check_sensors_thread_init():
     nrfTh = threading.Thread(target=sensor.checkSensors)
     nrfTh.start()
+
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------------------------------------------------------------------------------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-log.add_log("Uruchamiam serwer MyHome...")
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(22,GPIO.OUT)
-#-------------WATKI--------------------------
-LCD_thread_init()
-NRF_thread_init()
-display_brightness_thread_init()
+if __name__ == "__main__":
+    log.add_log("Uruchamiam serwer MyHome...")
+    GPIO.setwarnings(False)
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setup(22,GPIO.OUT)
+    #-------------WATKI--------------------------
+    LCD_thread_init()
+    NRF_thread_init()
+    display_brightness_thread_init()
 
-o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
-o.start()
-ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
-ti.start()
+    o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
+    o.start()
+    ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
+    ti.start()
 
-check_sensors_thread_init()
-#--------------MAIN FUNKTION------------------------------
-ready = udp.readStatus() #inicjalizacja zmiennej
-while(1):
-    if ready[0]:
-        udp.server()
-    ready = udp.readStatus()
+    check_sensors_thread_init()
+    #--------------MAIN FUNCTION------------------------------
+    ready = udp.readStatus() #inicjalizacja zmiennej
+    while(1):
+        if ready[0]:
+            udp.server()
+        ready = udp.readStatus()
