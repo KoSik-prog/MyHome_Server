@@ -13,11 +13,11 @@ from libraries.ikea import *
 from libraries.sqlDatabase import *
 from libraries.nrfConnect import *
 from libraries.udpServer import *
+from libraries.settings import *
 
 from time import sleep
 import rpi_backlight as bl
 import RPi.GPIO as GPIO
-import xml.etree.cElementTree as ET
 
 from numpy.random import randint
 
@@ -154,99 +154,6 @@ def autoCzas(klasa):
         sterowanieOswietleniem(klasa.Adres,0)
         time.sleep(20)
 
-
-
-def zapis_danych_xml():
-    root = ET.Element("data")
-
-    ET.SubElement(root, "czujnikZewtemp").text = str(czujnikZew.temp)
-    ET.SubElement(root, "czujnikZewhumi").text = str(czujnikZew.humi)
-    ET.SubElement(root, "czujnikZewlux").text = str(czujnikZew.lux)
-    ET.SubElement(root, "czujnikZewbatt").text = str(czujnikZew.batt)
-    ET.SubElement(root, "czujnikPok1temp").text = str(czujnikPok1.temp)
-    ET.SubElement(root, "czujnikPok1humi").text = str(czujnikPok1.humi)
-    ET.SubElement(root, "czujnikPok1batt").text = str(czujnikPok1.batt)
-    ET.SubElement(root, "czujnikPok2temp").text = str(czujnikPok2.temp)
-    ET.SubElement(root, "czujnikPok2humi").text = str(czujnikPok2.humi)
-
-    ET.SubElement(root, "czujnikKwiatekSlonce").text = str(czujnikKwiatek.slonce)
-    ET.SubElement(root, "czujnikKwiatekWilgotnosc").text = str(czujnikKwiatek.wilgotnosc)
-    ET.SubElement(root, "czujnikKwiatekWoda").text = str(czujnikKwiatek.woda)
-    ET.SubElement(root, "czujnikKwiatekZasilanie").text = str(czujnikKwiatek.zasilanie)
-
-    ET.SubElement(root, "lampaTVFlaga").text = str(lampaTV.Flaga)
-    ET.SubElement(root, "lampaTVUstawienie").text = str(lampaTV.Ustawienie)
-    ET.SubElement(root, "lampaTVJasnosc").text = str(lampaTV.Jasnosc)
-
-    ET.SubElement(root, "dekoracje1Flaga").text = str(dekoPok1.Flaga)
-    ET.SubElement(root, "dekoracje2Flaga").text = str(deko2Pok1.Flaga)
-
-    ET.SubElement(root, "dekoracjeUSB").text = str(dekoUsb.Flaga)
-
-    ET.SubElement(root, "dekoracjeFlaming").text = str(dekoFlaming.Flaga)
-
-    ET.SubElement(root, "lampaPrzedpokoj").text = str(lampaPrzedpokojTradfri.Status)
-
-    ET.SubElement(root, "lampaKuchFlaga").text = str(lampaKuch.Flaga)
-
-    ET.SubElement(root, "lampaPok2Flaga").text = str(lampaPok2.Flaga)
-    ET.SubElement(root, "lampaPok2Jasnosc").text = str(lampaPok2.Jasnosc)
-
-    ET.SubElement(root, "budaTemp1").text = str(buda.temp1)
-    ET.SubElement(root, "budaTemp2").text = str(buda.temp2)
-    ET.SubElement(root, "budaTemp3").text = str(buda.temp3)
-    ET.SubElement(root, "budaCzujnikFlaga").text = str(buda.czujnikZajetosciFlaga)
-    ET.SubElement(root, "budaCzujnikRaw").text = str(buda.czujnikZajetosciRaw)
-
-    tree = ET.ElementTree(root)
-    tree.write('/var/www/html/homevariables.xml')
-    #log.add_log("Zapisano dane")
-
-def zapis_ustawien_xml():
-    setings = ET.Element("settings")
-
-    ET.SubElement(setings, "lampaTVAutoLux_min").text = str(lampaTV.AutoLux_min)
-    ET.SubElement(setings, "lampaTVAutoOff").text = str(lampaTV.AutoOFF)
-    ET.SubElement(setings, "lampaTVAutoOn").text = str(lampaTV.AutoON)
-    ET.SubElement(setings, "lampaTVJasnosc").text = str(lampaTV.Jasnosc)
-    ET.SubElement(setings, "lampaTVUstawienie").text = str(lampaTV.Ustawienie)
-
-    ET.SubElement(setings, "lampaKuchAutoLux_min").text = str(lampaKuch.AutoLux_min)
-    ET.SubElement(setings, "lampaKuchAutoOFF").text = str(lampaKuch.AutoOFF)
-    ET.SubElement(setings, "lampaKuchAutoON").text = str(lampaKuch.AutoON)
-
-    ET.SubElement(setings, "lampa1Pok1Jasnosc").text = str(lampa1Pok1.Jasnosc)
-
-    ET.SubElement(setings, "lampaPok2AutoJasnosc").text = str(lampaPok2.AutoJasnosc)
-    ET.SubElement(setings, "lampaPok2AutoLux_min").text = str(lampaPok2.AutoLux_min)
-    ET.SubElement(setings, "lampaPok2AutoOFF").text = str(lampaPok2.AutoOFF)
-    ET.SubElement(setings, "lampaPok2AutoON").text = str(lampaPok2.AutoON)
-
-    tree2 = ET.ElementTree(setings)
-    tree2.write('/var/www/html/ustawienia.xml')
-    log.add_log("Zapisano ustawienia")
-
-def odczyt_ustawien_xml():
-    tree = ET.ElementTree(file='/var/www/html/ustawienia.xml')
-    root = tree.getroot()
-
-    lampaTV.AutoLux_min = int(root.find('lampaTVAutoLux_min').text)
-    lampaTV.AutoOff = root.find('lampaTVAutoOff').text
-    lampaTV.AutoOn = root.find('lampaTVAutoOn').text
-    lampaTV.Jasnosc = int(root.find('lampaTVJasnosc').text)
-    lampaTV.Ustawienie = root.find('lampaTVUstawienie').text
-
-    lampaKuch.AutoLux_min = int(root.find('lampaKuchAutoLux_min').text)
-    lampaKuch.AutoOFF = root.find('lampaKuchAutoOFF').text
-    lampaKuch.AutoON = root.find('lampaKuchAutoON').text
-
-    lampa1Pok1.Jasnosc = int(root.find('lampa1Pok1Jasnosc').text)
-
-    lampaPok2.AutoJasnosc = int(root.find('lampaPok2AutoJasnosc').text)
-    lampaPok2.AutoLux_min = int(root.find('lampaPok2AutoLux_min').text)
-    lampaPok2.AutoOFF = root.find('lampaPok2AutoOFF').text
-    lampaPok2.AutoON = root.find('lampaPok2AutoON').text
-
 def watchdog_reset():
     setings = ET.Element("settings")
     ET.SubElement(setings, "watchdogFlag").text = str(1)
@@ -306,7 +213,7 @@ def ODCZYT_USTAWIEN_WATEK():  #------WATEK ODCZYTUJACY USTAWIENIA Z XML
             q=0
         if q==0:
             weather.get_forecast('Rodgau')
-        odczyt_ustawien_xml()
+        settings.read()
         watchdog_reset()
         time.sleep(60)
         q=q+1
