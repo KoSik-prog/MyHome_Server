@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 try:
-    import time, traceback, datetime, random, threading, sys ,os, linecache, re, glob
+    import time, datetime, threading, sys ,os, re, glob
 except ImportError:
     print "Blad importu"
 
@@ -13,95 +13,17 @@ from libraries.nrfConnect import *
 from libraries.udpServer import *
 from libraries.settings import *
 from libraries.displayBrightness import *
+from sensors import *
 
 from time import sleep
 import RPi.GPIO as GPIO
 
-from numpy.random import randint
 
-
-kasowanieSQL_flaga=False
-
-#+++++ZWLOKA CZASOWA +++++++++++++++++++
-time.sleep(5)
+time.sleep(5) #+++++ZWLOKA CZASOWA +++++++++++++++++++
 
 swiatlo=0
 flaga_odczyt_ustawien=False
-
-
-def sprawdzCzujniki():
-    minimalneNapiecieBaterii=2.55
-    minimalnaWilgotnosc = 10
-    if((datetime.datetime.now() - czujnikZew.czas)>(datetime.timedelta(minutes=18))):
-        infoStrip.set_error(0,True)
-    if((datetime.datetime.now() - czujnikPok1.czas)>(datetime.timedelta(minutes=23))):
-        infoStrip.set_error(1,True)
-    if((datetime.datetime.now() - czujnikPok2.czas)>(datetime.timedelta(minutes=23))):
-        infoStrip.set_error(2,True)
-    if((datetime.datetime.now() - czujnikKwiatek.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(3,True)
-    if((datetime.datetime.now() - czujnikKwiatek2.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(4,True)
-    if((datetime.datetime.now() - czujnikKwiatek3.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(5,True)
-    if((datetime.datetime.now() - czujnikKwiatek4.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(6,True)
-    if((datetime.datetime.now() - czujnikKwiatek5.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(16,True)
-    if((datetime.datetime.now() - czujnikKwiatek6.czas)>(datetime.timedelta(minutes=63))):
-        infoStrip.set_error(19,True)
-    #sprawdzenie budy
-    if((datetime.datetime.now() - buda.czas)>(datetime.timedelta(minutes=2))):
-        buda.temp1=0.0
-        buda.temp2=0.0
-        buda.temp3=0.0
-        buda.czujnikZajetosciFlaga=0
-        buda.czujnikZajetosciRaw=0
-    #sprawdzenie stanu baterii
-    if(czujnikKwiatek.zasilanie <= 5):
-        infoStrip.set_error(7,True)
-    else:
-        infoStrip.set_error(7,False)
-    if(czujnikKwiatek2.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.set_error(8,True)
-    else:
-        infoStrip.set_error(8,False)
-    if(czujnikKwiatek3.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.set_error(9,True)
-    else:
-        infoStrip.set_error(9,False)
-    if(czujnikKwiatek4.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.set_error(10,True)
-    else:
-        infoStrip.set_error(10,False)
-    if(czujnikKwiatek2.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek2.slonce < 60):
-        infoStrip.set_error(11,True)
-    else:
-        infoStrip.set_error(11,False)
-    if(czujnikKwiatek3.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek3.slonce < 60):
-        infoStrip.set_error(12,True)
-    else:
-        infoStrip.set_error(12,False)
-    if(czujnikKwiatek4.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek4.slonce < 60):
-        infoStrip.set_error(13,True)
-    else:
-        infoStrip.set_error(13,False)
-    if(czujnikKwiatek5.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.set_error(14,True)
-    else:
-        infoStrip.set_error(14,False)
-    if(czujnikKwiatek5.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek5.slonce < 60):
-        infoStrip.set_error(15,True)
-    else:
-        infoStrip.set_error(15,False)
-    if(czujnikKwiatek6.zasilanie <= minimalneNapiecieBaterii):
-        infoStrip.set_error(17,True)
-    else:
-        infoStrip.set_error(17,False)
-    if(czujnikKwiatek6.wilgotnosc <= minimalnaWilgotnosc and czujnikKwiatek6.slonce < 60):
-        infoStrip.set_error(18,True)
-    else:
-        infoStrip.set_error(18,False)
+kasowanieSQL_flaga=False
 
 
 
@@ -192,7 +114,6 @@ def ODCZYT_USTAWIEN_WATEK():  #------WATEK ODCZYTUJACY USTAWIENIA Z XML
 def SPRAWDZENIE_TIMERA_WATEK():  #------WATEK SPRAWDZAJACY TIMER
     while(1):
         sprawdzTimer()
-        sprawdzCzujniki()
         time.sleep(10)
 
 #++++++++++++++++++++++++++++++ funkcje dla watkow +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -206,6 +127,10 @@ def NRF_thread_init():
 
 def display_brightness_thread_init():
     nrfTh = threading.Thread(target=displayBrightness.set_brightness)
+    nrfTh.start()
+
+def check_sensors_thread_init():
+    nrfTh = threading.Thread(target=sensor.checkSensors)
     nrfTh.start()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------------------------------------------------------------------------------------------------------------
@@ -223,6 +148,8 @@ o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
 o.start()
 ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
 ti.start()
+
+check_sensors_thread_init()
 #--------------MAIN FUNKTION------------------------------
 ready = udp.readStatus() #inicjalizacja zmiennej
 while(1):

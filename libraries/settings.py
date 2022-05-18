@@ -39,11 +39,11 @@ class SETTINGS_CL:
         ET.SubElement(setings, "lampaPok2AutoON").text = str(lampaPok2.AutoON)
 
         tree2 = ET.ElementTree(setings)
-        tree2.write(self.path)
+        tree2.write(SETTINGS_CL.path)
         log.add_log("Zapisano ustawienia")
 
     def read(self):
-        tree = ET.ElementTree(file=self.path)
+        tree = ET.ElementTree(file=SETTINGS_CL.path)
         root = tree.getroot()
 
         lampaTV.AutoLux_min = int(root.find('lampaTVAutoLux_min').text)
