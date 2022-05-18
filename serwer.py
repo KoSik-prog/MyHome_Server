@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 try:
-    import time, traceback, smbus, datetime, random, threading, sys ,os, linecache, re, glob
+    import time, traceback, datetime, random, threading, sys ,os, linecache, re, glob
 except ImportError:
     print "Blad importu"
 
@@ -8,15 +8,13 @@ from libraries.log import *
 from libraries.gui import *
 from devicesList import *
 from libraries.infoStrip import *
-from libraries.weatherForecast import *
-from libraries.ikea import *
 from libraries.sqlDatabase import *
 from libraries.nrfConnect import *
 from libraries.udpServer import *
 from libraries.settings import *
+from libraries.displayBrightness import *
 
 from time import sleep
-import rpi_backlight as bl
 import RPi.GPIO as GPIO
 
 from numpy.random import randint
@@ -160,34 +158,7 @@ def watchdog_reset():
     tree2 = ET.ElementTree(setings)
     tree2.write('Desktop/Home/watchdog.xml')
 
-def czujnik_swiatla():
-    bus = smbus.SMBus(1)
-    bus.write_byte_data(0x39, 0x00 | 0x80, 0x03)
-    bus.write_byte_data(0x39, 0x01 | 0x80, 0x02)
-    time.sleep(0.5)
-    data = bus.read_i2c_block_data(0x39, 0x0C | 0x80, 2)
-    ch0 = data[1] * 256 + data[0]
-    return int(ch0)
 
-def jasnosc_wyswietlacza(): #----STEROWANIE WYSWIETLACZEM - WATEK!!!!!!!!!! ----------------------------------------------------
-    global swiatlo
-    swiatlo_old=0
-    while(1):
-        swiatlo=czujnik_swiatla() #poprawic
-        gui.swiatlo = swiatlo
-        if swiatlo>(swiatlo_old+15) or swiatlo<(swiatlo_old-15): 
-            if swiatlo<7:
-                jasnoscwysw=11
-            elif swiatlo>=7 and swiatlo<100:
-                jasnoscwysw=int(((0.645*swiatlo)+5.4838)+11)
-            elif swiatlo>=100 and swiatlo<1000:
-                jasnoscwysw=int(((0.193*swiatlo) + 50.67)+11)
-            elif swiatlo>=1000:
-                jasnoscwysw=255
-            bl.set_brightness(jasnoscwysw, smooth=True, duration=2)  # ustawienie jasnosci LCD
-            #log.add_log("Jasnosc wyswietlacza:{}   / old:{}, new:{}".format(jasnoscwysw,swiatlo_old,swiatlo))
-            swiatlo_old=swiatlo
-        time.sleep(5)
 
 #=====================================================
 #Adresy  ==>>
@@ -232,6 +203,10 @@ def LCD_thread_init():
 def NRF_thread_init():
     nrfTh = threading.Thread(target=nrf.server)
     nrfTh.start()
+
+def display_brightness_thread_init():
+    nrfTh = threading.Thread(target=displayBrightness.set_brightness)
+    nrfTh.start()
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------------------------------------------------------------------------------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -242,8 +217,8 @@ GPIO.setup(22,GPIO.OUT)
 #-------------WATKI--------------------------
 LCD_thread_init()
 NRF_thread_init()
-l=threading.Thread(target=jasnosc_wyswietlacza)
-l.start()
+display_brightness_thread_init()
+
 o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
 o.start()
 ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)

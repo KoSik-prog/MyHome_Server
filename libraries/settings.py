@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
-# Name:        nrf_connect
+# Name:        settings
 # Purpose:
 #
 # Author:      KoSik
