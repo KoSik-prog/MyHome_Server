@@ -15,7 +15,7 @@ import spidev
 
 from libraries.log import *
 from devicesList import *
-from lib_nrf24 import NRF24
+from NRF24L01.lib_nrf24 import NRF24
 from libraries.sqlDatabase import *
 from libraries.infoStrip import *
 
