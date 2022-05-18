@@ -1,6 +1,6 @@
  # -*- coding: utf-8 -*-
 try:
-    import time, datetime, threading, sys ,os, re, glob
+    import time, datetime, threading
 except ImportError:
     print "Blad importu"
 
@@ -10,7 +10,7 @@ from devicesList import *
 from libraries.infoStrip import *
 from libraries.sqlDatabase import *
 from libraries.nrfConnect import *
-from libraries.udpServer import *
+from libraries.webServices import *
 from libraries.settings import *
 from libraries.displayBrightness import *
 from libraries.timer import *
@@ -45,7 +45,6 @@ def timer_thread_init():
 def check_sensors_thread_init():
     nrfTh = threading.Thread(target=sensor.check_sensors)
     nrfTh.start()
-
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------------------------------------------------------------------------------------------------------------
