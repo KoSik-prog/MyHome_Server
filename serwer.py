@@ -13,7 +13,7 @@ from libraries.nrfConnect import *
 from libraries.udpServer import *
 from libraries.settings import *
 from libraries.displayBrightness import *
-from libraries.watchdog import *
+from libraries.timer import *
 from sensors import *
 
 from time import sleep
@@ -22,94 +22,6 @@ import RPi.GPIO as GPIO
 
 time.sleep(5) #+++++ZWLOKA CZASOWA +++++++++++++++++++
 
-swiatlo=0
-flaga_odczyt_ustawien=False
-kasowanieSQL_flaga=False
-
-
-
-
-def sprawdzTimer():  #SPRAWDZENIE CO WYKONAC O DANEJ PORZE
-    #----------------------SPRAWDZENIE BAZY DANYCH SQL-----------------------kasowanie starych rekordow------------
-    if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:00") and kasowanieSQL_flaga==False:
-        sql.delete_records(30) #kasowanie starych rekordow z bazy danych
-        kasowanieSQL_flaga=True
-        log.add_log("Skasowano stare dane z SQL")
-    if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:01") and kasowanieSQL_flaga==True:
-        kasowanieSQL_flaga=False
-    #------------------------------------------------------------------------------------------
-    autoCzas(lampaTV)
-    autoCzas(dekoPok1)
-    autoCzas(deko2Pok1)
-    autoCzas(dekoFlaming)
-    autoCzas(lampaPok2Tradfri)
-    autoCzas(lampaPok2)#---- LED SYPIALNI
-    #autoCzas(lampaKuch)#-----LED KUCHNI
-    #autoCzas(dekoUsb)#----USB Stick
-    autoCzas(hydroponika)#----Hydroponika
-
-
-def autoCzas(klasa):
-    format = '%H:%M:%S.%f'
-    aktual=datetime.datetime.now().time()
-    try:
-        zmiennaON = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.AutoON, format) # obliczenie roznicy czasu
-    except ValueError as e:
-        print('Blad czasu wł:', e)
-    try:
-        zmiennaOFF = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.AutoOFF, format) # obliczenie roznicy czasu
-    except ValueError as e:
-        print('Blad czasu wył:', e)
-    #-----skasowanie flag ----------
-    if(int(zmiennaON.total_seconds())>(-15) and int(zmiennaON.total_seconds())<0 and  klasa.FlagaSterowanieManualne==True):
-        klasa.FlagaSterowanieManualne=False
-    if(int(zmiennaOFF.total_seconds())>(-15) and int(zmiennaOFF.total_seconds())<0 and klasa.FlagaSterowanieManualne==True):
-        klasa.FlagaSterowanieManualne=False
-    #------SPRAWDZENIE------------------------
-    if(klasa.Flaga==0 and automatykaOswietlenia.swiatloObliczone<klasa.AutoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-        log.add_log("AUTO {} -> ON".format(klasa.Opis))
-        sterowanieOswietleniem(klasa.Adres,klasa.AutoJasnosc)
-        time.sleep(20)
-    if(klasa.Flaga==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-        log.add_log("AUTO {} -> OFF".format(klasa.Opis))
-        sterowanieOswietleniem(klasa.Adres,0)
-        time.sleep(20)
-
-#=====================================================
-#Adresy  ==>>
-AdresLedTV = 1
-AdresSypialnia = 2
-AdresLampa1 = 3
-AdresKuchnia = 4
-AdresLampa2 = 5 #Dekoracje 1 REKA
-AdresLampa3 = 6 #Dekoracje 2 Eifla
-AdresFlaming = 7 #Dekoracje Flaming
-AdresUsb = 8 #Modul uniwersalny USB
-AdresCzujnikKwiatka1 = 9
-AdresCzujnikKwiatka2 = 10
-AdresCzujnikKwiatka3 = 11
-AdresBuda = 12
-AdresCzujnikKwiatka4 = 13
-AdresHydroponika = 15
-#++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-def ODCZYT_USTAWIEN_WATEK():  #------WATEK ODCZYTUJACY USTAWIENIA Z XML
-    q=0
-    while(1):
-        if q>5:
-            q=0
-        if q==0:
-            weather.get_forecast('Rodgau')
-        settings.read()
-        watchdog.reset()
-        time.sleep(60)
-        q=q+1
-
-def SPRAWDZENIE_TIMERA_WATEK():  #------WATEK SPRAWDZAJACY TIMER
-    while(1):
-        sprawdzTimer()
-        time.sleep(10)
-
-#++++++++++++++++++++++++++++++ funkcje dla watkow +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 def LCD_thread_init():
     lcdTh = threading.Thread(target=gui.lcd)
     lcdTh.start()
@@ -122,8 +34,16 @@ def display_brightness_thread_init():
     nrfTh = threading.Thread(target=displayBrightness.set_brightness)
     nrfTh.start()
 
+def settings_read_thread_init():
+    nrfTh = threading.Thread(target=settings.start_read)
+    nrfTh.start()
+
+def timer_thread_init():
+    nrfTh = threading.Thread(target=timer.check_timer)
+    nrfTh.start()
+
 def check_sensors_thread_init():
-    nrfTh = threading.Thread(target=sensor.checkSensors)
+    nrfTh = threading.Thread(target=sensor.check_sensors)
     nrfTh.start()
 
 
@@ -135,16 +55,12 @@ if __name__ == "__main__":
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(22,GPIO.OUT)
-    #-------------WATKI--------------------------
+    #-------------THREADS INIT--------------------------
     LCD_thread_init()
     NRF_thread_init()
     display_brightness_thread_init()
-
-    o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
-    o.start()
-    ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
-    ti.start()
-
+    settings_read_thread_init()
+    timer_thread_init()
     check_sensors_thread_init()
     #--------------MAIN FUNCTION------------------------------
     ready = udp.readStatus() #inicjalizacja zmiennej

@@ -11,6 +11,7 @@ from libraries.log import *
 class SQL_CL:
     databaseLoc = '/var/www/html/home_database.db'
     flagBusy = False
+    kasowanieSQL_flaga=False
 
     def add_record_sensor_outdoor_temp (self, temp, humi, wiatr, kierunek):
         for i in range(100):

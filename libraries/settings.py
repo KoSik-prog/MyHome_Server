@@ -11,14 +11,27 @@
 #-------------------------------------------------------------------------------
 import xml.etree.cElementTree as ET
 from libraries.log import *
+from libraries.weatherForecast import *
 from devicesList import *
+from libraries.watchdog import *
 
 
 class SETTINGS_CL:
     path = '/var/www/html/ustawienia.xml'
+    i=0
 
+    def start_read(self):
+        while(1):
+            if SETTINGS_CL.i>5:
+                SETTINGS_CL.i=0
+            if SETTINGS_CL.i==0:
+                weather.get_forecast('Rodgau')
+            self.read()
+            watchdog.reset()
+            time.sleep(60)
+            SETTINGS_CL.i += 1
     
-    def zapis_ustawien_xml(self):
+    def save(self):
         setings = ET.Element("settings")
 
         ET.SubElement(setings, "lampaTVAutoLux_min").text = str(lampaTV.AutoLux_min)
