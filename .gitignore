@@ -1,4 +1,6 @@
+*.pyc
+
+watchdog.xml
+
 log.txt
 watchdog_log.txt
-watchdog.xml
-*.pyc

@@ -103,7 +103,7 @@ class GUI_CL:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)
         display.display_picture(display.screen, self.posX , 0, 255, display.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
-        elif(tapeta.find('01') != -1):  #CLEAR SKY
+        if(tapeta.find('01') != -1):  #CLEAR SKY
             self.posX=0
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki2=(180,180,180,255)

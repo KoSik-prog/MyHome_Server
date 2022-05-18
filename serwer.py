@@ -1,18 +1,18 @@
  # -*- coding: utf-8 -*-
 try:
-    import select, time, socket, traceback, sqlite3, smbus, datetime, random, threading, sys ,os, linecache, re, glob
+    import time, traceback, smbus, datetime, random, threading, sys ,os, linecache, re, glob
 except ImportError:
     print "Blad importu"
 
 from libraries.log import *
-time.sleep(.01)
 from libraries.gui import *
 from devicesList import *
 from libraries.infoStrip import *
 from libraries.weatherForecast import *
 from libraries.ikea import *
 from libraries.sqlDatabase import *
-from libraries.nrf_connect import *
+from libraries.nrfConnect import *
+from libraries.udpServer import *
 
 from time import sleep
 import rpi_backlight as bl
@@ -21,7 +21,7 @@ import xml.etree.cElementTree as ET
 
 from numpy.random import randint
 
-AddrOut = 2222
+
 kasowanieSQL_flaga=False
 
 #+++++ZWLOKA CZASOWA +++++++++++++++++++
@@ -120,7 +120,7 @@ def sprawdzTimer():  #SPRAWDZENIE CO WYKONAC O DANEJ PORZE
     autoCzas(lampaTV)
     autoCzas(dekoPok1)
     autoCzas(deko2Pok1)
-    #autoCzas(dekoFlaming)
+    autoCzas(dekoFlaming)
     autoCzas(lampaPok2Tradfri)
     autoCzas(lampaPok2)#---- LED SYPIALNI
     #autoCzas(lampaKuch)#-----LED KUCHNI
@@ -153,357 +153,6 @@ def autoCzas(klasa):
         log.add_log("AUTO {} -> OFF".format(klasa.Opis))
         sterowanieOswietleniem(klasa.Adres,0)
         time.sleep(20)
-#------------------UDP-----------------------------------
-def server():
-    try:
-        message, address = s.recvfrom(1024)
-        log.add_log(log.actualDate() +" " + "Polaczenie %s: %s" % (address, message))
-        transmisja(message, address)
-        return message
-    except (KeyboardInterrupt, SystemExit):
-        raise
-    except:
-        traceback.print_exc()
-
-
-def transmisja(messag, adres):
-    if(messag.find('salonOswietlenie.') != -1):   # SALON
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz:pocz+3])
-        if(chJasnosc>=0 and chJasnosc<=100):
-            sterowanieOswietleniem(lampaPok1Tradfri.Adres, str(chJasnosc))
-        else:
-            log.add_log("Blad danych! -> {}".format(chJasnosc))
-    if(messag.find('tradfriLampaJasn.') != -1):   # LAMPA W SALONIE
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz:pocz+3])
-        if(chJasnosc>=0 and chJasnosc<=100):
-            sterowanieOswietleniem(lampaDuzaTradfri.Adres, str(chJasnosc))
-        else:
-            log.add_log("Blad danych! -> {}".format(chJasnosc))
-    if(messag.find('tradfriLampaKol.') != -1):   # LAMPA W SALONIE
-        pocz=messag.find(".")+1
-        sterowanieOswietleniem(lampaDuzaTradfri.Adres, messag[pocz:pocz+9])
-    if(messag.find('swiatloSypialni.') != -1):   # SYPIALNIA
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz:pocz+3])
-        lampaPok2.Jasnosc=chJasnosc
-        sterowanieOswietleniem(lampaPok2Tradfri.Adres,lampaPok2.Jasnosc)
-        sterowanieOswietleniem(lampaPok2.Adres,lampaPok2.Jasnosc)
-        lampaPok2.FlagaSterowanieManualne=True
-        dekoFlaming.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(dekoFlaming.Adres,messag[pocz])
-    if(messag.find('swiatloSypialniTradfri.') != -1):   # SYPIALNIA TRADFRI
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz])
-        sterowanieOswietleniem(lampaPok2Tradfri.Adres,chJasnosc)
-    if(messag.find('swiatloJadalniTradfri.') != -1):   # Jadalnia TRADFRI
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz])
-        sterowanieOswietleniem(lampaJadalniaTradfri.Adres,chJasnosc)
-    if(messag.find('swiatlokuchni.') != -1):  # KUCHNIA
-        pocz=messag.find(".")+1
-        sterowanieOswietleniem(AdresKuchnia,messag[pocz])
-        lampaKuch.FlagaSterowanieManualne=True
-    if(messag.find('swiatloPrzedpokoj.') != -1):  # PRZEDPOKOJ
-        pocz=messag.find(".")+1
-        chJasnosc=int(messag[pocz:len(messag)])
-        sterowanieOswietleniem(lampaPrzedpokojTradfri.Adres,chJasnosc)
-    if(messag.find('reflektor1.') != -1): # REFLEKTOR LED COLOR
-        lampa1Pok1.Ustawienie=messag[11:23]
-        lampa1Pok1.Jasnosc=messag[23:26]
-        sterowanieOswietleniem(AdresLampa1,lampa1Pok1.Jasnosc)
-    if(messag.find('reflektor1kolor.') != -1): # REFLEKTOR LED COLOR KOLOR
-        lampa1Pok1.Ustawienie=messag[16:28]
-        sterowanieOswietleniem(lampa1Pok1.Adres,lampa1Pok1.Jasnosc)
-    if(messag.find('reflektor1jasn.') != -1): # REFLEKTOR LED COLOR JASNOSC
-        lampa1Pok1.Jasnosc=messag[15:18]
-        sterowanieOswietleniem(lampa1Pok1.Adres,lampa1Pok1.Jasnosc)
-    if(messag.find('dekoracjePok1.') != -1): # DEKORACJE POKOJ 1
-        pocz=messag.find(".")+1
-        sterowanieOswietleniem(dekoPok1.Adres,messag[pocz])
-        dekoPok1.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(deko2Pok1.Adres,messag[pocz])
-    if(messag.find('dekoracjePok2.') != -1): # DEKORACJE POKOJ 2
-        pocz=messag.find(".")+1
-        dekoFlaming.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(dekoFlaming.Adres,messag[pocz])
-    if(messag.find('dekoracjeUSB.') != -1): # uniwersalny modul USB
-        pocz=messag.find(".")+1
-        dekoUsb.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(dekoUsb.Adres,messag[pocz])
-    if(messag.find('hydroponika.') != -1): # Hydroponika
-        pocz=messag.find(".")+1
-        dekoUsb.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(AdresHydroponika,messag[pocz])
-    if(messag=='?m'):
-        try:
-            s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(czujnikZew.temp,czujnikZew.humi,czujnikPok1.temp,czujnikPok1.humi,czujnikPok2.temp,czujnikPok2.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.zasilanie))+'letv{}{}{}'.format(int(lampaTV.Flaga),lampaTV.Ustawienie,lampaTV.Jasnosc)+'lesy{}{:03d}'.format(int(lampaPok2.Flaga),lampaPok2.Jasnosc)+'lela{}{:03d}'.format(int(lampa1Pok1.Flaga),lampa1Pok1.Jasnosc), adres)
-            log.add_log("Wyslano dane UDP")
-        except:
-            log.add_log("Blad danych dla UDP")
-    if(messag.find('sterTV.') != -1):
-        pocz=messag.find(".")+1
-        if int(messag[(pocz+9):(pocz+12)])>=0:
-            lampaTV.Ustawienie=messag[(pocz):(pocz+9)]
-            lampaTV.Jasnosc=int(messag[(pocz+9):(pocz+12)])
-        sterowanieOswietleniem(AdresLedTV,lampaTV.Jasnosc)
-        lampaTV.FlagaSterowanieManualne=True
-    if(messag.find('sterTVjasnosc.') != -1):
-        zmien=messag[14:17]
-        if int(zmien)>0:
-            lampaTV.Jasnosc=int(zmien)
-        sterowanieOswietleniem(AdresLedTV,zmien)
-        lampaTV.FlagaSterowanieManualne=True
-    if(messag.find('terrarium.') != -1):
-        pocz=messag.find(".T:")+1
-        terrarium.tempUP=float(messag[(pocz+2):(pocz+6)])
-        pocz=messag.find("/W:")+1
-        terrarium.wilgUP=float(messag[(pocz+2):(pocz+5)])
-        pocz=messag.find(",t:")+1
-        terrarium.tempDN=float(messag[(pocz+2):(pocz+6)])
-        pocz=messag.find("/w:")+1
-        terrarium.wilgDN=float(messag[(pocz+2):(pocz+5)])
-        pocz=messag.find("/I:")+1
-        terrarium.UVI=float(messag[(pocz+2):(pocz+11)])
-        log.add_log("   Terrarium TempUP: {}*C, WilgUP: {}%  /  TempDN: {}*C, WilgDN: {}*C  /  UVI: {}".format(terrarium.tempUP,terrarium.wilgUP,terrarium.tempDN,terrarium.wilgDN,terrarium.UVI))
-        sql.addRecordTerrarium(terrarium.tempUP,terrarium.wilgUP,terrarium.tempDN,terrarium.wilgDN,terrarium.UVI)
-    if(messag.find('ko2') != -1):
-        wiad="#05L" + messag[3:15]
-        log.add_log(wiad)
-        nrf.NRFwyslij(1,wiad)
-        lampaTV.FlagaSterowanieManualne=True
-    if(messag.find('gra') != -1):
-        wiad="#05G" + messag[3:6]
-        log.add_log(wiad)
-        nrf.NRFwyslij(1,wiad)
-        lampaTV.FlagaSterowanieManualne=True
-    if(messag.find('lelw')): # LAMPA LED BIALY
-        wiad="#06W" + messag[4:7]
-        nrf.NRFwyslij(3,wiad)
-    if(messag.find('pok1max') != -1):
-        wiad="#05K255255255255"
-        lampaTV.Ustawienie="255255255"
-        lampaTV.Jasnosc=255
-        log.add_log(wiad)
-        log.add_log(wiad)
-        nrf.NRFwyslij(1,wiad)
-        ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, tradfriDev.salon, 100)
-        lampaTV.FlagaSterowanieManualne=True
-        log.add_log("Tryb swiatel: Pokoj 1 max")
-    if(messag.find('budaTryb.') != -1):
-        pocz=messag.find(".")+1
-        wiad="#15T" + messag[pocz]
-        nrf.NRFwyslij(12,wiad)
-        sterowanieOswietleniem(AdresLedTV,lampaTV.Jasnosc)
-        lampaTV.FlagaSterowanieManualne=True
-    if(messag.find('spij') != -1):
-        sterowanieOswietleniem(AdresLedTV,"000")
-        lampaTV.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(lampaPok1Tradfri.Adres,0)
-        sterowanieOswietleniem(lampaPok1Tradfri.Zarowka,15)
-        #sterowanieOswietleniem(lampaJadalniaTradfri.Adres,0)
-        #sterowanieOswietleniem(lampaPrzedpokojTradfri.Adres,100)
-        sterowanieOswietleniem(lampaDuzaTradfri.Adres,0)
-        sterowanieOswietleniem(dekoPok1.Adres,0)
-        sterowanieOswietleniem(deko2Pok1.Adres,0)
-        #sterowanieOswietleniem(lampa1Pok1.Adres,0)
-        dekoPok1.FlagaSterowanieManualne=True
-        deko2Pok1.FlagaSterowanieManualne=True
-        deko2Pok1.FlagaSterowanieManualne=True
-        ustawSwiatloZeZwloka(lampaPok1Tradfri.Adres, 0, 30)
-        #ustawSwiatloZeZwloka(lampaPrzedpokojTradfri.Adres, 0, 31).start()
-        #ustawSwiatloZeZwloka(dekoFlaming.Adres, 0, 30*60).start()
-        dekoFlaming.FlagaSterowanieManualne=True
-        log.add_log("Tryb swiatel: spij")
-    if(messag.find('romantyczny') != -1):
-        if(random.randint(0, 1)==1):
-            lampaTV.Ustawienie="255000{:03d}".format(random.randint(20, 120))
-        else:
-            lampaTV.Ustawienie="255{:03d}000".format(random.randint(20, 120))
-        sterowanieOswietleniem(lampaTV.Adres,lampaTV.Ustawienie)
-        if(random.randint(0, 1)==1):
-            kolor="255000{:03d}".format(random.randint(20, 150))
-        else:
-            kolor="255{:03d}000".format(random.randint(20, 150))
-        sterowanieOswietleniem(lampaDuzaTradfri.Adres,kolor)
-        sterowanieOswietleniem(lampaDuzaTradfri.Adres, 100)
-        if(random.randint(0, 1)==1):
-            lampa1Pok1.Ustawienie="255000{:03d}000".format(random.randint(20, 120))
-        else:
-            lampa1Pok1.Ustawienie="255{:03d}000000".format(random.randint(20, 120))
-        sterowanieOswietleniem(lampa1Pok1.Adres, 255)
-        sterowanieOswietleniem(lampaPok1Tradfri.Adres, 0)
-        lampaTV.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(dekoPok1.Adres,0)
-        dekoPok1.FlagaSterowanieManualne=True
-        sterowanieOswietleniem(deko2Pok1.Adres,1)
-        deko2Pok1.FlagaSterowanieManualne=True
-        log.add_log("Tryb swiatel: romantyczny  --> "+wiad)
-
-
-class ustawSwiatloZeZwloka(threading.Thread): #------WATEK NADAWANIA NRF
-    def __init__(self, adres, jasnosc, czas):
-        threading.Thread.__init__(self)
-        self.adres = adres
-        self.jasnosc = jasnosc
-        self.czas = czas
-    def run(self):
-        time.sleep(self.czas)
-        if self.jasnosc==0:
-            sterowanieOswietleniem(self.adres,100)
-        sterowanieOswietleniem(self.adres,self.jasnosc)
-        log.add_log("Funkacja spij wlaczona")
-
-def sterowanieOswietleniem(adres, ustawienie):
-    if adres==lampaTV.Adres:   #TV
-        wiad="#05K{}{:03d}".format(lampaTV.Ustawienie,int(ustawienie))
-        if len(wiad)>=15:
-            log.add_log("Ustawiono Led TV: {}".format(wiad))
-            infoStrip.add_info("światło TV: {}".format(ustawienie))
-            nrf.NRFwyslij(AdresLedTV,wiad)
-            lampaTV.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==lampaPok2.Adres:  #SYPIALNIA
-        wiad="#S{:03d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
-            infoStrip.add_info("światło w sypialni: {}".format(ustawienie))
-            nrf.NRFwyslij(AdresSypialnia,wiad)
-            lampaPok2.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==lampaKuch.Adres:  #KUCHNIA
-        wiad="#07T{:01d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
-            infoStrip.add_info("światło w kuchni: {}".format(ustawienie))
-            nrf.NRFwyslij(AdresKuchnia,wiad)
-            lampaKuch.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==lampa1Pok1.Adres:  # LAMPA 1 w salonie
-        wiad="#05K{}{:03d}".format(lampa1Pok1.Ustawienie, int(ustawienie))
-        if len(wiad)>=5:
-            lampa1Pok1.Jasnosc=int(ustawienie)
-            log.add_log("Ustawiono Reflektor 1: {}".format(wiad))
-            infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.Ustawienie,int(ustawienie)))
-            nrf.NRFwyslij(AdresLampa1,wiad)
-            lampa1Pok1.blad+=1
-            if(int(ustawienie) == 0):
-                lampa1Pok1.Flaga = 0
-            else:
-                lampa1Pok1.Flaga = 1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==dekoPok1.Adres:  # dekoracje pok 1 / Reka
-        wiad="#08T{:1d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Lampa 1: {}".format(wiad))
-            infoStrip.add_info("dekoracje 1 w salonie: {}".format(ustawienie))
-            nrf.NRFwyslij(dekoPok1.Adres,wiad).start()
-            lampa1Pok1.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==deko2Pok1.Adres:  # dekoracje pok 1 / Eifla i inne
-        wiad="#09T{:1d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Lampa 2: {}".format(wiad))
-            infoStrip.add_info("dekoracje 2 w salonie: {}".format(ustawienie))
-            nrf.NRFwyslij(deko2Pok1.Adres,wiad)
-            dekoPok1.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==dekoFlaming.Adres:  # FLAMING
-        wiad="#10T{:1d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
-            infoStrip.add_info("flaming: {}".format(ustawienie))
-            nrf.NRFwyslij(AdresFlaming,wiad)
-            dekoFlaming.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==dekoUsb.Adres:  # Dekoracje - uniwersalny modul USB
-        wiad="#11T{:1d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
-            infoStrip.add_info("uniwersalny USB: {}".format(ustawienie))
-            nrf.NRFwyslij(AdresUsb,wiad)
-            dekoUsb.blad+=1
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
-    if adres==lampaPok1Tradfri.Adres:  # Tradfri Salon
-        if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, adres, ustawienie)
-        elif ustawienie>1:
-            ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, adres, ustawienie)
-        log.add_log("Tradfri Salon ->: {}".format(ustawienie))
-        infoStrip.add_info("oświetlenie w salonie: {}".format(ustawienie))
-    if adres==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
-        if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        elif ustawienie>1:
-            ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        log.add_log("Tradfri Salon-Zarowka ->: {}".format(ustawienie))
-    if adres==lampaJadalniaTradfri.Adres:  # Tradfri Jadalnia
-        if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        elif ustawienie>1:
-            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        log.add_log("Tradfri Jadalnia ->: {}".format(ustawienie))
-        infoStrip.add_info("oświetlenie w jadalni: {}".format(ustawienie))
-    if adres==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
-        if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        elif ustawienie>1:
-            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, ustawienie)
-        if(ustawienie>0):
-            lampaPrzedpokojTradfri.Status=1
-        else:
-            lampaPrzedpokojTradfri.Status=0
-        log.add_log("Tradfri Przedpokoj ->: {}".format(ustawienie))
-        infoStrip.add_info("oświetlenie w przedpokoju: {}".format(ustawienie))
-    if adres==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
-        if len(str(ustawienie))==1:
-            if int(ustawienie)==0 or int(ustawienie)==1:
-                ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, int(ustawienie))
-                log.add_log("Tradfri Lampa ON/OFF ->: {}".format(ustawienie))
-        elif len(str(ustawienie))==9:
-            chKolor1=int(ustawienie[0:3])
-            chKolor2=int(ustawienie[3:6])
-            chKolor3=int(ustawienie[6:9])
-            ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
-            log.add_log("Tradfri Lampa kolor ->: {}".format(ustawienie))
-            infoStrip.add_info("lampa w salonie -> kolor: {}".format(ustawienie))
-        elif len(str(ustawienie))==2 or len(str(ustawienie))==3:
-            if int(ustawienie)>1 and int(ustawienie)<=100:
-                ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, adres, int(ustawienie))
-                log.add_log("Tradfri Lampa Jasnosc ->: {}".format(ustawienie))
-                infoStrip.add_info("lampa w salonie: {}".format(ustawienie))
-        else:
-            log.add_log("Tradfri blad skladni")
-    if adres==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
-        if ustawienie==0 or ustawienie==1:
-            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, ustawienie)
-            lampaPok2Tradfri.Flaga = False
-        elif ustawienie>1:
-            ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, ustawienie)
-            ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, 1)
-            lampaPok2Tradfri.Flaga = True
-        log.add_log("Tradfri Sypialnia ->: {}".format(ustawienie))
-        infoStrip.add_info("oświetlenie w sypialni: {}".format(ustawienie))
-    if adres==hydroponika.Adres:   #Hydroponika
-        if int(ustawienie) > 1:
-            wiad="#17P1" #wlacz pompe
-        else:
-            wiad="#17A{:01d}".format(int(ustawienie))
-        if len(wiad)>=5:
-            log.add_log("Ustawiono Hydroponike: {}".format(wiad))
-            infoStrip.add_info("Hydroponika: {}".format(ustawienie))
-            nrf.NRFwyslij(hydroponika.Adres,wiad).start()
-        else:
-            log.add_log("BLAD SKLADNI!: {}".format(wiad))
 
 
 
@@ -683,14 +332,6 @@ log.add_log("Uruchamiam serwer MyHome...")
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(22,GPIO.OUT)
-
-#--------------UDP--------------------------
-s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-s.bind(('', AddrOut))
-s.setblocking(0)
-ready=select.select([s],[],[],1)
 #-------------WATKI--------------------------
 LCD_thread_init()
 NRF_thread_init()
@@ -700,9 +341,9 @@ o=threading.Thread(target=ODCZYT_USTAWIEN_WATEK)
 o.start()
 ti=threading.Thread(target=SPRAWDZENIE_TIMERA_WATEK)
 ti.start()
-#--------------------------------------------
+#--------------MAIN FUNKTION------------------------------
+ready = udp.readStatus() #inicjalizacja zmiennej
 while(1):
     if ready[0]:
-        server()
-    ready=select.select([s],[],[],0.5)
-    time.sleep(.01)
+        udp.server()
+    ready = udp.readStatus()

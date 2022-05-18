@@ -19,6 +19,22 @@ from lib_nrf24 import NRF24
 from libraries.sqlDatabase import *
 from libraries.infoStrip import *
 
+#Adresy  ==>>
+AdresLedTV = 1
+AdresSypialnia = 2
+AdresLampa1 = 3
+AdresKuchnia = 4
+AdresLampa2 = 5 #Dekoracje 1 REKA
+AdresLampa3 = 6 #Dekoracje 2 Eifla
+AdresFlaming = 7 #Dekoracje Flaming
+AdresUsb = 8 #Modul uniwersalny USB
+AdresCzujnikKwiatka1 = 9
+AdresCzujnikKwiatka2 = 10
+AdresCzujnikKwiatka3 = 11
+AdresBuda = 12
+AdresCzujnikKwiatka4 = 13
+AdresHydroponika = 15
+
 class NRF_CL():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
