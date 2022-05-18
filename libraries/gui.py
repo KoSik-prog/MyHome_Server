@@ -103,7 +103,8 @@ class GUI_CL:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)
         display.display_picture(display.screen, self.posX , 0, 255, display.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
-        if(tapeta.find('01') != -1):  #CLEAR SKY
+        elif(tapeta.find('01') != -1):  #CLEAR SKY
+            self.posX=0
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki2=(180,180,180,255)
             else:
@@ -112,17 +113,20 @@ class GUI_CL:
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
         elif(tapeta.find('50') != -1):
+            self.posX=0
             self.kolorczcionki1=(0,105,56,255)
             self.kolorczcionki2=(100,40,20,255)
             self.kolorczcionki3=(95,103,56,255)
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
         elif(tapeta.find('09') != -1 or tapeta.find('10') != -1):  #RAIN
+            self.posX=0
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,255,200,255)
             for i in range(6):
                 display.display_picture(display.screen, randint(30, 750), randint(70, 300), 255, display.get_picture("anim")) 
-        if(tapeta.find('11') != -1): #THUNDERSTORM
+        elif(tapeta.find('11') != -1): #THUNDERSTORM
+            self.posX=0
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
@@ -132,6 +136,7 @@ class GUI_CL:
             else:
                 self.pozycja_animacji[17][0]=self.pozycja_animacji[17][0]-1
         elif(tapeta.find('13') != -1): #SNOW
+            self.posX=0
             self.tfps=0.0
             flakesArray=[["snowflake1", 1], ["snowflake2", 2], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake3", 4], ["snowflake4", 1], ["snowflake5", 3], ["snowflake5", 3], ["snowflake5", 3], ["snowflake6", 4], ["snowflake6", 4], ["snowflake3", 5], ["snowflake6", 4], ["snowflake6", 4]]
             for i in range(15):
