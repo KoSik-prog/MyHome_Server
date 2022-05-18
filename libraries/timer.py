@@ -17,7 +17,7 @@ except ImportError:
 
 from libraries.log import *
 from libraries.sqlDatabase import *
-from libraries.others import *
+from lights import *
 from devicesList import *
 
 class TIMER_CL:
@@ -65,10 +65,10 @@ class TIMER_CL:
         #------SPRAWDZENIE------------------------
         if(klasa.Flaga==0 and automatykaOswietlenia.swiatloObliczone<klasa.AutoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
             log.add_log("AUTO {} -> ON".format(klasa.Opis))
-            sterowanieOswietleniem(klasa.Adres,klasa.AutoJasnosc)
+            light.set_light(klasa.Adres,klasa.AutoJasnosc)
             time.sleep(20)
         if(klasa.Flaga==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
             log.add_log("AUTO {} -> OFF".format(klasa.Opis))
-            sterowanieOswietleniem(klasa.Adres,0)
+            light.set_light(klasa.Adres,0)
             time.sleep(20)
 timer = TIMER_CL()
