@@ -112,13 +112,13 @@ class UDP_CL:
             light.set_light(lampa1Pok1.Adres,lampa1Pok1.Jasnosc)
         if(messag.find('dekoracjePok1.') != -1): # DEKORACJE POKOJ 1
             pocz=messag.find(".")+1
-            light.set_light(dekoPok1.Adres,messag[pocz])
+            light.set_light(dekoPok1.Adres, messag[pocz])
             dekoPok1.FlagaSterowanieManualne=True
-            light.set_light(deko2Pok1.Adres,messag[pocz])
+            light.set_light(deko2Pok1.Adres, messag[pocz])
         if(messag.find('dekoracjePok2.') != -1): # DEKORACJE POKOJ 2
             pocz=messag.find(".")+1
             dekoFlaming.FlagaSterowanieManualne=True
-            light.set_light(dekoFlaming.Adres,messag[pocz])
+            light.set_light(dekoFlaming.Adres, messag[pocz])
         if(messag.find('dekoracjeUSB.') != -1): # uniwersalny modul USB
             pocz=messag.find(".")+1
             dekoUsb.FlagaSterowanieManualne=True
@@ -138,13 +138,13 @@ class UDP_CL:
             if int(messag[(pocz+9):(pocz+12)])>=0:
                 lampaTV.Ustawienie=messag[(pocz):(pocz+9)]
                 lampaTV.Jasnosc=int(messag[(pocz+9):(pocz+12)])
-            light.set_light(self.AdresLedTV,lampaTV.Jasnosc)
+            light.set_light(self.AdresLedTV, lampaTV.Jasnosc)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('sterTVjasnosc.') != -1):
             zmien=messag[14:17]
             if int(zmien)>0:
                 lampaTV.Jasnosc=int(zmien)
-            light.set_light(self.AdresLedTV,zmien)
+            light.set_light(self.AdresLedTV, zmien)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('terrarium.') != -1):
             pocz=messag.find(".T:")+1
@@ -162,32 +162,32 @@ class UDP_CL:
         if(messag.find('ko2') != -1):
             wiad="#05L" + messag[3:15]
             log.add_log(wiad)
-            nrf.NRFwyslij(1,wiad)
+            nrf.NRFwyslij(lampaTV.adress, wiad)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('gra') != -1):
             wiad="#05G" + messag[3:6]
             log.add_log(wiad)
-            nrf.NRFwyslij(1,wiad)
+            nrf.NRFwyslij(lampaTV.adress, wiad)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('lelw')): # LAMPA LED BIALY
             wiad="#06W" + messag[4:7]
-            nrf.NRFwyslij(3,wiad)
+            #nrf.NRFwyslij(lampaTV.address, wiad)
         if(messag.find('pok1max') != -1):
             wiad="#05K255255255255"
             lampaTV.Ustawienie="255255255"
             lampaTV.Jasnosc=255
             log.add_log(wiad)
             log.add_log(wiad)
-            nrf.NRFwyslij(1,wiad)
+            nrf.NRFwyslij(lampaTV.address, wiad)
             ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, tradfriDev.salon, 100)
             lampaTV.FlagaSterowanieManualne=True
             log.add_log("Tryb swiatel: Pokoj 1 max")
         if(messag.find('budaTryb.') != -1):
             pocz=messag.find(".")+1
             wiad="#15T" + messag[pocz]
-            nrf.NRFwyslij(12,wiad)
-            light.set_light(self.AdresLedTV,lampaTV.Jasnosc)
-            lampaTV.FlagaSterowanieManualne=True
+            nrf.NRFwyslij(buda.address, wiad)
+            #light.set_light(self.AdresLedTV,lampaTV.Jasnosc)
+            #lampaTV.FlagaSterowanieManualne=True
         if(messag.find('spij') != -1):
             light.set_light(self.AdresLedTV,"000")
             lampaTV.FlagaSterowanieManualne=True

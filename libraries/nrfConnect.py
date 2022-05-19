@@ -19,40 +19,21 @@ from libraries.lib_nrf24 import NRF24
 from libraries.sqlDatabase import *
 from libraries.infoStrip import *
 
-#Adresy  ==>>
-AdresLedTV = 1
-AdresSypialnia = 2
-AdresLampa1 = 3
-AdresKuchnia = 4
-AdresLampa2 = 5 #Dekoracje 1 REKA
-AdresLampa3 = 6 #Dekoracje 2 Eifla
-AdresFlaming = 7 #Dekoracje Flaming
-AdresUsb = 8 #Modul uniwersalny USB
-AdresCzujnikKwiatka1 = 9
-AdresCzujnikKwiatka2 = 10
-AdresCzujnikKwiatka3 = 11
-AdresBuda = 12
-AdresCzujnikKwiatka4 = 13
-AdresHydroponika = 15
-
 class NRF_CL():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
-
-    NRFtx_tablicaAdresow=[0,0,0,0,0,0,0,0,0,0]
-    NRFtx_tablicaDanych=["","","","","","","","","",""]
-    pipesTXflag=[False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False] #Falga ustawiana gdy nadano i czeka na potwierdzenie
     radio = NRF24(GPIO, spidev.SpiDev())
-    pipes = [[0x11, 0x11, 0x11, 0x11, 0x11],[0x33, 0x33, 0x33, 0x33, 0x33],[0x33, 0x33, 0x33, 0x33, 0x44],[0x33, 0x33, 0x33, 0x00, 0x55],[0x33, 0x33, 0x33, 0x00, 0x66],[0x33, 0x33, 0x33, 0x33, 0x77],[0x33, 0x33, 0x33, 0x33, 0x09],[0x33, 0x33, 0x33, 0x33, 0x10],[0x33, 0x33, 0x33, 0x33, 0x11],[0x33, 0x33, 0x33, 0x11, 0x22],[0x33, 0x33, 0x33, 0x11, 0x33],[0x33, 0x33, 0x33, 0x11, 0x44],[0x33, 0x33, 0x33, 0x11, 0x55],[0x33, 0x33, 0x33, 0x11, 0x66],[0x33, 0x33, 0x33, 0x11, 0x77],[0x33, 0x33, 0x33, 0x11, 0x88]]
 
-    def __init__(self):
+    TXBuffer = [ [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""]]
+
+    def __init__(self, rxAddress):
         self.radio.begin(1,25)
         self.radio.setPayloadSize(24)
         self.radio.setChannel(0x64)
         self.radio.setDataRate(NRF24.BR_250KBPS)
-        self.radio.setPALevel(NRF24.PA_MIN)
+        self.radio.setPALevel(NRF24.PA_MAX)
         self.radio.setAutoAck(True)
-        self.radio.openReadingPipe(1, self.pipes[0])
+        self.radio.openReadingPipe(1, rxAddress)
         self.radio.openWritingPipe(1)
         self.radio.printDetails()
         self.radio.startListening()
@@ -76,42 +57,25 @@ class NRF_CL():
             self.radio.stopListening()
             time.sleep(.001)
 
-    def NRFwyslij(self, adres, dane):
-        w=0
-        self.pipesTXflag[adres]=True
-        while(w<2):
-            self.NRFwyslij2(adres, dane)
-            sleep(2)
-            w=w+1
-            if(self.pipesTXflag[adres]==False):
-                break
-        self.pipesTXflag[adres]=False
-
-    def NRFwyslij2(self, adres, wartosc):
-        for q in range(10):
-            if self.NRFtx_tablicaAdresow[q]==0:
-                self.NRFtx_tablicaAdresow[q]=adres
-                self.NRFtx_tablicaDanych[q]=wartosc
+    def NRFwyslij(self, address, data):
+        for i in range(len(NRF_CL.TXBuffer)):
+            if(NRF_CL.TXBuffer[i][1] == ""):
+                NRF_CL.TXBuffer[i][1] = data
+                NRF_CL.TXBuffer[i][0] = address
                 break
 
     def NRFsend(self):
-        if self.NRFtx_tablicaAdresow[0]!=0:
-            if(self.NRFtx_tablicaAdresow[0]==2 or self.NRFtx_tablicaAdresow[0]==4):
-                self.radio.setPALevel(NRF24.PA_MAX)
-            else:
-                self.radio.setPALevel(NRF24.PA_MIN)
-            self.radio.openWritingPipe(self.pipes[self.NRFtx_tablicaAdresow[0]])
-            time.sleep(.1)
-            self.NRFtransmit(self.NRFtx_tablicaDanych[0])
-            for q in range(9):
-                self.NRFtx_tablicaAdresow[q]=self.NRFtx_tablicaAdresow[q+1]
-                self.NRFtx_tablicaDanych[q]=self.NRFtx_tablicaDanych[q+1]
-            self.NRFtx_tablicaAdresow[9]=0
-            self.NRFtx_tablicaDanych[9]=""
+        if NRF_CL.TXBuffer[0][1] != "":
+            self.radio.openWritingPipe(NRF_CL.TXBuffer[0][0])
+            time.sleep(.01)
+            self.NRFtransmit(NRF_CL.TXBuffer[0][1])
+        for i in range(len(NRF_CL.TXBuffer) - 1):
+            NRF_CL.TXBuffer[i] = NRF_CL.TXBuffer[i+1]
+        NRF_CL.TXBuffer[len(NRF_CL.TXBuffer) - 1] = [ [], ""]
 
-    def NRFtransmit(self, dane):
+    def NRFtransmit(self, data):
         self.radio.stopListening()
-        message = list(dane)
+        message = list(data)
         self.radio.write(message)
         self.radio.startListening()
         while len(message) < 32:
@@ -174,7 +138,6 @@ class NRF_CL():
                         else:
                             lampaPok2.Flaga=1
                         lampaPok2.FlagaSterowanieManualne=True
-                        self.pipesTXflag[2]=False
                         lampaPok2.blad=0
                         log.add_log(("   Led Sypialni ON/OFF:{}".format(lampaPok2.Flaga)) + ("   PWM:{}".format(lampaPok2.Jasnosc)))
                 #------------------------------------------------------------------------------------------------------------
@@ -234,7 +197,6 @@ class NRF_CL():
                             lampaTV.Flaga=1
                         if int(string2)>0:
                             lampaTV.Jasnosc=int(string2)
-                        self.pipesTXflag[1]=False
                         lampaTV.blad=0
                         log.add_log(("   Led TV ON/OFF:{}".format(lampaTV.Flaga)) + ("   Jasnosc:{}".format(lampaTV.Jasnosc)))
     #------------------------------------------------------------------------------------------------------------
@@ -246,7 +208,6 @@ class NRF_CL():
                         else:
                             lampa1Pok1.Flaga=1
                         #lampa1Pok1.Jasnosc=int(string2)
-                        self.pipesTXflag[3]=False
                         lampa1Pok1.blad=0
                         log.add_log(("   Led lampa ON/OFF:{}".format(lampa1Pok1.Flaga)) + ("   Jasnosc:{}".format(lampa1Pok1.Jasnosc)))
         #------------------------------------------------------------------------------------------------------------
@@ -256,42 +217,36 @@ class NRF_CL():
                             lampaKuch.Flaga=1
                         else:
                             lampaKuch.Flaga=0
-                        self.pipesTXflag[4]=False
                         lampaKuch.blad=0
                         log.add_log(("   Led kuchnia TRYB:{}".format(lampaKuch.Flaga)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "08":  #DEKORACJE POK 1
                     if stringNRF[3]== "?":
                         dekoPok1.Flaga=int(stringNRF[4])
-                        self.pipesTXflag[AdresLampa2]=False
                         dekoPok1.blad=0
                         log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "09":  #DEKORACJE 2 POK 1
                     if stringNRF[3]== "?":
                         deko2Pok1.Flaga=int(stringNRF[4])
-                        self.pipesTXflag[AdresLampa3]=False
                         deko2Pok1.blad=0
                         log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "10":  #FLAMING
                     if stringNRF[3]== "?":
                         dekoFlaming.Flaga=int(stringNRF[4])
-                        self.pipesTXflag[AdresFlaming]=False
                         dekoFlaming.blad=0
                         log.add_log(("   Flaming ON/OFF:{}".format(dekoFlaming.Flaga)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "11":  #Uniwersalny modul USB
                     if stringNRF[3]== "?":
                         dekoUsb.Flaga=int(stringNRF[4])
-                        self.pipesTXflag[AdresUsb]=False
                         dekoUsb.blad=0
                         log.add_log(("   Uniwersalny USB ON/OFF:{}".format(dekoUsb.Flaga)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "18":  #Hydroponika
                     if stringNRF[3]== "?":
                         hydroponika.Flaga=int(stringNRF[4])
-                        self.pipesTXflag[hydroponika.Adres]=False
                         hydroponika.blad=0
                         log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
     #------------------------------------------------------------------------------------------------------------
@@ -424,4 +379,4 @@ class NRF_CL():
             obliczenia=obliczenia2+obliczenia3
             #print("obliczenia: {} -> o1:{}, o2:{} / {}".format(zmien,obliczenia2,obliczenia3,obliczenia))
         return int(round(obliczenia))
-nrf = NRF_CL()
+nrf = NRF_CL([0x11, 0x11, 0x11, 0x11, 0x11])

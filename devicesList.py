@@ -34,6 +34,7 @@ class czujnikPok2Cl:   #SYPIALNIA
 czujnikPok2=czujnikPok2Cl
 
 class czujnikKwiatekCl:   #KWIATEK
+    address = [0x33, 0x33, 0x33, 0x11, 0x22]
     woda=0
     slonce=0
     wilgotnosc=100
@@ -43,6 +44,7 @@ class czujnikKwiatekCl:   #KWIATEK
 czujnikKwiatek=czujnikKwiatekCl
 
 class czujnikKwiatek2Cl:   #adres 12  KWIATEK _maly czujnik PALMA
+    address = [0x33, 0x33, 0x33, 0x11, 0x33]
     slonce=0
     wilgotnosc=100
     wilgotnosc_raw=0
@@ -54,6 +56,7 @@ class czujnikKwiatek2Cl:   #adres 12  KWIATEK _maly czujnik PALMA
 czujnikKwiatek2=czujnikKwiatek2Cl
 
 class czujnikKwiatek3Cl:   #adres 13  KWIATEK _maly czujnik PACHIRA
+    address = [0x33, 0x33, 0x33, 0x11, 0x44]
     slonce=0
     wilgotnosc=100
     wilgotnosc_raw=0
@@ -64,6 +67,7 @@ class czujnikKwiatek3Cl:   #adres 13  KWIATEK _maly czujnik PACHIRA
 czujnikKwiatek3=czujnikKwiatek3Cl
 
 class czujnikKwiatek4Cl:   #adres 14  KWIATEK _maly czujnik POKRZYWA
+    address = [0x33, 0x33, 0x33, 0x11, 0x66]
     slonce=0
     wilgotnosc=100
     wilgotnosc_raw=0
@@ -102,6 +106,7 @@ class terrariumCl:   #TERRARIUM
 terrarium=terrariumCl
 
 class budaCl:   #BUDA
+    address = [0x33, 0x33, 0x33, 0x11, 0x55]
     Adres=12
     temp1=0.0
     temp2=0.0
@@ -121,6 +126,7 @@ class dekoPok1Cl:     #Dekoracje w salonie Reka
     FlagaSterowanieManualne=False
     AutoJasnosc=1
     blad=0
+    address = [0x33, 0x33, 0x33, 0x33, 0x77]
     Opis="Lampa-reka"
 dekoPok1=dekoPok1Cl
 
@@ -133,6 +139,7 @@ class deko2Pok1Cl:     #Dekoracje 2 w salonie  Eifla i inne
     FlagaSterowanieManualne=False
     AutoJasnosc=1
     blad=0
+    address = [0x33, 0x33, 0x33, 0x33, 0x09]
     Opis="Dekoracje szafka"
 deko2Pok1=deko2Pok1Cl
 
@@ -145,6 +152,7 @@ class dekoFlamingCl:     #Dekoracje w sypialni
     AutoLux_min=400 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
     blad=0
     Adres=7
+    address = [0x33, 0x33, 0x33, 0x33, 0x10]
     Opis='Flaming'
 dekoFlaming=dekoFlamingCl
 
@@ -157,10 +165,12 @@ class dekoUsbCl:     #USB Stick
     blad=0
     FlagaSterowanieManualne=False
     Adres=8
+    address = [0x33, 0x33, 0x33, 0x33, 0x11]
     Opis='USB-Stick'
 dekoUsb=dekoUsbCl
 
 class hydroponikaCl:     #Hydroponika
+    address = [0x33, 0x33, 0x33, 0x11, 0x88]
     AutoON='08:00:00.0000'
     AutoOFF='19:00:00.0000'
     AutoLux_min=65000
@@ -184,6 +194,7 @@ class lampaTVCl:     #LED TV
     AutoJasnosc=70
     blad=0
     Adres=1
+    address = [0x33, 0x33, 0x33, 0x33, 0x33]
     Opis="LED TV"
 lampaTV=lampaTVCl
 
@@ -197,6 +208,7 @@ class lampaPok2Cl:  # OSWIETLENIE SYPIALNI
     AutoJasnosc=5
     blad=0
     Adres=2
+    address = [0x33, 0x33, 0x33, 0x33, 0x44]
     Opis='Sypialnia'
 lampaPok2=lampaPok2Cl
 
@@ -206,6 +218,7 @@ class lampa1Pok1Cl:  # REFLEKTOR W SALONIE
     Flaga=0
     blad=0
     Adres=3
+    address = [0x33, 0x33, 0x33, 0x00, 0x55]
     Opis='Reflektor 1'
 lampa1Pok1=lampa1Pok1Cl
 
@@ -218,6 +231,7 @@ class lampaKuchCl:  # OSWIETLENIE KUCHNI
     AutoLux_min=1300 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
     blad=0
     Adres=4
+    address = [0x33, 0x33, 0x33, 0x00, 0x66]
     Opis='Kuchnia'
 lampaKuch=lampaKuchCl
 
