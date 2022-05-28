@@ -187,9 +187,9 @@ class lampaTVCl:     #LED TV
     Bialy=000
     Jasnosc=70
     Flaga=0
-    AutoON='14:00:00.0000' #16
+    AutoON='16:00:00.0000'
     AutoOFF='23:00:00.0000'
-    AutoLux_min=1000000#1000 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    AutoLux_min=1000 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
     FlagaSterowanieManualne=False
     AutoJasnosc=70
     blad=0

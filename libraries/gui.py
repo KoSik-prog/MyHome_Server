@@ -85,6 +85,11 @@ class GUI_CL:
         tapeta = weather.iconToday
         tapeta=tapeta.lower()
         if(tapeta.find('02') != -1 or tapeta.find('03') != -1 or tapeta.find('04') != -1): #CLOUDS
+            self.kolorczcionki1=(255,255,255,255)
+            self.kolorczcionki2=(255,200,100,255)
+            self.kolorczcionki3=(0,0,0,255)
+            self.kolorczcionki4=(60,60,60,200)
+            self.kolorczcionki5=(255,255,255,255)
             if self.pozycja_animacji[16][1]==0: #dla zmiany kierunku
                 if self.pozycja_animacji[16][0]>300:
                     self.pozycja_animacji[16][1]=1
@@ -104,6 +109,7 @@ class GUI_CL:
                 self.kolorczcionki4=(250,250,250,200)
         display.display_picture(display.screen, self.posX , 0, 255, display.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
         if(tapeta.find('01') != -1):  #CLEAR SKY
+            self.kolorczcionki1=(255,255,255,255)
             self.posX=0
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki2=(180,180,180,255)
@@ -121,12 +127,17 @@ class GUI_CL:
             self.kolorczcionki5=(255,82,0,255)
         elif(tapeta.find('09') != -1 or tapeta.find('10') != -1):  #RAIN
             self.posX=0
+            self.kolorczcionki1=(255,255,255,255)
+            self.kolorczcionki2=(255,200,100,255)
+            self.kolorczcionki5=(255,255,255,255)
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,255,200,255)
             for i in range(6):
                 display.display_picture(display.screen, randint(30, 750), randint(70, 300), 255, display.get_picture("anim")) 
         elif(tapeta.find('11') != -1): #THUNDERSTORM
             self.posX=0
+            self.kolorczcionki1=(255,255,255,255)
+            self.kolorczcionki2=(255,200,100,255)
             self.kolorczcionki3=(255,255,155,255)
             self.kolorczcionki4=(255,215,0,255)
             self.kolorczcionki5=(255,82,0,255)
@@ -146,6 +157,9 @@ class GUI_CL:
                 if self.pozycja_animacji[px][1]>randint(480, 500):
                     self.pozycja_animacji[px][0]=randint(10, 780)
                     self.pozycja_animacji[px][1]=0
+            self.kolorczcionki1=(255,255,255,255)
+            self.kolorczcionki2=(255,200,100,255)
+            self.kolorczcionki5=(255,255,255,255)
             self.kolorczcionki4=(160,180,160,255)
             self.kolorczcionki3=(220,220,250,255)
         #------------------------
