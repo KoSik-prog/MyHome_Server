@@ -187,9 +187,9 @@ class lampaTVCl:     #LED TV
     Bialy=000
     Jasnosc=70
     Flaga=0
-    AutoON='16:00:00.0000'
+    AutoON='14:00:00.0000' #16
     AutoOFF='23:00:00.0000'
-    AutoLux_min=1000 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    AutoLux_min=1000000#1000 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
     FlagaSterowanieManualne=False
     AutoJasnosc=70
     blad=0
@@ -236,23 +236,23 @@ class lampaKuchCl:  # OSWIETLENIE KUCHNI
 lampaKuch=lampaKuchCl
 
 class lampaDuzaTradfriCl:
-    Adres="65537" #Adres="131079"  -> grupa
+    address="65537" #Adres="131079"  -> grupa
     Status=False
 lampaDuzaTradfri=lampaDuzaTradfriCl
 
 class lampaPok1TradfriCl:
     Zarowka="65559"
-    Adres="131074"
+    address="131074"
     Status=False
 lampaPok1Tradfri=lampaPok1TradfriCl
 
 class lampaJadalniaTradfriCl:
-    Adres="131075"
+    address="131075"
     Status=False
 lampaJadalniaTradfri=lampaJadalniaTradfriCl
 
 class lampaPok2TradfriCl:  #SYPIALNIA
-    Adres="131082"
+    address="131082"
     Flaga=0
     AutoON='21:10:00.0000'
     AutoOFF='23:50:00.0000'
@@ -264,7 +264,7 @@ class lampaPok2TradfriCl:  #SYPIALNIA
 lampaPok2Tradfri=lampaPok2TradfriCl
 
 class lampaPrzedpokojTradfriCl:
-    Adres="131077"
+    address="131077"
     Status=False
     Opis="Oswietlenie przedpokoj"
 lampaPrzedpokojTradfri=lampaPrzedpokojTradfriCl

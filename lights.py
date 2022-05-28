@@ -51,7 +51,7 @@ class set_light_with_delay(threading.Thread): #------WATEK NADAWANIA NRF
 
 class LIGHTS_CL:
     def set_light(self, address, setting):
-        if address==lampaTV.Adres:   #TV
+        if address==lampaTV.address:   #TV
             wiad="#05K{}{:03d}".format(lampaTV.Ustawienie, int(setting))
             if len(wiad)>=15:
                 log.add_log("Ustawiono Led TV: {}".format(wiad))
@@ -60,7 +60,7 @@ class LIGHTS_CL:
                 lampaTV.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaPok2.Adres:  #SYPIALNIA
+        if address==lampaPok2.address:  #SYPIALNIA
             wiad="#S{:03d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
@@ -69,7 +69,7 @@ class LIGHTS_CL:
                 lampaPok2.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaKuch.Adres:  #KUCHNIA
+        if address==lampaKuch.address:  #KUCHNIA
             wiad="#07T{:01d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
@@ -78,7 +78,7 @@ class LIGHTS_CL:
                 lampaKuch.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampa1Pok1.Adres:  # LAMPA 1 w salonie
+        if address==lampa1Pok1.address:  # LAMPA 1 w salonie
             wiad="#05K{}{:03d}".format(lampa1Pok1.setting, int(setting))
             if len(wiad)>=5:
                 lampa1Pok1.Jasnosc=int(setting)
@@ -92,7 +92,7 @@ class LIGHTS_CL:
                     lampa1Pok1.Flaga = 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoPok1.Adres:  # dekoracje pok 1 / Reka
+        if address==dekoPok1.address:  # dekoracje pok 1 / Reka
             wiad="#08T{:1d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa 1: {}".format(wiad))
@@ -101,7 +101,7 @@ class LIGHTS_CL:
                 lampa1Pok1.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==deko2Pok1.Adres:  # dekoracje pok 1 / Eifla i inne
+        if address==deko2Pok1.address:  # dekoracje pok 1 / Eifla i inne
             wiad="#09T{:1d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa 2: {}".format(wiad))
@@ -110,7 +110,7 @@ class LIGHTS_CL:
                 dekoPok1.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoFlaming.Adres:  # FLAMING
+        if address==dekoFlaming.address:  # FLAMING
             wiad="#10T{:1d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
@@ -119,7 +119,7 @@ class LIGHTS_CL:
                 dekoFlaming.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoUsb.Adres:  # Dekoracje - uniwersalny modul USB
+        if address==dekoUsb.address:  # Dekoracje - uniwersalny modul USB
             wiad="#11T{:1d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
@@ -128,7 +128,7 @@ class LIGHTS_CL:
                 dekoUsb.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaPok1Tradfri.Adres:  # Tradfri Salon
+        if address==lampaPok1Tradfri.address:  # Tradfri Salon
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, address, setting)
             elif setting>1:
@@ -141,14 +141,14 @@ class LIGHTS_CL:
             elif setting>1:
                 ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             log.add_log("Tradfri Salon-Zarowka ->: {}".format(setting))
-        if address==lampaJadalniaTradfri.Adres:  # Tradfri Jadalnia
+        if address==lampaJadalniaTradfri.address:  # Tradfri Jadalnia
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             elif setting>1:
                 ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             log.add_log("Tradfri Jadalnia ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w jadalni: {}".format(setting))
-        if address==lampaPrzedpokojTradfri.Adres:  # Tradfri przedpokoj
+        if address==lampaPrzedpokojTradfri.address:  # Tradfri przedpokoj
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             elif setting>1:
@@ -159,7 +159,7 @@ class LIGHTS_CL:
                 lampaPrzedpokojTradfri.Status=0
             log.add_log("Tradfri Przedpokoj ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w przedpokoju: {}".format(setting))
-        if address==lampaDuzaTradfri.Adres:  # Tradfri Lampa Duza
+        if address==lampaDuzaTradfri.address:  # Tradfri Lampa Duza
             if len(str(setting))==1:
                 if int(setting)==0 or int(setting)==1:
                     ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, int(setting))
@@ -168,7 +168,7 @@ class LIGHTS_CL:
                 chKolor1=int(setting[0:3])
                 chKolor2=int(setting[3:6])
                 chKolor3=int(setting[6:9])
-                ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaDuzaTradfri.Adres, chKolor1, chKolor2, chKolor3)
+                ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaDuzaTradfri.address, chKolor1, chKolor2, chKolor3)
                 log.add_log("Tradfri Lampa kolor ->: {}".format(setting))
                 infoStrip.add_info("lampa w salonie -> kolor: {}".format(setting))
             elif len(str(setting))==2 or len(str(setting))==3:
@@ -178,17 +178,17 @@ class LIGHTS_CL:
                     infoStrip.add_info("lampa w salonie: {}".format(setting))
             else:
                 log.add_log("Tradfri blad skladni")
-        if address==lampaPok2Tradfri.Adres:  # Tradfri Sypialnia
+        if address==lampaPok2Tradfri.address:  # Tradfri Sypialnia
             if setting==0 or setting==1:
-                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, setting)
+                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, setting)
                 lampaPok2Tradfri.Flaga = False
             elif setting>1:
-                ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, setting)
-                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.Adres, 1)
+                ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, setting)
+                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, 1)
                 lampaPok2Tradfri.Flaga = True
             log.add_log("Tradfri Sypialnia ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w sypialni: {}".format(setting))
-        if address==hydroponika.Adres:   #Hydroponika
+        if address==hydroponika.address:   #Hydroponika
             if int(setting) > 1:
                 wiad="#17P1" #wlacz pompe
             else:

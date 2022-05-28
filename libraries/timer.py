@@ -22,8 +22,9 @@ from devicesList import *
 
 class TIMER_CL:
     def timer_start(self):
-        self.check_timer()
-        time.sleep(10)
+        while(1):
+            self.check_timer()
+            time.sleep(10)
 
 
     def check_timer(self):  #SPRAWDZENIE CO WYKONAC O DANEJ PORZE
@@ -65,10 +66,12 @@ class TIMER_CL:
         #------SPRAWDZENIE------------------------
         if(klasa.Flaga==0 and automatykaOswietlenia.swiatloObliczone<klasa.AutoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
             log.add_log("AUTO {} -> ON".format(klasa.Opis))
-            light.set_light(klasa.Adres,klasa.AutoJasnosc)
+            light.set_light(klasa.address, klasa.AutoJasnosc)
+            klasa.Flaga=1
             time.sleep(20)
         if(klasa.Flaga==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
             log.add_log("AUTO {} -> OFF".format(klasa.Opis))
-            light.set_light(klasa.Adres,0)
+            light.set_light(klasa.address, 0)
+            klasa.Flaga=0
             time.sleep(20)
 timer = TIMER_CL()

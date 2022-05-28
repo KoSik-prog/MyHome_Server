@@ -39,7 +39,7 @@ def settings_read_thread_init():
     nrfTh.start()
 
 def timer_thread_init():
-    nrfTh = threading.Thread(target=timer.check_timer)
+    nrfTh = threading.Thread(target=timer.timer_start)
     nrfTh.start()
 
 def check_sensors_thread_init():
