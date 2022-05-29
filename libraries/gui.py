@@ -87,8 +87,6 @@ class GUI_CL:
         if(tapeta.find('02') != -1 or tapeta.find('03') != -1 or tapeta.find('04') != -1): #CLOUDS
             self.kolorczcionki1=(255,255,255,255)
             self.kolorczcionki2=(255,200,100,255)
-            self.kolorczcionki3=(0,0,0,255)
-            self.kolorczcionki4=(60,60,60,200)
             self.kolorczcionki5=(255,255,255,255)
             if self.pozycja_animacji[16][1]==0: #dla zmiany kierunku
                 if self.pozycja_animacji[16][0]>300:
@@ -104,6 +102,9 @@ class GUI_CL:
             if(tapeta.find('02') != -1 and czujnikZew.noc_flaga==False):
                 self.kolorczcionki3=(185,242,107,255)
                 self.kolorczcionki4=(235,255,187,255)
+            else:
+                self.kolorczcionki3=(0,0,0,255)
+                self.kolorczcionki4=(60,60,60,200)
             if czujnikZew.noc_flaga==True:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)

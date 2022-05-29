@@ -57,7 +57,7 @@ class NRF_CL():
             self.radio.stopListening()
             time.sleep(.001)
 
-    def NRFwyslij(self, address, data):
+    def toSend(self, address, data):
         for i in range(len(NRF_CL.TXBuffer)):
             if(NRF_CL.TXBuffer[i][1] == ""):
                 NRF_CL.TXBuffer[i][1] = data
