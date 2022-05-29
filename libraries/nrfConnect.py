@@ -48,11 +48,8 @@ class NRF_CL():
             self.radio.startListening()
             if(len(tekst)>3):
                 self.NRFread(tekst)
-            #print(datetime.datetime.now() - czasAkcji)
             while not self.radio.available(0):
-                #time.sleep(.1)
                 self.NRFsend()
-            #czasAkcji=datetime.datetime.now()
             tekst= self.NRFGet()
             self.radio.stopListening()
             time.sleep(.001)
@@ -68,7 +65,8 @@ class NRF_CL():
         if NRF_CL.TXBuffer[0][1] != "":
             self.radio.openWritingPipe(NRF_CL.TXBuffer[0][0])
             time.sleep(.01)
-            print("NRF addr: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][1]))
+            #print("NRF addr: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][1]))
+            self.NRFtransmit(NRF_CL.TXBuffer[0][1])
             self.NRFtransmit(NRF_CL.TXBuffer[0][1])
         for i in range(len(NRF_CL.TXBuffer) - 1):
             NRF_CL.TXBuffer[i] = NRF_CL.TXBuffer[i+1]
@@ -89,7 +87,8 @@ class NRF_CL():
         for n in receivedMessage:
             if(n>=16 and n <=126):
                 stringNRF +=chr(n)
-        log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
+        if len(receivedMessage) > 1:
+            log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
         return stringNRF
 
     def NRFread(self, stringNRF):
