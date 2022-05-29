@@ -233,7 +233,7 @@ class NRF_CL():
                         log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="01":  #kwiatek
-                    if stringNRF[3]== "k":
+                    '''if stringNRF[3]== "k":
                         string2=(stringNRF[4:7])
                         czujnikKwiatek.light=str(string2)
                         string3=(stringNRF[7:10])
@@ -250,7 +250,8 @@ class NRF_CL():
                         log.add_log(("   Kwiatek light: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
                     if stringNRF[3]== "P":
                         sql.addRecordFlowerPodlanie()
-                        log.add_log("   Podlanie")
+                        log.add_log("   Podlanie")'''
+                    automatycznaKonewka.add_record(stringNRF)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "12":  #kwiatek 2  addres 12
                     czujnikKwiatek2.add_record(stringNRF)

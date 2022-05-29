@@ -45,7 +45,7 @@ czujnikPok2=czujnikPok2Cl
     error = "blebleble"
 czujnikKwiatek=czujnikKwiatekCl'''
 
-czujnikKwiatek = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
+automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
 
 czujnikKwiatek2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
