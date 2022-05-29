@@ -1,4 +1,6 @@
 import datetime
+from sensorFlower import *
+from deviceWaterCan import *
 
 class czujnikZewCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     temp=1.1
@@ -8,7 +10,7 @@ class czujnikZewCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     ir=0
     predkoscWiatru=0
     kierunekWiatru=0
-    czas=datetime.datetime.now()
+    time=datetime.datetime.now()
     blad=False
     noc_flaga=False
     noc_ustawienie=60  #ustawienie kiedy noc
@@ -19,7 +21,7 @@ class czujnikPok1Cl:  #SALON
     temp=2.2
     humi=2.2
     batt=2.2
-    czas=datetime.datetime.now()
+    time=datetime.datetime.now()
     blad=False
     sqlRoom = 'pok1Temp'
 czujnikPok1=czujnikPok1Cl
@@ -28,74 +30,29 @@ class czujnikPok2Cl:   #SYPIALNIA
     temp=3.3
     humi=3.3
     batt=3.3
-    czas=datetime.datetime.now()
+    time=datetime.datetime.now()
     blad=False
     sqlRoom = 'pok2Temp'
 czujnikPok2=czujnikPok2Cl
 
-class czujnikKwiatekCl:   #KWIATEK
+'''class czujnikKwiatekCl:   #KWIATEK
     address = [0x33, 0x33, 0x33, 0x11, 0x22]
     woda=0
-    slonce=0
-    wilgotnosc=100
-    zasilanie=100
-    czas=datetime.datetime.now()
+    light=0
+    humidity=100
+    power=100
+    time=datetime.datetime.now()
     error = "blebleble"
-czujnikKwiatek=czujnikKwiatekCl
+czujnikKwiatek=czujnikKwiatekCl'''
 
-class czujnikKwiatek2Cl:   #adres 12  KWIATEK _maly czujnik PALMA
-    address = [0x33, 0x33, 0x33, 0x11, 0x33]
-    slonce=0
-    wilgotnosc=100
-    wilgotnosc_raw=0
-    zasilanie=5.0
-    wartoscMin=120.0
-    wartoscMax=500.0
-    czas=datetime.datetime.now()
-    nazwa = "Palma"
-czujnikKwiatek2=czujnikKwiatek2Cl
+czujnikKwiatek = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
-class czujnikKwiatek3Cl:   #adres 13  KWIATEK _maly czujnik PACHIRA
-    address = [0x33, 0x33, 0x33, 0x11, 0x44]
-    slonce=0
-    wilgotnosc=100
-    wilgotnosc_raw=0
-    zasilanie=5.0
-    wartoscMin=380.0
-    wartoscMax=500.0
-    czas=datetime.datetime.now()
-czujnikKwiatek3=czujnikKwiatek3Cl
 
-class czujnikKwiatek4Cl:   #adres 14  KWIATEK _maly czujnik POKRZYWA
-    address = [0x33, 0x33, 0x33, 0x11, 0x66]
-    slonce=0
-    wilgotnosc=100
-    wilgotnosc_raw=0
-    zasilanie=5.0
-    wartoscMin=280.0#250.0
-    wartoscMax=580.0
-    czas=datetime.datetime.now()
-czujnikKwiatek4=czujnikKwiatek4Cl
-
-class czujnikKwiatek5Cl:   #adres 16  KWIATEK _maly czujnik BENJAMIN
-    slonce=0
-    wilgotnosc=100
-    wilgotnosc_raw=0
-    zasilanie=5.0
-    wartoscMin=400.0
-    wartoscMax=550.0
-    czas=datetime.datetime.now()
-czujnikKwiatek5=czujnikKwiatek5Cl
-
-class czujnikKwiatek6Cl:   #adres 17  KWIATEK _maly czujnik  SZEFLERA
-    slonce=0
-    wilgotnosc=100
-    wilgotnosc_raw=0
-    zasilanie=5.0
-    wartoscMin=260.0
-    wartoscMax=500.0
-    czas=datetime.datetime.now()
-czujnikKwiatek6=czujnikKwiatek6Cl
+czujnikKwiatek2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
+czujnikKwiatek3 = SENSOR_FLOWER_CL(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
+czujnikKwiatek4 = SENSOR_FLOWER_CL(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
+czujnikKwiatek5 = SENSOR_FLOWER_CL(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
+czujnikKwiatek6 = SENSOR_FLOWER_CL(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
 
 class terrariumCl:   #TERRARIUM
     tempUP=0.0
@@ -114,7 +71,7 @@ class budaCl:   #BUDA
     czujnikZajetosciFlaga=False
     czujnikZajetosciRaw=0
     tryb=0
-    czas=datetime.datetime.now()
+    time=datetime.datetime.now()
 buda=budaCl
 
 class dekoPok1Cl:     #Dekoracje w salonie Reka

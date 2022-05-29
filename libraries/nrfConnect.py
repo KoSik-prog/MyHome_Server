@@ -13,6 +13,8 @@ from time import sleep
 import RPi.GPIO as GPIO
 import spidev
 
+from sensorFlower import *
+from deviceWaterCan import *
 from libraries.log import *
 from devicesList import *
 from libraries.lib_nrf24 import NRF24
@@ -87,34 +89,14 @@ class NRF_CL():
         for n in receivedMessage:
             if(n>=16 and n <=126):
                 stringNRF +=chr(n)
-        if len(receivedMessage) > 1:
-            log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
+        if stringNRF != "":
+                log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
         return stringNRF
 
     def NRFread(self, stringNRF):
         if len(stringNRF)!=0:
             if stringNRF[0]== "#": # '#' - poczatek transmisji
                 flaga_NRFOdebral=0
-                #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]=="01":  #kwiatek
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek.slonce=str(string2)
-                        string3=(stringNRF[7:10])
-                        czujnikKwiatek.wilgotnosc=str(string3)
-                        string4=(stringNRF[10:13])
-                        czujnikKwiatek.woda=str(string4)
-                        string5=(stringNRF[13:16])
-                        czujnikKwiatek.zasilanie=str(string5)
-                        sql.addRecordWateringCan(czujnikKwiatek.wilgotnosc, czujnikKwiatek.slonce, czujnikKwiatek.woda, czujnikKwiatek.zasilanie, 0, 0) #ostatni parametr to podlanie poprawic!!!
-                        czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(3,False)
-                        if(czujnikKwiatek.woda < 10):
-                            infoStrip.set_error(20,False)
-                        log.add_log(("   Kwiatek Slonce: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
-                    if stringNRF[3]== "P":
-                        sql.addRecordFlowerPodlanie()
-                        log.add_log("   Podlanie")
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="02":  #czujnik temperatury 3 - sypialni
                     if stringNRF[3]== "y":
@@ -249,54 +231,46 @@ class NRF_CL():
                         hydroponika.Flaga=int(stringNRF[4])
                         hydroponika.blad=0
                         log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
+        #------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3]=="01":  #kwiatek
+                    if stringNRF[3]== "k":
+                        string2=(stringNRF[4:7])
+                        czujnikKwiatek.light=str(string2)
+                        string3=(stringNRF[7:10])
+                        czujnikKwiatek.humidity=str(string3)
+                        string4=(stringNRF[10:13])
+                        czujnikKwiatek.woda=str(string4)
+                        string5=(stringNRF[13:16])
+                        czujnikKwiatek.power=str(string5)
+                        sql.addRecordWateringCan(czujnikKwiatek.humidity, czujnikKwiatek.light, czujnikKwiatek.woda, czujnikKwiatek.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
+                        czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        infoStrip.set_error(3,False)
+                        if(czujnikKwiatek.woda < 10):
+                            infoStrip.set_error(20,False)
+                        log.add_log(("   Kwiatek light: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
+                    if stringNRF[3]== "P":
+                        sql.addRecordFlowerPodlanie()
+                        log.add_log("   Podlanie")
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "12":  #kwiatek 2  addres 12
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek2.slonce=int(string2)
-                        #string3=(stringNRF[7:10])
-                        string5=(stringNRF[14:17])
-                        czujnikKwiatek2.wilgotnosc_raw=string5
-                        string3 = self.obliczFunkcje(czujnikKwiatek2.wartoscMin, czujnikKwiatek2.wartoscMax, int((stringNRF[14:17])))
-                        czujnikKwiatek2.wilgotnosc=int(string3)
-                        string4=(stringNRF[10]+"."+stringNRF[11:13])
-                        czujnikKwiatek2.zasilanie=str(string4)
-                        sql.addRecordFlower(2, czujnikKwiatek2.wilgotnosc,czujnikKwiatek2.slonce,czujnikKwiatek2.zasilanie,czujnikKwiatek2.wilgotnosc_raw)
-                        czujnikKwiatek2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(4,False)
-                        log.add_log(("   Kwiatek 12 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                    czujnikKwiatek2.add_record(stringNRF)
+                    infoStrip.set_error(4,False)  # poprawic - przeniesc do klasy urzadzenia
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek3.slonce=int(string2)
-                        #string3=(stringNRF[7:10])
-                        string5=(stringNRF[14:17])
-                        czujnikKwiatek3.wilgotnosc_raw=string5
-                        string3 = self.obliczFunkcje(czujnikKwiatek3.wartoscMin, czujnikKwiatek3.wartoscMax, int((stringNRF[14:17])))
-                        czujnikKwiatek3.wilgotnosc=int(string3)
-                        string4=(stringNRF[10]+"."+stringNRF[11:13])
-                        czujnikKwiatek3.zasilanie=str(string4)
-                        sql.addRecordFlower(3, czujnikKwiatek3.wilgotnosc,czujnikKwiatek3.slonce,czujnikKwiatek3.zasilanie, czujnikKwiatek3.wilgotnosc_raw)
-                        czujnikKwiatek3.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(5,False)
-                        log.add_log(("   Kwiatek 13 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                    czujnikKwiatek3.add_record(stringNRF)
+                    infoStrip.set_error(5,False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek4.slonce=int(string2)
-                        #string3=(stringNRF[7:10])
-                        string5=(stringNRF[14:17])
-                        czujnikKwiatek4.wilgotnosc_raw=int(string5)
-                        string3 = self.obliczFunkcje(czujnikKwiatek4.wartoscMin, czujnikKwiatek4.wartoscMax, czujnikKwiatek4.wilgotnosc_raw)
-                        czujnikKwiatek4.wilgotnosc=int(string3)
-                        string4=(stringNRF[10]+"."+stringNRF[11:13])
-                        czujnikKwiatek4.zasilanie=str(string4)
-                        sql.addRecordFlower(4, czujnikKwiatek4.wilgotnosc,czujnikKwiatek4.slonce,czujnikKwiatek4.zasilanie, czujnikKwiatek4.wilgotnosc_raw)
-                        czujnikKwiatek4.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(6,False)
-                        log.add_log(("   Kwiatek 14 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
+                    czujnikKwiatek4.add_record(stringNRF)
+                    infoStrip.set_error(6,False)
+    #------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3]== "16":  #kwiatek 5 adres 16
+                    czujnikKwiatek5.add_record(stringNRF)
+                    infoStrip.set_error(16,False)
+    #------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
+                    czujnikKwiatek6.add_record(stringNRF)
+                    infoStrip.set_error(19,False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "15":  #BUDA 15
                     if stringNRF[3]== "s":
@@ -313,42 +287,12 @@ class NRF_CL():
                         buda.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         log.add_log(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
     #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]== "16":  #kwiatek 5 adres 16
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek5.slonce=int(string2)
-                        string5=(stringNRF[14:17])
-                        czujnikKwiatek5.wilgotnosc_raw=int(string5)
-                        string3 = self.obliczFunkcje(czujnikKwiatek5.wartoscMin, czujnikKwiatek5.wartoscMax, czujnikKwiatek5.wilgotnosc_raw)
-                        czujnikKwiatek5.wilgotnosc=int(string3)
-                        string4=(stringNRF[10]+"."+stringNRF[11:13])
-                        czujnikKwiatek5.zasilanie=str(string4)
-                        sql.addRecordFlower(5, czujnikKwiatek5.wilgotnosc,czujnikKwiatek5.slonce,czujnikKwiatek5.zasilanie, czujnikKwiatek5.wilgotnosc_raw)
-                        czujnikKwiatek5.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(16,False)
-                        log.add_log(("   Kwiatek 16 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
-    #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
-                    if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek6.slonce=int(string2)
-                        string5=(stringNRF[14:17])
-                        czujnikKwiatek6.wilgotnosc_raw=int(string5)
-                        string3 = self.obliczFunkcje(czujnikKwiatek6.wartoscMin, czujnikKwiatek6.wartoscMax, czujnikKwiatek6.wilgotnosc_raw)
-                        czujnikKwiatek6.wilgotnosc=int(string3)
-                        string4=(stringNRF[10]+"."+stringNRF[11:13])
-                        czujnikKwiatek6.zasilanie=str(string4)
-                        sql.addRecordFlower(6, czujnikKwiatek6.wilgotnosc,czujnikKwiatek6.slonce,czujnikKwiatek6.zasilanie, czujnikKwiatek6.wilgotnosc_raw)
-                        czujnikKwiatek6.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(19,False)
-                        log.add_log(("   Kwiatek 17 Slonce: {}%   Wilg: {}%   Zas: {}V".format(string2,string3,string4)))
-    #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "99":  #testowy
                     if stringNRF[3]== ".":
                             int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
                             int2 = ''.join(str(chr(e)) for e in stringNRF[9:])
                             fl1=(float(int1)/1000)
-                            log.add_stuff_log('zasilanie: {:.3f}V  -> wilgotnosc: {}'.format(fl1,int2))
+                            log.add_stuff_log('power: {:.3f}V  -> humidity: {}'.format(fl1,int2))
 
     def oblicz_swiatlo(self):
         k=3 #wzmocnienie

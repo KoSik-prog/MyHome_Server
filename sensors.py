@@ -28,17 +28,17 @@ class SENSORS_CL:
             time.sleep(10)
 
     def set_receive_error_on_strip(self, myClass, time, errorNumber):
-        if((datetime.datetime.now() - myClass.czas) > (datetime.timedelta(minutes = time))):
+        if((datetime.datetime.now() - myClass.time) > (datetime.timedelta(minutes = time))):
             infoStrip.set_error(errorNumber,True)
 
     def set_power_error_on_strip(self, myClass, minPower, errorNumber):
-        if(myClass.zasilanie <= minPower):
+        if(myClass.power <= minPower):
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)
 
     def set_min_humidity_error_on_strip(self, myClass, errorNumber):
-        if(myClass.wilgotnosc <= SENSORS_CL.minHumidity and myClass.slonce < 60):
+        if(myClass.humidity <= SENSORS_CL.minHumidity and myClass.light < 60):
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)
@@ -67,7 +67,7 @@ class SENSORS_CL:
         self.set_min_humidity_error_on_strip(czujnikKwiatek5, 15)
         self.set_min_humidity_error_on_strip(czujnikKwiatek6, 18)
         #sprawdzenie budy
-        if((datetime.datetime.now() - buda.czas)>(datetime.timedelta(minutes=2))):
+        if((datetime.datetime.now() - buda.time)>(datetime.timedelta(minutes=2))):
             buda.temp1=0.0
             buda.temp2=0.0
             buda.temp3=0.0

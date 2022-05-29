@@ -62,7 +62,7 @@ class SQL_CL:
         conn.close()
         self.flagBusy = False
 
-    def addRecordWateringCan(self, humidity, sun,water,  power, humidity_raw, watering):
+    def addRecordWateringCan(self, humidity, sun, water,  power, humidity_raw, watering):
         for i in range(100):
             if self.flagBusy == False:
                 break
@@ -135,7 +135,7 @@ class SQL_CL:
         conn=sqlite3.connect('/var/www/html/home_database.db')
         curs=conn.cursor()
         curs.execute("DROP TABLE IF EXISTS kwiatek1;")
-        curs.execute("CREATE TABLE IF NOT EXISTS kwiatek1 (timestamp DATETIME PRIMARY KEY, wilgotnosc INTEGER, slonce INTEGER, zasilanie INTEGER, wilgotnosc_raw INTEGER, podlanie INTEGER);")
+        curs.execute("CREATE TABLE IF NOT EXISTS kwiatek1 (timestamp DATETIME PRIMARY KEY, wilgotnosc INTEGER, slonce INTEGER, power INTEGER, wilgotnosc_raw INTEGER, podlanie INTEGER);")
         conn.commit()
         conn.close()
 
