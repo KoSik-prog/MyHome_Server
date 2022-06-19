@@ -26,14 +26,15 @@ class NRF_CL():
     GPIO.setmode(GPIO.BCM)
     radio = NRF24(GPIO, spidev.SpiDev())
 
-    TXBuffer = [ [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""], [[], ""]]
+    '''TXBuffer -> bufor nadawania [adres, wiadomosc, moc nadawania(PA_LEVEL)]'''
+    TXBuffer = [ [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""]]
 
     def __init__(self, rxAddress):
         self.radio.begin(1,25)
         self.radio.setPayloadSize(24)
         self.radio.setChannel(0x64)
         self.radio.setDataRate(NRF24.BR_250KBPS)
-        self.radio.setPALevel(NRF24.PA_MAX)
+        self.radio.setPALevel(NRF24.PA_LOW)
         self.radio.setAutoAck(True)
         self.radio.openReadingPipe(1, rxAddress)
         self.radio.openWritingPipe(1)
@@ -44,7 +45,6 @@ class NRF_CL():
         flaga_NRFodczytal=0
         tekst=""
 
-        #czasAkcji=datetime.datetime.now()
         while(1):
             #--------NRF-----------------------
             self.radio.startListening()
@@ -56,23 +56,24 @@ class NRF_CL():
             self.radio.stopListening()
             time.sleep(.001)
 
-    def toSend(self, address, data):
+    def toSend(self, address, data, txPower):
         for i in range(len(NRF_CL.TXBuffer)):
-            if(NRF_CL.TXBuffer[i][1] == ""):
-                NRF_CL.TXBuffer[i][1] = data
+            if(NRF_CL.TXBuffer[i][2] == ""):
                 NRF_CL.TXBuffer[i][0] = address
+                NRF_CL.TXBuffer[i][1] = txPower
+                NRF_CL.TXBuffer[i][2] = data
                 break
 
     def NRFsend(self):
-        if NRF_CL.TXBuffer[0][1] != "":
+        if NRF_CL.TXBuffer[0][2] != "":
             self.radio.openWritingPipe(NRF_CL.TXBuffer[0][0])
+            self.radio.setPALevel(NRF_CL.TXBuffer[0][2]) #zmiana mocy nadawania
             time.sleep(.01)
-            #print("NRF addr: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][1]))
-            self.NRFtransmit(NRF_CL.TXBuffer[0][1])
-            self.NRFtransmit(NRF_CL.TXBuffer[0][1])
+            print("NRF addr: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][2]))
+            self.NRFtransmit(NRF_CL.TXBuffer[0][2])
         for i in range(len(NRF_CL.TXBuffer) - 1):
             NRF_CL.TXBuffer[i] = NRF_CL.TXBuffer[i+1]
-        NRF_CL.TXBuffer[len(NRF_CL.TXBuffer) - 1] = [ [], ""]
+        NRF_CL.TXBuffer[len(NRF_CL.TXBuffer) - 1] = [ [], 1, "" ]
 
     def NRFtransmit(self, data):
         self.radio.stopListening()
@@ -108,7 +109,7 @@ class NRF_CL():
                         czujnikPok2.temp=float(string2)
                         czujnikPok2.humi=float(string3)
                         sql.addRecordSensorTemp(czujnikPok2.sqlRoom, czujnikPok2.temp,czujnikPok2.humi)
-                        czujnikPok2.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        czujnikPok2.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         czujnikPok2.blad=False #kasowanie bledu
                         infoStrip.set_error(2,False)
                         log.add_log(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
@@ -148,7 +149,7 @@ class NRF_CL():
                         czujnikZew.predkoscWiatru=float(string4)
                         string5=stringNRF[14:17]
                         czujnikZew.kierunekWiatru=int(string5)
-                        czujnikZew.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        czujnikZew.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         czujnikZew.blad=False #kasowanie bledu
                         infoStrip.set_error(0,False)
                         log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
@@ -165,7 +166,7 @@ class NRF_CL():
                         sql.addRecordSensorTemp(czujnikPok1.sqlRoom, czujnikPok1.temp,czujnikPok1.humi)
                         string4=(stringNRF[11:14])
                         czujnikPok1.batt=int(string4)
-                        czujnikPok1.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        czujnikPok1.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         czujnikPok1.blad=False #kasowanie bledu
                         infoStrip.set_error(1,False)
                         log.add_log(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
@@ -232,26 +233,11 @@ class NRF_CL():
                         hydroponika.blad=0
                         log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
         #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]=="01":  #kwiatek
-                    '''if stringNRF[3]== "k":
-                        string2=(stringNRF[4:7])
-                        czujnikKwiatek.light=str(string2)
-                        string3=(stringNRF[7:10])
-                        czujnikKwiatek.humidity=str(string3)
-                        string4=(stringNRF[10:13])
-                        czujnikKwiatek.woda=str(string4)
-                        string5=(stringNRF[13:16])
-                        czujnikKwiatek.power=str(string5)
-                        sql.addRecordWateringCan(czujnikKwiatek.humidity, czujnikKwiatek.light, czujnikKwiatek.woda, czujnikKwiatek.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
-                        czujnikKwiatek.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        infoStrip.set_error(3,False)
-                        if(czujnikKwiatek.woda < 10):
-                            infoStrip.set_error(20,False)
-                        log.add_log(("   Kwiatek light: {}%".format(string2)) +("   Wilg: {}%".format(string3)) +("   Woda: {}x10ml".format(string4)) +("   Zas: {}%".format(string5)))
-                    if stringNRF[3]== "P":
-                        sql.addRecordFlowerPodlanie()
-                        log.add_log("   Podlanie")'''
+                if stringNRF[1:3]=="01":  #konewka
                     automatycznaKonewka.add_record(stringNRF)
+                    infoStrip.set_error(3,False)
+                    if(automatycznaKonewka.water < 10):
+                        infoStrip.set_error(20, False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "12":  #kwiatek 2  addres 12
                     czujnikKwiatek2.add_record(stringNRF)
@@ -285,7 +271,7 @@ class NRF_CL():
                         buda.czujnikZajetosciFlaga=int(string7)
                         string8=(stringNRF[14:16])
                         buda.czujnikZajetosciRaw=int(string8)
-                        buda.czas=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        buda.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         log.add_log(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "99":  #testowy
@@ -309,19 +295,4 @@ class NRF_CL():
         else:
             czujnikZew.noc_flaga=False
         log.add_log("Swiatlo obliczone=  {}".format(automatykaOswietlenia.swiatloObliczone) + " / {}".format(automatykaOswietlenia.wartosciLux))
-
-    def obliczFunkcje(self, wartoscMin, wartoscMax, pomiar):
-        obliczenia=0.0
-        #print("dane: {}/{}  -> {}".format(wartoscMin, wartoscMax, float(pomiar)))
-        if(float(pomiar) < wartoscMin):
-            obliczenia=0
-        elif(float(pomiar) > wartoscMax):
-            obliczenia=100
-        else:
-            zmien=wartoscMax-wartoscMin
-            obliczenia2=(100.0/zmien)*float(pomiar)
-            obliczenia3=(-wartoscMin)*(100.0/zmien)
-            obliczenia=obliczenia2+obliczenia3
-            #print("obliczenia: {} -> o1:{}, o2:{} / {}".format(zmien,obliczenia2,obliczenia3,obliczenia))
-        return int(round(obliczenia))
 nrf = NRF_CL([0x11, 0x11, 0x11, 0x11, 0x11])

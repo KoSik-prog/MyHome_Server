@@ -19,7 +19,7 @@ from devicesList import *
 from libraries.infoStrip import *
 
 class SENSORS_CL:
-    minBatterieVoltage=2.55
+    minBatteryVoltage=2.55
     minHumidity = 10
 
     def check_sensors(self): #watek
@@ -55,11 +55,11 @@ class SENSORS_CL:
         self.set_receive_error_on_strip(czujnikKwiatek6, 63, 19)
         #sprawdzenie stanu baterii
         self.set_power_error_on_strip(automatycznaKonewka, 5, 7)
-        self.set_power_error_on_strip(czujnikKwiatek2, SENSORS_CL.minBatterieVoltage, 8)
-        self.set_power_error_on_strip(czujnikKwiatek3, SENSORS_CL.minBatterieVoltage, 9)
-        self.set_power_error_on_strip(czujnikKwiatek4, SENSORS_CL.minBatterieVoltage, 10)
-        self.set_power_error_on_strip(czujnikKwiatek5, SENSORS_CL.minBatterieVoltage, 14)
-        self.set_power_error_on_strip(czujnikKwiatek6, SENSORS_CL.minBatterieVoltage, 17)
+        self.set_power_error_on_strip(czujnikKwiatek2, SENSORS_CL.minBatteryVoltage, 8)
+        self.set_power_error_on_strip(czujnikKwiatek3, SENSORS_CL.minBatteryVoltage, 9)
+        self.set_power_error_on_strip(czujnikKwiatek4, SENSORS_CL.minBatteryVoltage, 10)
+        self.set_power_error_on_strip(czujnikKwiatek5, SENSORS_CL.minBatteryVoltage, 14)
+        self.set_power_error_on_strip(czujnikKwiatek6, SENSORS_CL.minBatteryVoltage, 17)
         #sprawdzenie wilgotnosci
         self.set_min_humidity_error_on_strip(czujnikKwiatek2, 11)
         self.set_min_humidity_error_on_strip(czujnikKwiatek3, 12)

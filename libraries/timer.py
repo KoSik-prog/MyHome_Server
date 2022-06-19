@@ -41,7 +41,7 @@ class TIMER_CL:
         self.auto_timer(deko2Pok1)
         self.auto_timer(dekoFlaming)
         self.auto_timer(lampaPok2Tradfri)
-        self.auto_timer(lampaPok2)#---- LED SYPIALNI
+        #self.auto_timer(lampaPok2)#---- LED SYPIALNI
         self.auto_timer(hydroponika)#----Hydroponika
         #self.auto_timer(lampaKuch)#-----LED KUCHNI
         #self.auto_timer(dekoUsb)#----USB Stick

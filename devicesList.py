@@ -1,6 +1,7 @@
 import datetime
 from sensorFlower import *
 from deviceWaterCan import *
+from libraries.lib_nrf24 import NRF24
 
 class czujnikZewCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     temp=1.1
@@ -10,7 +11,7 @@ class czujnikZewCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     ir=0
     predkoscWiatru=0
     kierunekWiatru=0
-    time=datetime.datetime.now()
+    time = datetime.datetime.now()
     blad=False
     noc_flaga=False
     noc_ustawienie=60  #ustawienie kiedy noc
@@ -45,9 +46,10 @@ czujnikPok2=czujnikPok2Cl
     error = "blebleble"
 czujnikKwiatek=czujnikKwiatekCl'''
 
+#  DEVICES
 automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
-
+#  SENSORS
 czujnikKwiatek2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
 czujnikKwiatek3 = SENSOR_FLOWER_CL(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
 czujnikKwiatek4 = SENSOR_FLOWER_CL(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
@@ -64,6 +66,7 @@ terrarium=terrariumCl
 
 class budaCl:   #BUDA
     address = [0x33, 0x33, 0x33, 0x11, 0x55]
+    nrfPower = NRF24.PA_LOW
     Adres=12
     temp1=0.0
     temp2=0.0
@@ -84,6 +87,7 @@ class dekoPok1Cl:     #Dekoracje w salonie Reka
     AutoJasnosc=1
     blad=0
     address = [0x33, 0x33, 0x33, 0x33, 0x77]
+    nrfPower = NRF24.PA_LOW
     Opis="Lampa-reka"
 dekoPok1=dekoPok1Cl
 
@@ -97,6 +101,7 @@ class deko2Pok1Cl:     #Dekoracje 2 w salonie  Eifla i inne
     AutoJasnosc=1
     blad=0
     address = [0x33, 0x33, 0x33, 0x33, 0x09]
+    nrfPower = NRF24.PA_LOW
     Opis="Dekoracje szafka"
 deko2Pok1=deko2Pok1Cl
 
@@ -110,6 +115,7 @@ class dekoFlamingCl:     #Dekoracje w sypialni
     blad=0
     Adres=7
     address = [0x33, 0x33, 0x33, 0x33, 0x10]
+    nrfPower = NRF24.PA_LOW
     Opis='Flaming'
 dekoFlaming=dekoFlamingCl
 
@@ -123,11 +129,13 @@ class dekoUsbCl:     #USB Stick
     FlagaSterowanieManualne=False
     Adres=8
     address = [0x33, 0x33, 0x33, 0x33, 0x11]
+    nrfPower = NRF24.PA_LOW
     Opis='USB-Stick'
 dekoUsb=dekoUsbCl
 
 class hydroponikaCl:     #Hydroponika
     address = [0x33, 0x33, 0x33, 0x11, 0x88]
+    nrfPower = NRF24.PA_LOW
     AutoON='08:00:00.0000'
     AutoOFF='19:00:00.0000'
     AutoLux_min=65000
@@ -140,6 +148,7 @@ class hydroponikaCl:     #Hydroponika
 hydroponika=hydroponikaCl
 
 class lampaTVCl:     #LED TV
+    nrfPower = NRF24.PA_LOW
     Ustawienie="255255255"
     Bialy=000
     Jasnosc=70
@@ -166,6 +175,7 @@ class lampaPok2Cl:  # OSWIETLENIE SYPIALNI
     blad=0
     Adres=2
     address = [0x33, 0x33, 0x33, 0x33, 0x44]
+    nrfPower = NRF24.PA_LOW
     Opis='Sypialnia'
 lampaPok2=lampaPok2Cl
 
@@ -176,6 +186,7 @@ class lampa1Pok1Cl:  # REFLEKTOR W SALONIE
     blad=0
     Adres=3
     address = [0x33, 0x33, 0x33, 0x00, 0x55]
+    nrfPower = NRF24.PA_LOW
     Opis='Reflektor 1'
 lampa1Pok1=lampa1Pok1Cl
 
@@ -189,6 +200,7 @@ class lampaKuchCl:  # OSWIETLENIE KUCHNI
     blad=0
     Adres=4
     address = [0x33, 0x33, 0x33, 0x00, 0x66]
+    nrfPower = NRF24.PA_LOW
     Opis='Kuchnia'
 lampaKuch=lampaKuchCl
 

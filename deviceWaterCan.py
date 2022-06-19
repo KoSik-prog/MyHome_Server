@@ -39,12 +39,9 @@ class DEVICE_WATER_CAN_CL:
                 self.power = data[13:16]
                 self.watering = data[17]
 
-                sql.addRecordWateringCan(self.humidity, self.light, self.woda, self.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
+                sql.addRecordWateringCan(self.humidity, self.light, self.water, self.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
                 self.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                infoStrip.set_error(3,False)
 
-                if(czujnikKwiatek.woda < 10):
-                    infoStrip.set_error(20,False)
-                log.add_log("   Kwiatek AutoKonewka swiatlo:{}%  wilgotnosc:{}  woda:{}x10ml  zas:{}%  podlanie:{}".format(self.light, self.humidity, self.water, self.power, self.watering))
+                log.add_log("   Kwiatek AutoKonewka wilgotnosc:{}  swiatlo:{}%  woda:{}x10ml  zas:{}%  podlanie:{}".format(self.humidity, self.light, self.water, self.power, self.watering))
             else:
                 log.add_log("   Kwiatek AutoKonewka blad skladni")

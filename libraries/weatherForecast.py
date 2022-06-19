@@ -77,13 +77,13 @@ class WEATHER_CL:
                 log.add_log('nie znaleziono pogody na jutro')
 
     def get_forecast(self, miasto):
-        log.add_log("Pobieram progrnoze pogody...")
+        #log.add_log("Pobieram progrnoze pogody...")
         url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID=85b527bafdfc28a92672434b32ead750&units=metric'.format(miasto)
         try:
             json_data = requests.get(url).json()
             self.forecast_today(json_data)
             self.forecast_tomorrow(json_data)
-            log.add_log(' Pobrano prognoze pogody dla miasta ' + miasto)
+            log.add_log('Pobrano prognoze pogody dla miasta ' + miasto)
         except:
             log.add_log("Blad polaczenia z serwerem pogody")
 

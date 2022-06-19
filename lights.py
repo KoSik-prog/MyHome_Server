@@ -56,25 +56,25 @@ class LIGHTS_CL:
             if len(wiad)>=15:
                 log.add_log("Ustawiono Led TV: {}".format(wiad))
                 infoStrip.add_info("światło TV: {}".format(setting))
-                nrf.toSend(lampaTV.address, wiad)
+                nrf.toSend(lampaTV.address, wiad, lampaTV.nrfPower)
                 lampaTV.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaPok2.address:  #SYPIALNIA
+        if address == lampaPok2.address:  #SYPIALNIA
             wiad="#S{:03d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
                 infoStrip.add_info("światło w sypialni: {}".format(setting))
-                nrf.toSend(lampaPok2.address, wiad)
+                nrf.toSend(lampaPok2.address, wiad, lampaPok2.nrfPower)
                 lampaPok2.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaKuch.address:  #KUCHNIA
+        if address == lampaKuch.address:  #KUCHNIA
             wiad="#07T{:01d}".format(int(setting))
             if len(wiad)>=5:
                 log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
                 infoStrip.add_info("światło w kuchni: {}".format(setting))
-                nrf.toSend(lampaKuch.address, wiad)
+                nrf.toSend(lampaKuch.address, wiad, lampaKuch.nrfPower)
                 lampaKuch.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
@@ -84,7 +84,7 @@ class LIGHTS_CL:
                 lampa1Pok1.Jasnosc=int(setting)
                 log.add_log("Ustawiono Reflektor 1: {}".format(wiad))
                 infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.setting,int(setting)))
-                nrf.toSend(lampa1Pok1.address, wiad)
+                nrf.toSend(lampa1Pok1.address, wiad, lampa1Pok1.nrfPower)
                 lampa1Pok1.blad+=1
                 if(int(setting) == 0):
                     lampa1Pok1.Flaga = 0
@@ -97,7 +97,7 @@ class LIGHTS_CL:
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa 1: {}".format(wiad))
                 infoStrip.add_info("dekoracje 1 w salonie: {}".format(setting))
-                nrf.toSend(dekoPok1.address, wiad)
+                nrf.toSend(dekoPok1.address, wiad, dekoPok1.nrfPower)
                 lampa1Pok1.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
@@ -106,7 +106,7 @@ class LIGHTS_CL:
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa 2: {}".format(wiad))
                 infoStrip.add_info("dekoracje 2 w salonie: {}".format(setting))
-                nrf.toSend(deko2Pok1.address, wiad)
+                nrf.toSend(deko2Pok1.address, wiad, deko2Pok1.nrfPower)
                 dekoPok1.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
@@ -115,7 +115,7 @@ class LIGHTS_CL:
             if len(wiad)>=5:
                 log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
                 infoStrip.add_info("flaming: {}".format(setting))
-                nrf.toSend(dekoFlaming.address, wiad)
+                nrf.toSend(dekoFlaming.address, wiad, dekoFlaming.nrfPower)
                 dekoFlaming.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
@@ -124,7 +124,7 @@ class LIGHTS_CL:
             if len(wiad)>=5:
                 log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
                 infoStrip.add_info("uniwersalny USB: {}".format(setting))
-                nrf.toSend(dekoUsb.address, wiad)
+                nrf.toSend(dekoUsb.address, wiad, dekoUsb.nrfPower)
                 dekoUsb.blad+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
@@ -196,7 +196,7 @@ class LIGHTS_CL:
             if len(wiad)>=5:
                 log.add_log("Ustawiono Hydroponike: {}".format(wiad))
                 infoStrip.add_info("Hydroponika: {}".format(setting))
-                nrf.toSend(hydroponika.address, wiad)
+                nrf.toSend(hydroponika.address, wiad, hydroponika.nrfPower)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(wiad))
 light = LIGHTS_CL()

@@ -162,30 +162,30 @@ class UDP_CL:
         if(messag.find('ko2') != -1):
             wiad="#05L" + messag[3:15]
             log.add_log(wiad)
-            nrf.toSend(lampaTV.adress, wiad)
+            nrf.toSend(lampaTV.adress, wiad, lampaTV.nrfPower)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('gra') != -1):
             wiad="#05G" + messag[3:6]
             log.add_log(wiad)
-            nrf.toSend(lampaTV.adress, wiad)
+            nrf.toSend(lampaTV.adress, wiad, lampaTV.nrfPower)
             lampaTV.FlagaSterowanieManualne=True
         if(messag.find('lelw')): # LAMPA LED BIALY
             wiad="#06W" + messag[4:7]
-            #nrf.toSend(lampaTV.address, wiad)
+            #nrf.toSend(lampaTV.address, wiad, lampaTV.nrfPower)
         if(messag.find('pok1max') != -1):
             wiad="#05K255255255255"
             lampaTV.Ustawienie="255255255"
             lampaTV.Jasnosc=255
             log.add_log(wiad)
             log.add_log(wiad)
-            nrf.toSend(lampaTV.address, wiad)
+            nrf.toSend(lampaTV.address, wiad, lampaTV.nrfPower)
             ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, tradfriDev.salon, 100)
             lampaTV.FlagaSterowanieManualne=True
             log.add_log("Tryb swiatel: Pokoj 1 max")
         if(messag.find('budaTryb.') != -1):
             pocz=messag.find(".")+1
             wiad="#15T" + messag[pocz]
-            nrf.toSend(buda.address, wiad)
+            nrf.toSend(buda.address, wiad, buda.nrfPower)
             #light.set_light(lampaTV.address,lampaTV.Jasnosc)
             #lampaTV.FlagaSterowanieManualne=True
         if(messag.find('spij') != -1):
