@@ -69,7 +69,7 @@ class NRF_CL():
             self.radio.openWritingPipe(NRF_CL.TXBuffer[0][0])
             self.radio.setPALevel(NRF_CL.TXBuffer[0][2]) #zmiana mocy nadawania
             time.sleep(.01)
-            print("NRF addr: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][2]))
+            print("NRF addr: {} / power: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][1], NRF_CL.TXBuffer[0][2]))
             self.NRFtransmit(NRF_CL.TXBuffer[0][2])
         for i in range(len(NRF_CL.TXBuffer) - 1):
             NRF_CL.TXBuffer[i] = NRF_CL.TXBuffer[i+1]

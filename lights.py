@@ -36,7 +36,7 @@ addressBuda = 12
 addressCzujnikKwiatka4 = 13
 addressHydroponika = 15
 
-class set_light_with_delay(threading.Thread): #------WATEK NADAWANIA NRF
+class set_light_with_delay(threading.Thread):
     def __init__(self, address, jasnosc, czas):
         threading.Thread.__init__(self)
         self.address = address
@@ -47,7 +47,7 @@ class set_light_with_delay(threading.Thread): #------WATEK NADAWANIA NRF
         if self.jasnosc == 0:
             light.set_light(self.address, 100)
         light.set_light(self.address, self.jasnosc)
-        log.add_log("Funkacja spij wlaczona")
+        log.add_log("Funkacja spij dla adresu: {} wlaczona".format(self.address))
 
 class LIGHTS_CL:
     def set_light(self, address, setting):

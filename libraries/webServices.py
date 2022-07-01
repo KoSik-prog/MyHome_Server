@@ -202,9 +202,9 @@ class UDP_CL:
             dekoPok1.FlagaSterowanieManualne=True
             deko2Pok1.FlagaSterowanieManualne=True
             deko2Pok1.FlagaSterowanieManualne=True
-            set_light_with_delay(lampaPok1Tradfri.address, 0, 30)
+            set_light_with_delay(lampaPok1Tradfri.address, 0, 30).start()
             #set_light_with_delay(lampaPrzedpokojTradfri.address, 0, 31).start()
-            set_light_with_delay(dekoFlaming.address, 0, 30*60).start()
+            set_light_with_delay(dekoFlaming.address, 0, 15*60).start()
             dekoFlaming.FlagaSterowanieManualne=True
             log.add_log("Tryb swiatel: spij")
         if(messag.find('romantyczny') != -1):
