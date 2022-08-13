@@ -44,33 +44,31 @@ class SENSORS_CL:
             infoStrip.set_error(errorNumber, False)
 
     def check_sensor(self):
-        self.set_receive_error_on_strip(czujnikZew, 18, 0)
-        self.set_receive_error_on_strip(czujnikPok1, 23, 1)
-        self.set_receive_error_on_strip(czujnikPok2, 23, 2)
-        self.set_receive_error_on_strip(automatycznaKonewka, 63, 3)
-        self.set_receive_error_on_strip(czujnikKwiatek2, 63, 4)
-        self.set_receive_error_on_strip(czujnikKwiatek3, 63, 5)
-        self.set_receive_error_on_strip(czujnikKwiatek4, 63, 6)
-        self.set_receive_error_on_strip(czujnikKwiatek5, 63, 16)
-        self.set_receive_error_on_strip(czujnikKwiatek6, 63, 19)
+        self.set_receive_error_on_strip(sensorOutsideTemperature, 18, 0)
+        self.set_receive_error_on_strip(sensorRoom1Temperature, 23, 1)
+        self.set_receive_error_on_strip(sensorRoom2Temperature, 23, 2)
+        self.set_receive_error_on_strip(sensorFlower2, 63, 4)
+        self.set_receive_error_on_strip(sensorFlower3, 63, 5)
+        self.set_receive_error_on_strip(sensorFlower4, 63, 6)
+        self.set_receive_error_on_strip(sensorFlower5, 63, 16)
+        self.set_receive_error_on_strip(sensorFlower6, 63, 19)
         #sprawdzenie stanu baterii
-        self.set_power_error_on_strip(automatycznaKonewka, 5, 7)
-        self.set_power_error_on_strip(czujnikKwiatek2, SENSORS_CL.minBatteryVoltage, 8)
-        self.set_power_error_on_strip(czujnikKwiatek3, SENSORS_CL.minBatteryVoltage, 9)
-        self.set_power_error_on_strip(czujnikKwiatek4, SENSORS_CL.minBatteryVoltage, 10)
-        self.set_power_error_on_strip(czujnikKwiatek5, SENSORS_CL.minBatteryVoltage, 14)
-        self.set_power_error_on_strip(czujnikKwiatek6, SENSORS_CL.minBatteryVoltage, 17)
+        self.set_power_error_on_strip(sensorFlower2, SENSORS_CL.minBatteryVoltage, 8)
+        self.set_power_error_on_strip(sensorFlower3, SENSORS_CL.minBatteryVoltage, 9)
+        self.set_power_error_on_strip(sensorFlower4, SENSORS_CL.minBatteryVoltage, 10)
+        self.set_power_error_on_strip(sensorFlower5, SENSORS_CL.minBatteryVoltage, 14)
+        self.set_power_error_on_strip(sensorFlower6, SENSORS_CL.minBatteryVoltage, 17)
         #sprawdzenie wilgotnosci
-        self.set_min_humidity_error_on_strip(czujnikKwiatek2, 11)
-        self.set_min_humidity_error_on_strip(czujnikKwiatek3, 12)
-        self.set_min_humidity_error_on_strip(czujnikKwiatek4, 13)
-        self.set_min_humidity_error_on_strip(czujnikKwiatek5, 15)
-        self.set_min_humidity_error_on_strip(czujnikKwiatek6, 18)
+        self.set_min_humidity_error_on_strip(sensorFlower2, 11)
+        self.set_min_humidity_error_on_strip(sensorFlower3, 12)
+        self.set_min_humidity_error_on_strip(sensorFlower4, 13)
+        self.set_min_humidity_error_on_strip(sensorFlower5, 15)
+        self.set_min_humidity_error_on_strip(sensorFlower6, 18)
         #sprawdzenie budy
-        if((datetime.datetime.now() - buda.time)>(datetime.timedelta(minutes=2))):
-            buda.temp1=0.0
-            buda.temp2=0.0
-            buda.temp3=0.0
-            buda.czujnikZajetosciFlaga=0
-            buda.czujnikZajetosciRaw=0
+        if((datetime.datetime.now() - dogHouse.time)>(datetime.timedelta(minutes=2))):
+            dogHouse.temp1=0.0
+            dogHouse.temp2=0.0
+            dogHouse.temp3=0.0
+            dogHouse.czujnikZajetosciflaga=0
+            dogHouse.czujnikZajetosciRaw=0
 sensor = SENSORS_CL()

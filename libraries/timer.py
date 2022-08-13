@@ -36,15 +36,15 @@ class TIMER_CL:
         if (str(time.strftime("%d"))=="01") and (str(time.strftime("%H:%M"))=="01:01") and SQL_CL.kasowanieSQL_flaga==True:
             SQL_CL.kasowanieSQL_flaga=False
         #------------------------------------------------------------------------------------------
-        self.auto_timer(lampaTV)
-        self.auto_timer(dekoPok1)
-        self.auto_timer(deko2Pok1)
-        self.auto_timer(dekoFlaming)
-        self.auto_timer(lampaPok2Tradfri)
-        #self.auto_timer(lampaPok2)#---- LED SYPIALNI
-        self.auto_timer(hydroponika)#----Hydroponika
-        #self.auto_timer(lampaKuch)#-----LED KUCHNI
-        #self.auto_timer(dekoUsb)#----USB Stick
+        self.auto_timer(ledStripRoom1)
+        self.auto_timer(decorationRoom1)
+        self.auto_timer(decoration2Room1)
+        self.auto_timer(decorationFlamingo)
+        self.auto_timer(ledLightRoom2Tradfri)
+        #self.auto_timer(ledLightRoom2)#---- LED SYPIALNI
+        self.auto_timer(hyroponics)#----hyroponics
+        self.auto_timer(kitchenLight)#-----LED KUCHNI
+        #self.auto_timer(usbPlug)#----USB Stick
 
 
     def auto_timer(self, klasa):
@@ -59,19 +59,19 @@ class TIMER_CL:
         except ValueError as e:
             print('Blad czasu wył:', e)
         #-----skasowanie flag ----------
-        if(int(zmiennaON.total_seconds())>(-15) and int(zmiennaON.total_seconds())<0 and  klasa.FlagaSterowanieManualne==True):
-            klasa.FlagaSterowanieManualne=False
-        if(int(zmiennaOFF.total_seconds())>(-15) and int(zmiennaOFF.total_seconds())<0 and klasa.FlagaSterowanieManualne==True):
-            klasa.FlagaSterowanieManualne=False
+        if(int(zmiennaON.total_seconds())>(-15) and int(zmiennaON.total_seconds())<0 and  klasa.flagManualControl==True):
+            klasa.flagManualControl=False
+        if(int(zmiennaOFF.total_seconds())>(-15) and int(zmiennaOFF.total_seconds())<0 and klasa.flagManualControl==True):
+            klasa.flagManualControl=False
         #------SPRAWDZENIE------------------------
-        if(klasa.Flaga==0 and automatykaOswietlenia.swiatloObliczone<klasa.AutoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-            log.add_log("AUTO {} -> ON".format(klasa.Opis))
-            light.set_light(klasa.address, klasa.AutoJasnosc)
-            klasa.Flaga=1
+        if(klasa.flag==0 and lightingAutomation.calculatedBrightness<klasa.autoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.flagManualControl==False and klasa.error<20):
+            log.add_log("AUTO {} -> ON".format(klasa.label))
+            light.set_light(klasa.address, klasa.autoBrightness)
+            klasa.flag=1
             time.sleep(20)
-        if(klasa.Flaga==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.FlagaSterowanieManualne==False and klasa.blad<20):
-            log.add_log("AUTO {} -> OFF".format(klasa.Opis))
+        if(klasa.flag==1 and (int(zmiennaOFF.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<60) and klasa.flagManualControl==False and klasa.error<20):
+            log.add_log("AUTO {} -> OFF".format(klasa.label))
             light.set_light(klasa.address, 0)
-            klasa.Flaga=0
+            klasa.flag=0
             time.sleep(20)
 timer = TIMER_CL()

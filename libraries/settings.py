@@ -34,22 +34,22 @@ class SETTINGS_CL:
     def save(self):
         setings = ET.Element("settings")
 
-        ET.SubElement(setings, "lampaTVAutoLux_min").text = str(lampaTV.AutoLux_min)
-        ET.SubElement(setings, "lampaTVAutoOff").text = str(lampaTV.AutoOFF)
-        ET.SubElement(setings, "lampaTVAutoOn").text = str(lampaTV.AutoON)
-        ET.SubElement(setings, "lampaTVJasnosc").text = str(lampaTV.Jasnosc)
-        ET.SubElement(setings, "lampaTVUstawienie").text = str(lampaTV.Ustawienie)
+        ET.SubElement(setings, "ledStripRoom1autoLux_min").text = str(ledStripRoom1.autoLux_min)
+        ET.SubElement(setings, "ledStripRoom1AutoOff").text = str(ledStripRoom1.AutoOFF)
+        ET.SubElement(setings, "ledStripRoom1AutoOn").text = str(ledStripRoom1.AutoON)
+        ET.SubElement(setings, "ledStripRoom1Jasnosc").text = str(ledStripRoom1.Jasnosc)
+        ET.SubElement(setings, "ledStripRoom1Ustawienie").text = str(ledStripRoom1.setting)
 
-        ET.SubElement(setings, "lampaKuchAutoLux_min").text = str(lampaKuch.AutoLux_min)
-        ET.SubElement(setings, "lampaKuchAutoOFF").text = str(lampaKuch.AutoOFF)
-        ET.SubElement(setings, "lampaKuchAutoON").text = str(lampaKuch.AutoON)
+        ET.SubElement(setings, "kitchenLightautoLux_min").text = str(kitchenLight.autoLux_min)
+        ET.SubElement(setings, "kitchenLightAutoOFF").text = str(kitchenLight.AutoOFF)
+        ET.SubElement(setings, "kitchenLightAutoON").text = str(kitchenLight.AutoON)
 
-        ET.SubElement(setings, "lampa1Pok1Jasnosc").text = str(lampa1Pok1.Jasnosc)
+        ET.SubElement(setings, "spootLightRoom1Jasnosc").text = str(spootLightRoom1.Jasnosc)
 
-        ET.SubElement(setings, "lampaPok2AutoJasnosc").text = str(lampaPok2.AutoJasnosc)
-        ET.SubElement(setings, "lampaPok2AutoLux_min").text = str(lampaPok2.AutoLux_min)
-        ET.SubElement(setings, "lampaPok2AutoOFF").text = str(lampaPok2.AutoOFF)
-        ET.SubElement(setings, "lampaPok2AutoON").text = str(lampaPok2.AutoON)
+        ET.SubElement(setings, "ledLightRoom2autoBrightness").text = str(ledLightRoom2.autoBrightness)
+        ET.SubElement(setings, "ledLightRoom2autoLux_min").text = str(ledLightRoom2.autoLux_min)
+        ET.SubElement(setings, "ledLightRoom2AutoOFF").text = str(ledLightRoom2.AutoOFF)
+        ET.SubElement(setings, "ledLightRoom2AutoON").text = str(ledLightRoom2.AutoON)
 
         tree2 = ET.ElementTree(setings)
         tree2.write(SETTINGS_CL.path)
@@ -59,20 +59,20 @@ class SETTINGS_CL:
         tree = ET.ElementTree(file=SETTINGS_CL.path)
         root = tree.getroot()
 
-        lampaTV.AutoLux_min = int(root.find('lampaTVAutoLux_min').text)
-        lampaTV.AutoOff = root.find('lampaTVAutoOff').text
-        lampaTV.AutoOn = root.find('lampaTVAutoOn').text
-        lampaTV.Jasnosc = int(root.find('lampaTVJasnosc').text)
-        lampaTV.Ustawienie = root.find('lampaTVUstawienie').text
+        ledStripRoom1.autoLux_min = int(root.find('ledStripRoom1autoLux_min').text)
+        ledStripRoom1.AutoOff = root.find('ledStripRoom1AutoOff').text
+        ledStripRoom1.AutoOn = root.find('ledStripRoom1AutoOn').text
+        ledStripRoom1.Jasnosc = int(root.find('ledStripRoom1Jasnosc').text)
+        ledStripRoom1.setting = root.find('ledStripRoom1Ustawienie').text
 
-        lampaKuch.AutoLux_min = int(root.find('lampaKuchAutoLux_min').text)
-        lampaKuch.AutoOFF = root.find('lampaKuchAutoOFF').text
-        lampaKuch.AutoON = root.find('lampaKuchAutoON').text
+        kitchenLight.autoLux_min = int(root.find('kitchenLightautoLux_min').text)
+        kitchenLight.AutoOFF = root.find('kitchenLightAutoOFF').text
+        kitchenLight.AutoON = root.find('kitchenLightAutoON').text
 
-        lampa1Pok1.Jasnosc = int(root.find('lampa1Pok1Jasnosc').text)
+        spootLightRoom1.Jasnosc = int(root.find('spootLightRoom1Jasnosc').text)
 
-        lampaPok2.AutoJasnosc = int(root.find('lampaPok2AutoJasnosc').text)
-        lampaPok2.AutoLux_min = int(root.find('lampaPok2AutoLux_min').text)
-        lampaPok2.AutoOFF = root.find('lampaPok2AutoOFF').text
-        lampaPok2.AutoON = root.find('lampaPok2AutoON').text
+        ledLightRoom2.autoBrightness = int(root.find('ledLightRoom2autoBrightness').text)
+        ledLightRoom2.autoLux_min = int(root.find('ledLightRoom2autoLux_min').text)
+        ledLightRoom2.AutoOFF = root.find('ledLightRoom2AutoOFF').text
+        ledLightRoom2.AutoON = root.find('ledLightRoom2AutoON').text
 settings = SETTINGS_CL()

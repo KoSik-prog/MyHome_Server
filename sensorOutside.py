@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
 # Name:        sensorOutside
-# Purpose:
-#
 # Author:      KoSik
 #
 # Created:     29.05.2022
@@ -18,18 +16,17 @@ from libraries.log import *
 from libraries.sqlDatabase import *
 
 class SENSOR_OUTSIDE_CL:
-    temperature=0.0
-    humidity=0.0
-    power=0.0
-    light=0
-    ir=0
-    windSpeed=0
-    windDirection=0
+    temperature = 0.0
+    humidity = 0.0
+    power = 0.0
+    light = 0
+    ir = 0
+    windSpeed = 0
+    windDirection = 0
     time=datetime.datetime.now()
     errorFlag = False
     nightFlag = False
-    noc_ustawienie=60  #ustawienie kiedy noc
-    flaga_peirwszaPaczka=False
+    night_setting = 60  #ustawienie kiedy noc
 
     def __init__(self, address):
         self.time = datetime.datetime.now()
@@ -41,7 +38,7 @@ class SENSOR_OUTSIDE_CL:
             self.power=int(data[14:18])
             sql.addRecordSensorOutdoorLight(self.light, self.ir)
             self.calculate_light()
-            log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(automatykaOswietlenia.swiatloObliczone))
+            log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(lightingAutomation.calculatedBrightness))
             log.add_log("   Sensor1 zewnetrzny ->   light: {}    lightIR: {}    Bateria: {}".format(self.light, self.ir, self.power))
         if data[3]== "t":
             if(data[4]=="1"):
@@ -62,14 +59,14 @@ class SENSOR_OUTSIDE_CL:
     def calculate_light(self):
         k=3 #wzmocnienie
         for i in range(4):
-            automatykaOswietlenia.wartosciLux[i]=automatykaOswietlenia.wartosciLux[i+1]
-        automatykaOswietlenia.wartosciLux[4]=czujnikZew.lux
-        automatykaOswietlenia.swiatloObliczone=automatykaOswietlenia.wartosciLux[0]
+            lightingAutomation.LUXvalue[i]=lightingAutomation.LUXvalue[i+1]
+        lightingAutomation.LUXvalue[4]=sensorOutsideTemperature.lux
+        lightingAutomation.calculatedBrightness=lightingAutomation.LUXvalue[0]
         for i in range(4):
-            automatykaOswietlenia.swiatloObliczone=automatykaOswietlenia.swiatloObliczone+automatykaOswietlenia.wartosciLux[i+1]
-        automatykaOswietlenia.swiatloObliczone=(automatykaOswietlenia.swiatloObliczone+((automatykaOswietlenia.wartosciLux[4]*k)))/(5+k)
-        if automatykaOswietlenia.swiatloObliczone<czujnikZew.noc_ustawienie:
-            czujnikZew.nightFlag = True
+            lightingAutomation.calculatedBrightness=lightingAutomation.calculatedBrightness+lightingAutomation.LUXvalue[i+1]
+        lightingAutomation.calculatedBrightness=(lightingAutomation.calculatedBrightness+((lightingAutomation.LUXvalue[4]*k)))/(5+k)
+        if lightingAutomation.calculatedBrightness<sensorOutsideTemperature.night_setting:
+            sensorOutsideTemperature.nightFlag = True
         else:
-            czujnikZew.nightFlag = False
-        log.add_log("Swiatlo obliczone=  {}".format(automatykaOswietlenia.swiatloObliczone) + " / {}".format(automatykaOswietlenia.wartosciLux))
+            sensorOutsideTemperature.nightFlag = False
+        log.add_log("Swiatlo obliczone=  {}".format(lightingAutomation.calculatedBrightness) + " / {}".format(lightingAutomation.LUXvalue))

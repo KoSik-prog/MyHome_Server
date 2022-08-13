@@ -53,7 +53,7 @@ class GUI_CL:
                     if(px>17 and px<284 and py>15 and py<227):
                         display.set_background_colour(self.bgcolor)
                         obraz=0
-            #flaga_odczyt_ustawien=wysw.odswiez(czujnikZew.temp,czujnikPok1.temp,czujnikPok2.temp,czujnikZew.humi,czujnikPok1.humi,czujnikPok2.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.swiatlo, int(lampa1Pok1.Flaga), int(lampa1Pok1.Jasnosc), int(lampa1Pok1.Ustawienie), int(lampaTV.Flaga), int(lampaTV.Jasnosc), int(lampaPok2.Flaga), int(lampaPok2.Jasnosc), int(lampaKuch.Flaga),czujnikZew.czas,czujnikZew.blad,czujnikPok1.blad,czujnikPok2.blad)
+            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutsideTemperature.temp,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.swiatlo, int(spootLightRoom1.flag), int(spootLightRoom1.Jasnosc), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.Jasnosc), int(ledLightRoom2.flag), int(ledLightRoom2.Jasnosc), int(kitchenLight.flag),sensorOutsideTemperature.czas,sensorOutsideTemperature.error,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
             if(obraz==0):
                 if self.tryb_nocny==False:
                     self.obraz_glowny()
@@ -99,20 +99,20 @@ class GUI_CL:
                 else:
                     self.pozycja_animacji[16][0]=self.pozycja_animacji[16][0]-1
             self.posX=(-600)+self.pozycja_animacji[16][0]
-            if(tapeta.find('02') != -1 and czujnikZew.noc_flaga==False):
+            if(tapeta.find('02') != -1 and sensorOutsideTemperature.flagNight==False):
                 self.kolorczcionki3=(185,242,107,255)
                 self.kolorczcionki4=(235,255,187,255)
             else:
                 self.kolorczcionki3=(0,0,0,255)
                 self.kolorczcionki4=(60,60,60,200)
-            if czujnikZew.noc_flaga==True:
+            if sensorOutsideTemperature.flagNight==True:
                 self.kolorczcionki3=(190,190,190,255)
                 self.kolorczcionki4=(250,250,250,200)
-        display.display_picture(display.screen, self.posX , 0, 255, display.get_background(czujnikZew.noc_flaga, weather.iconToday)) 
+        display.display_picture(display.screen, self.posX , 0, 255, display.get_background(sensorOutsideTemperature.flagNight, weather.iconToday)) 
         if(tapeta.find('01') != -1):  #CLEAR SKY
             self.kolorczcionki1=(255,255,255,255)
             self.posX=0
-            if czujnikZew.noc_flaga==True:
+            if sensorOutsideTemperature.flagNight==True:
                 self.kolorczcionki2=(180,180,180,255)
             else:
                 self.kolorczcionki2=(100,40,20,255)
@@ -172,27 +172,27 @@ class GUI_CL:
         display.text_center(display.screen, str(int(time.strftime("%d")))+" "+dateDec.month(str(time.strftime("%B"))),"Nimbus Sans L",56,620,120,self.kolorczcionki2,255)  #dzien tygodnia
 
         display.text2(display.screen, "dziś","Nimbus Sans L",56,50,170,self.kolorczcionki3,255)
-        display.display_picture(display.screen, 30, 210, 255, display.get_icon(czujnikZew.noc_flaga, weather.iconToday))
+        display.display_picture(display.screen, 30, 210, 255, display.get_icon(sensorOutsideTemperature.flagNight, weather.iconToday))
         display.display_picture(display.screen, 20, 330, 255, display.get_picture("arrow_down"))
         display.text2(display.screen, "{:.0f}°C".format(weather.tempMinToday),"Nimbus Sans L",54,70,330,self.kolorczcionki3,255)
         display.display_picture(display.screen, 20, 380, 255, display.get_picture("arrow_up"))
         display.text2(display.screen, "{:.0f}°C".format(weather.tempMaxToday),"Nimbus Sans L",54,70,380,self.kolorczcionki4,255)
         display.text2(display.screen, "jutro","Nimbus Sans L",56,230,170,self.kolorczcionki3,255)
-        display.display_picture(display.screen, 220, 210, 255, display.get_icon(czujnikZew.noc_flaga, weather.iconTomorrow))
+        display.display_picture(display.screen, 220, 210, 255, display.get_icon(sensorOutsideTemperature.flagNight, weather.iconTomorrow))
         display.display_picture(display.screen, 205, 330, 255, display.get_picture("arrow_down"))
         display.text2(display.screen, "{:.0f}°C".format(weather.tempMinTomorrow),"Nimbus Sans L",54,245,330,self.kolorczcionki3,255)
         display.display_picture(display.screen, 205, 380, 255, display.get_picture("arrow_up"))
         display.text2(display.screen, "{:.0f}°C".format(weather.tempMaxTomorrow),"Nimbus Sans L",54,245,380,self.kolorczcionki4,255)
 
         display.display_picture(display.screen, 390, 170, 255, display.get_picture("temp_out"))
-        dlugosc=display.text2(display.screen, "{:.1f}°C".format(czujnikZew.temp),"Nimbus Sans L",68,485,190,self.kolorczcionki5,255)
-        display.text2(display.screen, "{:.0f}%".format(czujnikZew.humi),"Nimbus Sans L",48,505+dlugosc,200,self.kolorczcionki4,255)
+        dlugosc=display.text2(display.screen, "{:.1f}°C".format(sensorOutsideTemperature.temp),"Nimbus Sans L",68,485,190,self.kolorczcionki5,255)
+        display.text2(display.screen, "{:.0f}%".format(sensorOutsideTemperature.humi),"Nimbus Sans L",48,505+dlugosc,200,self.kolorczcionki4,255)
         display.display_picture(display.screen, 390, 258, 255, display.get_picture("temp_in"))
-        dlugosc=display.text2(display.screen, "{:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",68,485,280,self.kolorczcionki4,255)
-        display.text2(display.screen, "{:.0f}%".format(czujnikPok1.humi),"Nimbus Sans L",48,505+dlugosc,290,self.kolorczcionki4,255)
+        dlugosc=display.text2(display.screen, "{:.1f}°C".format(sensorRoom1Temperature.temp),"Nimbus Sans L",68,485,280,self.kolorczcionki4,255)
+        display.text2(display.screen, "{:.0f}%".format(sensorRoom1Temperature.humi),"Nimbus Sans L",48,505+dlugosc,290,self.kolorczcionki4,255)
 
         display.display_picture(display.screen, 390, 350, 255, display.get_picture("wind"))
-        dlugosc=display.text2(display.screen, "{:.1f}m/s".format(czujnikZew.predkoscWiatru),"Nimbus Sans L",50,485,370,self.kolorczcionki3,255)
+        dlugosc=display.text2(display.screen, "{:.1f}m/s".format(sensorOutsideTemperature.windSpeed),"Nimbus Sans L",50,485,370,self.kolorczcionki3,255)
 
         # PASEK INFORMACYJNY
         infoStrip.actualInformation=infoStrip.read_info()
@@ -221,6 +221,6 @@ class GUI_CL:
         self.kolorczcionki3=(180,180,180,255)
 
         display.text_center_background(display.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210, self.kolorczcionki3,255,(0,0,0,255)) #czas
-        display.text_background(display.screen, "Temperatura {:.1f}°C".format(czujnikPok1.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
+        display.text_background(display.screen, "Temperatura {:.1f}°C".format(sensorRoom1Temperature.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
 
 gui = GUI_CL()

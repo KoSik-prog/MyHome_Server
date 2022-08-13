@@ -26,7 +26,7 @@ class WATCHDOG_CL:
             self.watchdog_set()
             time.sleep(120)
             self.watchdog_read()
-            log.add_watchdog_log('Flaga watchdog = {}'.format(WATCHDOG_CL.watchdogFlag))
+            log.add_watchdog_log('flaga watchdog = {}'.format(WATCHDOG_CL.watchdogFlag))
             sys.stdout.flush()
             if(WATCHDOG_CL.watchdogFlag == 0):
                 log.add_watchdog_log('RESET!')

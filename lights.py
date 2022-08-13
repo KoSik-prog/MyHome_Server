@@ -32,9 +32,9 @@ addressUsb = 8 #Modul uniwersalny USB
 addressCzujnikKwiatka1 = 9
 addressCzujnikKwiatka2 = 10
 addressCzujnikKwiatka3 = 11
-addressBuda = 12
+addressdogHouse = 12
 addressCzujnikKwiatka4 = 13
-addressHydroponika = 15
+addresshyroponics = 15
 
 class set_light_with_delay(threading.Thread):
     def __init__(self, address, jasnosc, czas):
@@ -51,115 +51,115 @@ class set_light_with_delay(threading.Thread):
 
 class LIGHTS_CL:
     def set_light(self, address, setting):
-        if address==lampaTV.address:   #TV
-            wiad="#05K{}{:03d}".format(lampaTV.Ustawienie, int(setting))
-            if len(wiad)>=15:
-                log.add_log("Ustawiono Led TV: {}".format(wiad))
+        if address==ledStripRoom1.address:   #TV
+            packet="#05K{}{:03d}".format(ledStripRoom1.setting, int(setting))
+            if len(packet)>=15:
+                log.add_log("Ustawiono Led TV: {}".format(packet))
                 infoStrip.add_info("światło TV: {}".format(setting))
-                nrf.toSend(lampaTV.address, wiad, lampaTV.nrfPower)
-                lampaTV.blad+=1
+                nrf.toSend(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+                ledStripRoom1.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address == lampaPok2.address:  #SYPIALNIA
-            wiad="#S{:03d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Led Sypialni: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == ledLightRoom2.address:  #SYPIALNIA
+            packet="#S{:03d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Led Sypialni: {}".format(packet))
                 infoStrip.add_info("światło w sypialni: {}".format(setting))
-                nrf.toSend(lampaPok2.address, wiad, lampaPok2.nrfPower)
-                lampaPok2.blad+=1
+                nrf.toSend(ledLightRoom2.address, packet, ledLightRoom2.nrfPower)
+                ledLightRoom2.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address == lampaKuch.address:  #KUCHNIA
-            wiad="#07T{:01d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Led Kuchni: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == kitchenLight.address:  #KUCHNIA
+            packet="#06T{:01d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Led Kuchni: {}".format(packet))
                 infoStrip.add_info("światło w kuchni: {}".format(setting))
-                nrf.toSend(lampaKuch.address, wiad, lampaKuch.nrfPower)
-                lampaKuch.blad+=1
+                nrf.toSend(kitchenLight.address, packet, kitchenLight.nrfPower)
+                kitchenLight.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampa1Pok1.address:  # LAMPA 1 w salonie
-            wiad="#05K{}{:03d}".format(lampa1Pok1.setting, int(setting))
-            if len(wiad)>=5:
-                lampa1Pok1.Jasnosc=int(setting)
-                log.add_log("Ustawiono Reflektor 1: {}".format(wiad))
-                infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(lampa1Pok1.setting,int(setting)))
-                nrf.toSend(lampa1Pok1.address, wiad, lampa1Pok1.nrfPower)
-                lampa1Pok1.blad+=1
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==spootLightRoom1.address:  # LAMPA 1 w salonie
+            packet="#05K{}{:03d}".format(spootLightRoom1.setting, int(setting))
+            if len(packet)>=5:
+                spootLightRoom1.Jasnosc=int(setting)
+                log.add_log("Ustawiono Reflektor 1: {}".format(packet))
+                infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(spootLightRoom1.setting,int(setting)))
+                nrf.toSend(spootLightRoom1.address, packet, spootLightRoom1.nrfPower)
+                spootLightRoom1.error+=1
                 if(int(setting) == 0):
-                    lampa1Pok1.Flaga = 0
+                    spootLightRoom1.flag = 0
                 else:
-                    lampa1Pok1.Flaga = 1
+                    spootLightRoom1.flag = 1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoPok1.address:  # dekoracje pok 1 / Reka
-            wiad="#08T{:1d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Lampa 1: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==decorationRoom1.address:  # dekoracje pok 1 / Reka
+            packet="#08T{:1d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Lampa 1: {}".format(packet))
                 infoStrip.add_info("dekoracje 1 w salonie: {}".format(setting))
-                nrf.toSend(dekoPok1.address, wiad, dekoPok1.nrfPower)
-                lampa1Pok1.blad+=1
+                nrf.toSend(decorationRoom1.address, packet, decorationRoom1.nrfPower)
+                spootLightRoom1.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==deko2Pok1.address:  # dekoracje pok 1 / Eifla i inne
-            wiad="#09T{:1d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Lampa 2: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==decoration2Room1.address:  # dekoracje pok 1 / Eifla i inne
+            packet="#09T{:1d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Lampa 2: {}".format(packet))
                 infoStrip.add_info("dekoracje 2 w salonie: {}".format(setting))
-                nrf.toSend(deko2Pok1.address, wiad, deko2Pok1.nrfPower)
-                dekoPok1.blad+=1
+                nrf.toSend(decoration2Room1.address, packet, decoration2Room1.nrfPower)
+                decorationRoom1.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoFlaming.address:  # FLAMING
-            wiad="#10T{:1d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Lampa Flaming: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==decorationFlamingo.address:  # FLAMING
+            packet="#10T{:1d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Lampa Flaming: {}".format(packet))
                 infoStrip.add_info("flaming: {}".format(setting))
-                nrf.toSend(dekoFlaming.address, wiad, dekoFlaming.nrfPower)
-                dekoFlaming.blad+=1
+                nrf.toSend(decorationFlamingo.address, packet, decorationFlamingo.nrfPower)
+                decorationFlamingo.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==dekoUsb.address:  # Dekoracje - uniwersalny modul USB
-            wiad="#11T{:1d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Uniwersalny USB: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==usbPlug.address:  # Dekoracje - uniwersalny modul USB
+            packet="#11T{:1d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Uniwersalny USB: {}".format(packet))
                 infoStrip.add_info("uniwersalny USB: {}".format(setting))
-                nrf.toSend(dekoUsb.address, wiad, dekoUsb.nrfPower)
-                dekoUsb.blad+=1
+                nrf.toSend(usbPlug.address, packet, usbPlug.nrfPower)
+                usbPlug.error+=1
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
-        if address==lampaPok1Tradfri.address:  # Tradfri Salon
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address==mainLightRoom1Tradfri.address:  # Tradfri Salon
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, address, setting)
             elif setting>1:
                 ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid, ikea.security_user, address, setting)
             log.add_log("Tradfri Salon ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w salonie: {}".format(setting))
-        if address==lampaPok1Tradfri.Zarowka:  # Tradfri Salon Zarowka
+        if address==mainLightRoom1Tradfri.bulb:  # Tradfri Salon bulb
             if setting==0 or setting==1:
                 ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             elif setting>1:
                 ikea.ikea_dim_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
-            log.add_log("Tradfri Salon-Zarowka ->: {}".format(setting))
-        if address==lampaJadalniaTradfri.address:  # Tradfri Jadalnia
+            log.add_log("Tradfri Salon-bulb ->: {}".format(setting))
+        if address==diningRoomTradfri.address:  # Tradfri Jadalnia
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             elif setting>1:
                 ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             log.add_log("Tradfri Jadalnia ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w jadalni: {}".format(setting))
-        if address==lampaPrzedpokojTradfri.address:  # Tradfri przedpokoj
+        if address==hallTradfri.address:  # Tradfri przedpokoj
             if setting==0 or setting==1:
                 ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             elif setting>1:
                 ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, setting)
             if(setting>0):
-                lampaPrzedpokojTradfri.Status=1
+                hallTradfri.status=1
             else:
-                lampaPrzedpokojTradfri.Status=0
+                hallTradfri.status=0
             log.add_log("Tradfri Przedpokoj ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w przedpokoju: {}".format(setting))
-        if address==lampaDuzaTradfri.address:  # Tradfri Lampa Duza
+        if address==floorLampRoom1Tradfri.address:  # Tradfri Lampa Duza
             if len(str(setting))==1:
                 if int(setting)==0 or int(setting)==1:
                     ikea.ikea_power_light(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, address, int(setting))
@@ -168,7 +168,7 @@ class LIGHTS_CL:
                 chKolor1=int(setting[0:3])
                 chKolor2=int(setting[3:6])
                 chKolor3=int(setting[6:9])
-                ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaDuzaTradfri.address, chKolor1, chKolor2, chKolor3)
+                ikea.ikea_RGB_lamp(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, floorLampRoom1Tradfri.address, chKolor1, chKolor2, chKolor3)
                 log.add_log("Tradfri Lampa kolor ->: {}".format(setting))
                 infoStrip.add_info("lampa w salonie -> kolor: {}".format(setting))
             elif len(str(setting))==2 or len(str(setting))==3:
@@ -177,26 +177,26 @@ class LIGHTS_CL:
                     log.add_log("Tradfri Lampa Jasnosc ->: {}".format(setting))
                     infoStrip.add_info("lampa w salonie: {}".format(setting))
             else:
-                log.add_log("Tradfri blad skladni")
-        if address==lampaPok2Tradfri.address:  # Tradfri Sypialnia
+                log.add_log("Tradfri error skladni")
+        if address==ledLightRoom2Tradfri.address:  # Tradfri Sypialnia
             if setting==0 or setting==1:
-                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, setting)
-                lampaPok2Tradfri.Flaga = False
+                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, ledLightRoom2Tradfri.address, setting)
+                ledLightRoom2Tradfri.flag = False
             elif setting>1:
-                ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, setting)
-                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, lampaPok2Tradfri.address, 1)
-                lampaPok2Tradfri.Flaga = True
+                ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, ledLightRoom2Tradfri.address, setting)
+                ikea.ikea_power_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, ledLightRoom2Tradfri.address, 1)
+                ledLightRoom2Tradfri.flag = True
             log.add_log("Tradfri Sypialnia ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w sypialni: {}".format(setting))
-        if address==hydroponika.address:   #Hydroponika
+        if address==hyroponics.address:   #hyroponics
             if int(setting) > 1:
-                wiad="#17P1" #wlacz pompe
+                packet="#17P1" #wlacz pompe
             else:
-                wiad="#17A{:01d}".format(int(setting))
-            if len(wiad)>=5:
-                log.add_log("Ustawiono Hydroponike: {}".format(wiad))
-                infoStrip.add_info("Hydroponika: {}".format(setting))
-                nrf.toSend(hydroponika.address, wiad, hydroponika.nrfPower)
+                packet="#17A{:01d}".format(int(setting))
+            if len(packet)>=5:
+                log.add_log("Ustawiono Hydroponike: {}".format(packet))
+                infoStrip.add_info("hyroponics: {}".format(setting))
+                nrf.toSend(hyroponics.address, packet, hyroponics.nrfPower)
             else:
-                log.add_log("BLAD SKLADNI!: {}".format(wiad))
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
 light = LIGHTS_CL()

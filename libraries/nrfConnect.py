@@ -106,53 +106,53 @@ class NRF_CL():
                             string3=(stringNRF[7:10])
                         else:
                             string3=(stringNRF[7:9]+'.0')
-                        czujnikPok2.temp=float(string2)
-                        czujnikPok2.humi=float(string3)
-                        sql.addRecordSensorTemp(czujnikPok2.sqlRoom, czujnikPok2.temp,czujnikPok2.humi)
-                        czujnikPok2.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        czujnikPok2.blad=False #kasowanie bledu
+                        sensorRoom2Temperature.temp=float(string2)
+                        sensorRoom2Temperature.humi=float(string3)
+                        sql.addRecordSensorTemp(sensorRoom2Temperature.sqlRoom, sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)
+                        sensorRoom2Temperature.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        sensorRoom2Temperature.error=False #kasowanie bledu
                         infoStrip.set_error(2,False)
-                        log.add_log(("   Sensor3 czujnikPok2.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
+                        log.add_log(("   Sensor3 sensorRoom2Temperature.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                     if stringNRF[3]== "?":
                         string2=(stringNRF[4:7])
-                        lampaPok2.Jasnosc=int(string2)
-                        if(lampaPok2.Jasnosc==0):
-                            lampaPok2.Flaga=0
+                        ledLightRoom2.Jasnosc=int(string2)
+                        if(ledLightRoom2.Jasnosc==0):
+                            ledLightRoom2.flag=0
                         else:
-                            lampaPok2.Flaga=1
-                        lampaPok2.FlagaSterowanieManualne=True
-                        lampaPok2.blad=0
-                        log.add_log(("   Led Sypialni ON/OFF:{}".format(lampaPok2.Flaga)) + ("   PWM:{}".format(lampaPok2.Jasnosc)))
+                            ledLightRoom2.flag=1
+                        ledLightRoom2.flagManualControl=True
+                        ledLightRoom2.error=0
+                        log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) + ("   PWM:{}".format(ledLightRoom2.Jasnosc)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="03":  #czujnik  zewnetrzny
                     if stringNRF[3]== "s":
                         string1=(stringNRF[4:9])
-                        czujnikZew.lux=int(string1)
+                        sensorOutsideTemperature.lux=int(string1)
                         string2=(stringNRF[9:14])
-                        czujnikZew.ir=int(string2)
+                        sensorOutsideTemperature.ir=int(string2)
                         string3=(stringNRF[14:18])
-                        czujnikZew.batt=int(string3)
-                        sql.addRecordSensorOutdoorLight(czujnikZew.lux,czujnikZew.ir)
-                        self.oblicz_swiatlo()
-                        log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(automatykaOswietlenia.swiatloObliczone))
-                        log.add_log("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(czujnikZew.lux,czujnikZew.ir,czujnikZew.batt))
+                        sensorOutsideTemperature.batt=int(string3)
+                        sql.addRecordSensorOutdoorLight(sensorOutsideTemperature.lux,sensorOutsideTemperature.ir)
+                        self.calculate_light_value()
+                        log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(lightingAutomation.calculatedBrightness))
+                        log.add_log("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(sensorOutsideTemperature.lux,sensorOutsideTemperature.ir,sensorOutsideTemperature.batt))
                     if stringNRF[3]== "t":
                         if(stringNRF[4]=="1"):
                             string2=('-'+stringNRF[5:7]+"."+stringNRF[7])
                         else:
                             string2=(stringNRF[5:7]+"."+stringNRF[7])
-                        czujnikZew.temp=float(string2)
+                        sensorOutsideTemperature.temp=float(string2)
                         string3=(stringNRF[8:10]+"."+stringNRF[10])
-                        czujnikZew.humi=float(string3)
-                        sql.add_record_sensor_outdoor_temp(czujnikZew.temp,czujnikZew.humi,czujnikZew.predkoscWiatru,czujnikZew.kierunekWiatru)
+                        sensorOutsideTemperature.humi=float(string3)
+                        sql.add_record_sensor_outdoor_temp(sensorOutsideTemperature.temp,sensorOutsideTemperature.humi,sensorOutsideTemperature.windSpeed,sensorOutsideTemperature.windDirection)
                         string4=stringNRF[11:13]+'.'+stringNRF[13]
-                        czujnikZew.predkoscWiatru=float(string4)
+                        sensorOutsideTemperature.windSpeed=float(string4)
                         string5=stringNRF[14:17]
-                        czujnikZew.kierunekWiatru=int(string5)
-                        czujnikZew.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        czujnikZew.blad=False #kasowanie bledu
+                        sensorOutsideTemperature.windDirection=int(string5)
+                        sensorOutsideTemperature.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        sensorOutsideTemperature.error=False #kasowanie bledu
                         infoStrip.set_error(0,False)
-                        log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(czujnikZew.temp, czujnikZew.humi, czujnikZew.predkoscWiatru, czujnikZew.kierunekWiatru))
+                        log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(sensorOutsideTemperature.temp, sensorOutsideTemperature.humi, sensorOutsideTemperature.windSpeed, sensorOutsideTemperature.windDirection))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
                     if stringNRF[3]== "t":
@@ -160,119 +160,113 @@ class NRF_CL():
                             string2=('-'+stringNRF[5:7]+'.'+stringNRF[7])
                         else:
                             string2=(stringNRF[5:7]+'.'+stringNRF[7])
-                        czujnikPok1.temp=float(string2)
+                        sensorRoom1Temperature.temp=float(string2)
                         string3=(stringNRF[8:10]+'.'+stringNRF[10])
-                        czujnikPok1.humi=float(string3)
-                        sql.addRecordSensorTemp(czujnikPok1.sqlRoom, czujnikPok1.temp,czujnikPok1.humi)
+                        sensorRoom1Temperature.humi=float(string3)
+                        sql.addRecordSensorTemp(sensorRoom1Temperature.sqlRoom, sensorRoom1Temperature.temp,sensorRoom1Temperature.humi)
                         string4=(stringNRF[11:14])
-                        czujnikPok1.batt=int(string4)
-                        czujnikPok1.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        czujnikPok1.blad=False #kasowanie bledu
+                        sensorRoom1Temperature.batt=int(string4)
+                        sensorRoom1Temperature.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        sensorRoom1Temperature.error=False #kasowanie bledu
                         infoStrip.set_error(1,False)
-                        log.add_log(("   Sensor2 czujnikPok1.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
+                        log.add_log(("   Sensor2 sensorRoom1Temperature.temp: {}*C".format(string2)) +("   Wilg2: {}%".format(string3)) +("   Batt: {}".format(string4)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "05":  #LED - tv
                     if stringNRF[3]== "?":
                         string2=(stringNRF[13:16])
                         if(int(string2)==0):
-                            lampaTV.Flaga=0
+                            ledStripRoom1.flag=0
                         else:
-                            lampaTV.Flaga=1
+                            ledStripRoom1.flag=1
                         if int(string2)>0:
-                            lampaTV.Jasnosc=int(string2)
-                        lampaTV.blad=0
-                        log.add_log(("   Led TV ON/OFF:{}".format(lampaTV.Flaga)) + ("   Jasnosc:{}".format(lampaTV.Jasnosc)))
+                            ledStripRoom1.Jasnosc=int(string2)
+                        ledStripRoom1.error=0
+                        log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.flag)) + ("   Jasnosc:{}".format(ledStripRoom1.Jasnosc)))
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "06":  #LED LAMPA
                     if stringNRF[3]== "?":
                         string2=(stringNRF[13:16])
                         if(int(string2)==0):
-                            lampa1Pok1.Flaga=0
+                            spootLightRoom1.flag=0
                         else:
-                            lampa1Pok1.Flaga=1
-                        #lampa1Pok1.Jasnosc=int(string2)
-                        lampa1Pok1.blad=0
-                        log.add_log(("   Led lampa ON/OFF:{}".format(lampa1Pok1.Flaga)) + ("   Jasnosc:{}".format(lampa1Pok1.Jasnosc)))
+                            spootLightRoom1.flag=1
+                        #spootLightRoom1.Jasnosc=int(string2)
+                        spootLightRoom1.error=0
+                        log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.flag)) + ("   Jasnosc:{}".format(spootLightRoom1.Jasnosc)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "07":  #LED KUCHNIA
                     if stringNRF[3]== "?":
                         if (int(stringNRF[4]) == 1 or int(stringNRF[4]) == 2):
-                            lampaKuch.Flaga=1
+                            kitchenLight.flag=1
                         else:
-                            lampaKuch.Flaga=0
-                        lampaKuch.blad=0
-                        log.add_log(("   Led kuchnia TRYB:{}".format(lampaKuch.Flaga)))
+                            kitchenLight.flag=0
+                        kitchenLight.error=0
+                        log.add_log(("   Led kuchnia TRYB:{}".format(kitchenLight.flag)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "08":  #DEKORACJE POK 1
                     if stringNRF[3]== "?":
-                        dekoPok1.Flaga=int(stringNRF[4])
-                        dekoPok1.blad=0
-                        log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
+                        decorationRoom1.flag=int(stringNRF[4])
+                        decorationRoom1.error=0
+                        log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(decorationRoom1.flag)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "09":  #DEKORACJE 2 POK 1
                     if stringNRF[3]== "?":
-                        deko2Pok1.Flaga=int(stringNRF[4])
-                        deko2Pok1.blad=0
-                        log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(dekoPok1.Flaga)))
+                        decoration2Room1.flag=int(stringNRF[4])
+                        decoration2Room1.error=0
+                        log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(decorationRoom1.flag)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "10":  #FLAMING
                     if stringNRF[3]== "?":
-                        dekoFlaming.Flaga=int(stringNRF[4])
-                        dekoFlaming.blad=0
-                        log.add_log(("   Flaming ON/OFF:{}".format(dekoFlaming.Flaga)))
+                        decorationFlamingo.flag=int(stringNRF[4])
+                        decorationFlamingo.error=0
+                        log.add_log(("   Flaming ON/OFF:{}".format(decorationFlamingo.flag)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "11":  #Uniwersalny modul USB
                     if stringNRF[3]== "?":
-                        dekoUsb.Flaga=int(stringNRF[4])
-                        dekoUsb.blad=0
-                        log.add_log(("   Uniwersalny USB ON/OFF:{}".format(dekoUsb.Flaga)))
+                        usbPlug.flag=int(stringNRF[4])
+                        usbPlug.error=0
+                        log.add_log(("   Uniwersalny USB ON/OFF:{}".format(usbPlug.flag)))
         #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]== "18":  #Hydroponika
+                if stringNRF[1:3]== "18":  #hyroponics
                     if stringNRF[3]== "?":
-                        hydroponika.Flaga=int(stringNRF[4])
-                        hydroponika.blad=0
-                        log.add_log(("   Hydroponika ON/OFF:{}".format(hydroponika.Flaga)))
-        #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]=="01":  #konewka
-                    automatycznaKonewka.add_record(stringNRF)
-                    infoStrip.set_error(3,False)
-                    if(automatycznaKonewka.water < 10):
-                        infoStrip.set_error(20, False)
+                        hyroponics.flag=int(stringNRF[4])
+                        hyroponics.error=0
+                        log.add_log(("   hyroponics ON/OFF:{}".format(hyroponics.flag)))
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "12":  #kwiatek 2  addres 12
-                    czujnikKwiatek2.add_record(stringNRF)
+                    sensorFlower2.add_record(stringNRF)
                     infoStrip.set_error(4,False)  # poprawic - przeniesc do klasy urzadzenia
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "13":  #kwiatek 3 adres 13
-                    czujnikKwiatek3.add_record(stringNRF)
+                    sensorFlower3.add_record(stringNRF)
                     infoStrip.set_error(5,False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "14":  #kwiatek 4 adres 14
-                    czujnikKwiatek4.add_record(stringNRF)
+                    sensorFlower4.add_record(stringNRF)
                     infoStrip.set_error(6,False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "16":  #kwiatek 5 adres 16
-                    czujnikKwiatek5.add_record(stringNRF)
+                    sensorFlower5.add_record(stringNRF)
                     infoStrip.set_error(16,False)
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "17":  #kwiatek 6 adres 17
-                    czujnikKwiatek6.add_record(stringNRF)
+                    sensorFlower6.add_record(stringNRF)
                     infoStrip.set_error(19,False)
     #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]== "15":  #BUDA 15
+                if stringNRF[1:3]== "15":  #dogHouse 15
                     if stringNRF[3]== "s":
                         string2=(stringNRF[4:7])
-                        buda.temp1=float(string2)/10
+                        dogHouse.temp1=float(string2)/10
                         string5=(stringNRF[7:10])
-                        buda.temp2=float(string5)/10
+                        dogHouse.temp2=float(string5)/10
                         string6=(stringNRF[10:13])
-                        buda.temp3=float(string6)/10
+                        dogHouse.temp3=float(string6)/10
                         string7=(stringNRF[13])
-                        buda.czujnikZajetosciFlaga=int(string7)
+                        dogHouse.czujnikZajetosciflaga=int(string7)
                         string8=(stringNRF[14:16])
-                        buda.czujnikZajetosciRaw=int(string8)
-                        buda.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        log.add_log(("   Buda t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(buda.temp1,buda.temp2,buda.temp3,buda.czujnikZajetosciFlaga, buda.czujnikZajetosciRaw)))
+                        dogHouse.czujnikZajetosciRaw=int(string8)
+                        dogHouse.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        log.add_log(("   dogHouse t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(dogHouse.temp1,dogHouse.temp2,dogHouse.temp3,dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "99":  #testowy
                     if stringNRF[3]== ".":
@@ -281,18 +275,20 @@ class NRF_CL():
                             fl1=(float(int1)/1000)
                             log.add_stuff_log('power: {:.3f}V  -> humidity: {}'.format(fl1,int2))
 
-    def oblicz_swiatlo(self):
+    def calculate_light_value(self):
         k=3 #wzmocnienie
         for i in range(4):
-            automatykaOswietlenia.wartosciLux[i]=automatykaOswietlenia.wartosciLux[i+1]
-        automatykaOswietlenia.wartosciLux[4]=czujnikZew.lux
-        automatykaOswietlenia.swiatloObliczone=automatykaOswietlenia.wartosciLux[0]
+            lightingAutomation.LUXvalue[i]=lightingAutomation.LUXvalue[i+1]
+        lightingAutomation.LUXvalue[4]=sensorOutsideTemperature.lux
+        lightingAutomation.calculatedBrightness=lightingAutomation.LUXvalue[0]
         for i in range(4):
-            automatykaOswietlenia.swiatloObliczone=automatykaOswietlenia.swiatloObliczone+automatykaOswietlenia.wartosciLux[i+1]
-        automatykaOswietlenia.swiatloObliczone=(automatykaOswietlenia.swiatloObliczone+((automatykaOswietlenia.wartosciLux[4]*k)))/(5+k)
-        if automatykaOswietlenia.swiatloObliczone<czujnikZew.noc_ustawienie:
-            czujnikZew.noc_flaga=True
+            lightingAutomation.calculatedBrightness=lightingAutomation.calculatedBrightness+lightingAutomation.LUXvalue[i+1]
+        lightingAutomation.calculatedBrightness=(lightingAutomation.calculatedBrightness+((lightingAutomation.LUXvalue[4]*k)))/(5+k)
+        if lightingAutomation.calculatedBrightness<sensorOutsideTemperature.nightSetting:
+            sensorOutsideTemperature.flagNight=True
         else:
-            czujnikZew.noc_flaga=False
-        log.add_log("Swiatlo obliczone=  {}".format(automatykaOswietlenia.swiatloObliczone) + " / {}".format(automatykaOswietlenia.wartosciLux))
+            sensorOutsideTemperature.flagNight=False
+        log.add_log("Swiatlo obliczone=  {}".format(lightingAutomation.calculatedBrightness) + " / {}".format(lightingAutomation.LUXvalue))
+
+
 nrf = NRF_CL([0x11, 0x11, 0x11, 0x11, 0x11])

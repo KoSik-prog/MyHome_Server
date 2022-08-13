@@ -40,7 +40,7 @@ json_data = requests.get(url).json()
 def prognozaDzis(prognoza):
     Pogoda.TempMaxDzis=-50
     Pogoda.TempMinDzis=50
-    flaga=0
+    flag=0
     select_data = prognoza['list']
     #obliczenia daty
     d = datetime.today()
@@ -52,9 +52,9 @@ def prognozaDzis(prognoza):
             if float(box['main']['temp_min'])<Pogoda.TempMinDzis:
                 Pogoda.TempMinDzis=float(box['main']['temp_min'])
             czas=datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
-            if flaga==0:
+            if flag==0:
                 Pogoda.IkonaDzis=box['weather'][0]['description']
-                flaga=1
+                flag=1
         else:
             print('weather not found')
         break

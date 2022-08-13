@@ -1,40 +1,49 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------------
+# Name:        sensorFlower
+# Author:      KoSik
+#
+# Created:     29.05.2022
+# Copyright:   (c) kosik 2022
+#-------------------------------------------------------------------------------
+
 import datetime
 from sensorFlower import *
 from deviceWaterCan import *
 from libraries.lib_nrf24 import NRF24
 
-class czujnikZewCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
-    temp=1.1
-    humi=1.1
-    batt=1.1
-    lux=0
-    ir=0
-    predkoscWiatru=0
-    kierunekWiatru=0
+class sensorOutsideTemperatureCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
+    temp = 1.1
+    humi = 1.1
+    batt = 1.1
+    lux = 0
+    ir = 0
+    windSpeed = 0
+    windDirection = 0
     time = datetime.datetime.now()
-    blad=False
-    noc_flaga=False
-    noc_ustawienie=60  #ustawienie kiedy noc
-    flaga_peirwszaPaczka=False
-czujnikZew=czujnikZewCl
+    error = False
+    flagNight = False
+    nightSetting = 60  #ustawienie kiedy noc
+sensorOutsideTemperature = sensorOutsideTemperatureCl
 
-class czujnikPok1Cl:  #SALON
-    temp=2.2
-    humi=2.2
-    batt=2.2
-    time=datetime.datetime.now()
-    blad=False
+class sensorRoom1TemperatureCl:  #SALON
+    temp = 2.2
+    humi = 2.2
+    batt = 2.2
+    time = datetime.datetime.now()
+    error = False
     sqlRoom = 'pok1Temp'
-czujnikPok1=czujnikPok1Cl
+sensorRoom1Temperature = sensorRoom1TemperatureCl
 
-class czujnikPok2Cl:   #SYPIALNIA
-    temp=3.3
-    humi=3.3
-    batt=3.3
-    time=datetime.datetime.now()
-    blad=False
+class sensorRoom2TemperatureCl:   #SYPIALNIA
+    temp = 3.3
+    humi = 3.3
+    batt = 3.3
+    time = datetime.datetime.now()
+    error = False
     sqlRoom = 'pok2Temp'
-czujnikPok2=czujnikPok2Cl
+sensorRoom2Temperature = sensorRoom2TemperatureCl
 
 '''class czujnikKwiatekCl:   #KWIATEK
     address = [0x33, 0x33, 0x33, 0x11, 0x22]
@@ -47,199 +56,188 @@ czujnikPok2=czujnikPok2Cl
 czujnikKwiatek=czujnikKwiatekCl'''
 
 #  DEVICES
-automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
+#automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
 #  SENSORS
-czujnikKwiatek2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
-czujnikKwiatek3 = SENSOR_FLOWER_CL(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
-czujnikKwiatek4 = SENSOR_FLOWER_CL(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
-czujnikKwiatek5 = SENSOR_FLOWER_CL(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
-czujnikKwiatek6 = SENSOR_FLOWER_CL(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
+sensorFlower2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
+sensorFlower3 = SENSOR_FLOWER_CL(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
+sensorFlower4 = SENSOR_FLOWER_CL(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
+sensorFlower5 = SENSOR_FLOWER_CL(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
+sensorFlower6 = SENSOR_FLOWER_CL(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
 
 class terrariumCl:   #TERRARIUM
-    tempUP=0.0
-    wilgUP=0.0
-    tempDN=0.0
-    wilgDN=0.0
-    UVI=0.0
-terrarium=terrariumCl
+    tempUP = 0.0
+    humiUP = 0.0
+    tempDN = 0.0
+    humiDN = 0.0
+    UVI = 0.0
+terrarium = terrariumCl
 
-class budaCl:   #BUDA
+class dogHouseCl:   #dogHouse
     address = [0x33, 0x33, 0x33, 0x11, 0x55]
     nrfPower = NRF24.PA_LOW
-    Adres=12
-    temp1=0.0
-    temp2=0.0
-    temp3=0.0
-    czujnikZajetosciFlaga=False
-    czujnikZajetosciRaw=0
-    tryb=0
-    time=datetime.datetime.now()
-buda=budaCl
+    temp1 = 0.0
+    temp2 = 0.0
+    temp3 = 0.0
+    czujnikZajetosciflaga = False
+    czujnikZajetosciRaw = 0
+    tryb = 0
+    time = datetime.datetime.now()
+dogHouse = dogHouseCl
 
-class dekoPok1Cl:     #Dekoracje w salonie Reka
-    Adres=5
-    Flaga=0
-    AutoON='15:50:00.0000'
-    AutoOFF='23:05:00.0000'
-    AutoLux_min=700 #ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
-    FlagaSterowanieManualne=False
-    AutoJasnosc=1
-    blad=0
+class decorationRoom1Cl:     #Dekoracje w salonie Reka
+    flag = 0
+    AutoON = '15:50:00.0000'
+    AutoOFF = '23:05:00.0000'
+    autoLux_min = 600 #ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
+    flagManualControl = False
+    autoBrightness = 1
+    error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x77]
     nrfPower = NRF24.PA_LOW
-    Opis="Lampa-reka"
-dekoPok1=dekoPok1Cl
+    label = "Lampa-reka"
+decorationRoom1 = decorationRoom1Cl
 
-class deko2Pok1Cl:     #Dekoracje 2 w salonie  Eifla i inne
-    Adres=6
-    Flaga=0
-    AutoON='15:50:00.0000'
-    AutoOFF='23:04:00.0000'
-    AutoLux_min=800 #ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
-    FlagaSterowanieManualne=False
-    AutoJasnosc=1
-    blad=0
+class decoration2Room1Cl:     #Dekoracje 2 w salonie  Eifla i inne
+    flag = 0
+    AutoON = '15:50:00.0000'
+    AutoOFF = '23:04:00.0000'
+    autoLux_min = 500 #ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
+    flagManualControl = False
+    autoBrightness = 1
+    error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x09]
     nrfPower = NRF24.PA_LOW
-    Opis="Dekoracje szafka"
-deko2Pok1=deko2Pok1Cl
+    label = "Dekoracje szafka"
+decoration2Room1 = decoration2Room1Cl
 
-class dekoFlamingCl:     #Dekoracje w sypialni
-    Flaga=0
-    AutoON='20:00:00.0000'
-    AutoOFF='23:59:00.0000'
-    FlagaSterowanieManualne=False
-    AutoJasnosc=1
-    AutoLux_min=400 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
-    blad=0
-    Adres=7
+class decorationFlamingoCl:     #Dekoracje w sypialni
+    flag = 0
+    AutoON = '21:30:00.0000'
+    AutoOFF = '23:59:00.0000'
+    flagManualControl = False
+    autoBrightness = 1
+    autoLux_min = 300 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x10]
     nrfPower = NRF24.PA_LOW
-    Opis='Flaming'
-dekoFlaming=dekoFlamingCl
+    label = 'Flaming'
+decorationFlamingo = decorationFlamingoCl
 
-class dekoUsbCl:     #USB Stick
-    AutoON='17:00:00.0000'
-    AutoOFF='23:00:00.0000'
-    AutoLux_min=1100
-    AutoJasnosc=1
-    Flaga=0
-    blad=0
-    FlagaSterowanieManualne=False
-    Adres=8
+class usbPlugCl:     #USB Stick
+    AutoON = '17:00:00.0000'
+    AutoOFF = '23:00:00.0000'
+    autoLux_min = 1100
+    autoBrightness = 1
+    flag = 0
+    error = 0
+    flagManualControl = False
     address = [0x33, 0x33, 0x33, 0x33, 0x11]
     nrfPower = NRF24.PA_LOW
-    Opis='USB-Stick'
-dekoUsb=dekoUsbCl
+    label = 'USB-Stick'
+usbPlug = usbPlugCl
 
-class hydroponikaCl:     #Hydroponika
+class hyroponicsCl:     #hyroponika
     address = [0x33, 0x33, 0x33, 0x11, 0x88]
     nrfPower = NRF24.PA_LOW
-    AutoON='08:00:00.0000'
-    AutoOFF='19:00:00.0000'
-    AutoLux_min=65000
-    Flaga=0
-    blad=0
-    AutoJasnosc=1
-    FlagaSterowanieManualne=False
-    Adres=15
-    Opis='Hyroponika'
-hydroponika=hydroponikaCl
+    AutoON = '08:00:00.0000'
+    AutoOFF = '19:00:00.0000'
+    autoLux_min = 65000
+    flag = 0
+    error = 0
+    autoBrightness = 1
+    flagManualControl = False
+    label = 'Hyroponika'
+hyroponics = hyroponicsCl
 
-class lampaTVCl:     #LED TV
+class ledStripRoom1Cl:     #LED TV
     nrfPower = NRF24.PA_LOW
-    Ustawienie="255255255"
-    Bialy=000
-    Jasnosc=70
-    Flaga=0
-    AutoON='16:00:00.0000'
-    AutoOFF='23:00:00.0000'
-    AutoLux_min=1000 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
-    FlagaSterowanieManualne=False
-    AutoJasnosc=70
-    blad=0
-    Adres=1
+    setting = "255255255"
+    Bialy = 000
+    Jasnosc = 70
+    flag = 0
+    AutoON = '16:00:00.0000'
+    AutoOFF = '23:00:00.0000'
+    autoLux_min = 600 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    flagManualControl = False
+    autoBrightness = 70
+    error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x33]
-    Opis="LED TV"
-lampaTV=lampaTVCl
+    label="LED TV"
+ledStripRoom1 = ledStripRoom1Cl
 
-class lampaPok2Cl:  # OSWIETLENIE SYPIALNI
-    Jasnosc=0
-    Flaga=0
-    AutoON='21:00:00.0000'
-    AutoOFF='23:50:00.0000'
-    AutoLux_min=400 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
-    FlagaSterowanieManualne=False
-    AutoJasnosc=5
-    blad=0
-    Adres=2
+class ledLightRoom2Cl:  # OSWIETLENIE SYPIALNI
+    Jasnosc = 0
+    flag = 0
+    AutoON = '21:00:00.0000'
+    AutoOFF = '23:50:00.0000'
+    autoLux_min = 200 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    flagManualControl = False
+    autoBrightness = 5
+    error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x44]
     nrfPower = NRF24.PA_LOW
-    Opis='Sypialnia'
-lampaPok2=lampaPok2Cl
+    label = 'Sypialnia'
+ledLightRoom2 = ledLightRoom2Cl
 
-class lampa1Pok1Cl:  # REFLEKTOR W SALONIE
-    Ustawienie="000000000100"
-    Jasnosc=0
-    Flaga=0
-    blad=0
-    Adres=3
+class spootLightRoom1Cl:  # REFLEKTOR W SALONIE
+    setting = "000000000100"
+    Jasnosc = 0
+    flag = 0
+    error = 0
     address = [0x33, 0x33, 0x33, 0x00, 0x55]
     nrfPower = NRF24.PA_LOW
-    Opis='Reflektor 1'
-lampa1Pok1=lampa1Pok1Cl
+    label = 'Reflektor 1'
+spootLightRoom1 = spootLightRoom1Cl
 
-class lampaKuchCl:  # OSWIETLENIE KUCHNI
-    Flaga=0
-    AutoON='15:00:00.0000'
-    AutoOFF='23:58:00.0000'
-    FlagaSterowanieManualne=False
-    AutoJasnosc=1
-    AutoLux_min=1300 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
-    blad=0
-    Adres=4
-    address = [0x33, 0x33, 0x33, 0x00, 0x66]
+class kitchenLightCl:  # OSWIETLENIE KUCHNI
+    flag = 0
+    AutoON = '15:00:00.0000'
+    AutoOFF = '23:58:00.0000'
+    flagManualControl = False
+    autoBrightness = 1
+    autoLux_min = 1300 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    error = 0
+    address = [0, 0, 0, 0, 6]
     nrfPower = NRF24.PA_LOW
-    Opis='Kuchnia'
-lampaKuch=lampaKuchCl
+    label = 'Kuchnia'
+kitchenLight = kitchenLightCl
 
-class lampaDuzaTradfriCl:
-    address="65537" #Adres="131079"  -> grupa
-    Status=False
-lampaDuzaTradfri=lampaDuzaTradfriCl
+class floorLampRoom1TradfriCl:
+    address = "65537" #Adres="131079"  -> grupa
+    status = False
+floorLampRoom1Tradfri = floorLampRoom1TradfriCl
 
-class lampaPok1TradfriCl:
-    Zarowka="65559"
-    address="131074"
-    Status=False
-lampaPok1Tradfri=lampaPok1TradfriCl
+class mainLightRoom1TradfriCl:
+    bulb = "65559"
+    address = "131074"
+    status = False
+mainLightRoom1Tradfri = mainLightRoom1TradfriCl
 
-class lampaJadalniaTradfriCl:
-    address="131075"
-    Status=False
-lampaJadalniaTradfri=lampaJadalniaTradfriCl
+class diningRoomTradfriCl:
+    address = "131075"
+    status = False
+diningRoomTradfri = diningRoomTradfriCl
 
-class lampaPok2TradfriCl:  #SYPIALNIA
-    address="131082"
-    Flaga=0
-    AutoON='21:10:00.0000'
-    AutoOFF='23:50:00.0000'
-    AutoLux_min=600 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
-    FlagaSterowanieManualne=False
-    AutoJasnosc=5
-    blad=0
-    Opis="Lampy sypialnia"
-lampaPok2Tradfri=lampaPok2TradfriCl
+class ledLightRoom2TradfriCl:  #SYPIALNIA
+    address = "131082"
+    flag = 0
+    AutoON = '21:10:00.0000'
+    AutoOFF = '23:50:00.0000'
+    autoLux_min = 600
+    flagManualControl = False
+    autoBrightness = 5
+    error = 0
+    label = "Lampy sypialnia"
+ledLightRoom2Tradfri = ledLightRoom2TradfriCl
 
-class lampaPrzedpokojTradfriCl:
-    address="131077"
-    Status=False
-    Opis="Oswietlenie przedpokoj"
-lampaPrzedpokojTradfri=lampaPrzedpokojTradfriCl
+class hallTradfriCl: #przedpokoj
+    address = "131077"
+    status = False
+    label = "Oswietlenie przedpokoj"
+hallTradfri = hallTradfriCl
 
-class automatykaOswietleniaCl:
-    wartosciLux=[2000,2000,2000,2000,2000]
-    swiatloObliczone=2000
-    flagaSwiatloWlaczone=False
-automatykaOswietlenia=automatykaOswietleniaCl()
+class lightingAutomationCl:
+    LUXvalue = [2000,2000,2000,2000,2000]
+    calculatedBrightness = 2000
+lightingAutomation = lightingAutomationCl()
