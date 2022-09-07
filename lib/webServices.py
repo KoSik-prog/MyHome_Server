@@ -40,7 +40,6 @@ class UDP_CL:
         ready = select.select([self.s], [], [], 0.5)
         return ready
 
-
     def transmisja(self, messag, adres):
         if(messag.find('salonOswietlenie.') != -1):   # SALON
             strt=messag.find(".")+1
@@ -146,30 +145,30 @@ class UDP_CL:
         if(messag.find('ko2') != -1):
             packet="#05L" + messag[3:15]
             log.add_log(packet)
-            nrf.toSend(ledStripRoom1.adress, packet, ledStripRoom1.nrfPower)
+            nrf.to_send(ledStripRoom1.adress, packet, ledStripRoom1.nrfPower)
             ledStripRoom1.flagManualControl=True
         if(messag.find('gra') != -1):
             packet="#05G" + messag[3:6]
             log.add_log(packet)
-            nrf.toSend(ledStripRoom1.adress, packet, ledStripRoom1.nrfPower)
+            nrf.to_send(ledStripRoom1.adress, packet, ledStripRoom1.nrfPower)
             ledStripRoom1.flagManualControl=True
         if(messag.find('lelw')): # LAMPA LED BIALY
             packet="#06W" + messag[4:7]
-            #nrf.toSend(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+            #nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
         if(messag.find('pok1max') != -1):
             packet="#05K255255255255"
             ledStripRoom1.setting="255255255"
             ledStripRoom1.brightness=255
             log.add_log(packet)
             log.add_log(packet)
-            nrf.toSend(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+            nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
             ikea.ikea_dim_group(ikea.ipAddress,ikea.user_id,ikea.securityid,ikea.security_user, tradfriDev.salon, 100)
             ledStripRoom1.flagManualControl=True
             log.add_log("Tryb swiatel: Pokoj 1 max")
         if(messag.find('dogHouseTryb.') != -1):
             strt=messag.find(".")+1
             packet="#15T" + messag[strt]
-            nrf.toSend(dogHouse.address, packet, dogHouse.nrfPower)
+            nrf.to_send(dogHouse.address, packet, dogHouse.nrfPower)
             #light.set_light(ledStripRoom1.address,ledStripRoom1.brightness)
             #ledStripRoom1.flagManualControl=True
         if(messag.find('spij') != -1):
@@ -215,4 +214,5 @@ class UDP_CL:
             light.set_light(decoration2Room1.address,1)
             decoration2Room1.flagManualControl=True
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
+
 udp = UDP_CL(2222)

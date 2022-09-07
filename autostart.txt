@@ -11,4 +11,4 @@ Zawartosc:
 @pcmanfm --desktop --profile LXDE-pi 
 @xscreensaver -no-splash
 @sudo python /home/pi/Desktop/Home/watchdog.py
-@sudo python /home/pi/Desktop/Home/serwer.py
+@sudo python /home/pi/Desktop/Home/myhome.py

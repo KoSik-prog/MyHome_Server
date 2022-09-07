@@ -26,8 +26,8 @@ class NRF_CL():
     GPIO.setmode(GPIO.BCM)
     radio = NRF24(GPIO, spidev.SpiDev())
 
-    '''TXBuffer -> bufor nadawania [adres, wiadomosc, moc nadawania(PA_LEVEL)]'''
-    TXBuffer = [ [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""]]
+    '''txBuffer -> transmit buffer [address, tx_power(PA_LEVEL), message]'''
+    txBuffer = [ [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""], [[], 1, ""]]
 
     def __init__(self, rxAddress):
         self.radio.begin(1,25)
@@ -41,41 +41,38 @@ class NRF_CL():
         self.radio.printDetails()
         self.radio.startListening()
 
-    def server(self):  #---- SERWER NRF - WATEK!!!!!!!!!! ------------------------------------------------------------------------------------------------------
-        flaga_NRFodczytal=0
-        tekst=""
-
+    def nrf24l01_thread(self):
+        rxBuffer = ""
         while(1):
-            #--------NRF-----------------------
             self.radio.startListening()
-            if(len(tekst)>3):
-                self.NRFread(tekst)
+            if len(rxBuffer) > 3:
+                self.decode_message(rxBuffer)
             while not self.radio.available(0):
-                self.NRFsend()
-            tekst= self.NRFGet()
+                self.send()
+            rxBuffer = self.get_message()
             self.radio.stopListening()
             time.sleep(.001)
 
-    def toSend(self, address, data, txPower):
-        for i in range(len(NRF_CL.TXBuffer)):
-            if(NRF_CL.TXBuffer[i][2] == ""):
-                NRF_CL.TXBuffer[i][0] = address
-                NRF_CL.TXBuffer[i][1] = txPower
-                NRF_CL.TXBuffer[i][2] = data
+    def to_send(self, address, data, txPower):
+        for i in range(len(NRF_CL.txBuffer)):
+            if(NRF_CL.txBuffer[i][2] == ""):
+                NRF_CL.txBuffer[i][0] = address
+                NRF_CL.txBuffer[i][1] = txPower
+                NRF_CL.txBuffer[i][2] = data
                 break
 
-    def NRFsend(self):
-        if NRF_CL.TXBuffer[0][2] != "":
-            self.radio.openWritingPipe(NRF_CL.TXBuffer[0][0])
-            self.radio.setPALevel(NRF_CL.TXBuffer[0][2]) #zmiana mocy nadawania
+    def send(self):
+        if NRF_CL.txBuffer[0][2] != "":
+            self.radio.openWritingPipe(NRF_CL.txBuffer[0][0])
+            self.radio.setPALevel(NRF_CL.txBuffer[0][2]) #zmiana mocy nadawania
             time.sleep(.01)
-            print("NRF addr: {} / power: {} / send: {}".format(NRF_CL.TXBuffer[0][0], NRF_CL.TXBuffer[0][1], NRF_CL.TXBuffer[0][2]))
-            self.NRFtransmit(NRF_CL.TXBuffer[0][2])
-        for i in range(len(NRF_CL.TXBuffer) - 1):
-            NRF_CL.TXBuffer[i] = NRF_CL.TXBuffer[i+1]
-        NRF_CL.TXBuffer[len(NRF_CL.TXBuffer) - 1] = [ [], 1, "" ]
+            print("NRF addr: {} / power: {} / send: {}".format(NRF_CL.txBuffer[0][0], NRF_CL.txBuffer[0][1], NRF_CL.txBuffer[0][2]))
+            self.transmit(NRF_CL.txBuffer[0][2])
+        for i in range(len(NRF_CL.txBuffer) - 1):
+            NRF_CL.txBuffer[i] = NRF_CL.txBuffer[i+1]
+        NRF_CL.txBuffer[len(NRF_CL.txBuffer) - 1] = [ [], 1, "" ]
 
-    def NRFtransmit(self, data):
+    def transmit(self, data):
         self.radio.stopListening()
         message = list(data)
         self.radio.write(message)
@@ -83,7 +80,7 @@ class NRF_CL():
         while len(message) < 32:
             message.append(0)
 
-    def NRFGet(self):
+    def get_message(self):
         receivedMessage = ['','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','','']
         stringNRF = ""
         self.radio.read(receivedMessage, self.radio.getDynamicPayloadSize())
@@ -94,7 +91,7 @@ class NRF_CL():
                 log.add_log(("-----> ODEBRANO: {}".format(stringNRF)))
         return stringNRF
 
-    def NRFread(self, stringNRF):
+    def decode_message(self, stringNRF):
         if len(stringNRF)!=0:
             if stringNRF[0]== "#": # '#' - poczatek transmisji
                 flaga_NRFOdebral=0

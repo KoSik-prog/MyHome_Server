@@ -56,7 +56,7 @@ class LIGHTS_CL:
             if len(packet)>=15:
                 log.add_log("Ustawiono Led TV: {}".format(packet))
                 infoStrip.add_info("światło TV: {}".format(setting))
-                nrf.toSend(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+                nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
                 ledStripRoom1.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -65,7 +65,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Led Sypialni: {}".format(packet))
                 infoStrip.add_info("światło w sypialni: {}".format(setting))
-                nrf.toSend(ledLightRoom2.address, packet, ledLightRoom2.nrfPower)
+                nrf.to_send(ledLightRoom2.address, packet, ledLightRoom2.nrfPower)
                 ledLightRoom2.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -74,7 +74,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Led Kuchni: {}".format(packet))
                 infoStrip.add_info("światło w kuchni: {}".format(setting))
-                nrf.toSend(kitchenLight.address, packet, kitchenLight.nrfPower)
+                nrf.to_send(kitchenLight.address, packet, kitchenLight.nrfPower)
                 kitchenLight.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -84,7 +84,7 @@ class LIGHTS_CL:
                 spootLightRoom1.brightness=int(setting)
                 log.add_log("Ustawiono Reflektor 1: {}".format(packet))
                 infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(spootLightRoom1.setting,int(setting)))
-                nrf.toSend(spootLightRoom1.address, packet, spootLightRoom1.nrfPower)
+                nrf.to_send(spootLightRoom1.address, packet, spootLightRoom1.nrfPower)
                 spootLightRoom1.error+=1
                 if(int(setting) == 0):
                     spootLightRoom1.flag = 0
@@ -97,7 +97,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Lampa 1: {}".format(packet))
                 infoStrip.add_info("dekoracje 1 w salonie: {}".format(setting))
-                nrf.toSend(decorationRoom1.address, packet, decorationRoom1.nrfPower)
+                nrf.to_send(decorationRoom1.address, packet, decorationRoom1.nrfPower)
                 spootLightRoom1.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -106,7 +106,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Lampa 2: {}".format(packet))
                 infoStrip.add_info("dekoracje 2 w salonie: {}".format(setting))
-                nrf.toSend(decoration2Room1.address, packet, decoration2Room1.nrfPower)
+                nrf.to_send(decoration2Room1.address, packet, decoration2Room1.nrfPower)
                 decorationRoom1.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -115,7 +115,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Lampa Flaming: {}".format(packet))
                 infoStrip.add_info("flaming: {}".format(setting))
-                nrf.toSend(decorationFlamingo.address, packet, decorationFlamingo.nrfPower)
+                nrf.to_send(decorationFlamingo.address, packet, decorationFlamingo.nrfPower)
                 decorationFlamingo.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -124,7 +124,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Uniwersalny USB: {}".format(packet))
                 infoStrip.add_info("uniwersalny USB: {}".format(setting))
-                nrf.toSend(usbPlug.address, packet, usbPlug.nrfPower)
+                nrf.to_send(usbPlug.address, packet, usbPlug.nrfPower)
                 usbPlug.error+=1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -196,7 +196,7 @@ class LIGHTS_CL:
             if len(packet)>=5:
                 log.add_log("Ustawiono Hydroponike: {}".format(packet))
                 infoStrip.add_info("hyroponics: {}".format(setting))
-                nrf.toSend(hyroponics.address, packet, hyroponics.nrfPower)
+                nrf.to_send(hyroponics.address, packet, hyroponics.nrfPower)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
 light = LIGHTS_CL()

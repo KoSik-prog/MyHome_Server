@@ -19,23 +19,21 @@ from sensors import *
 from time import sleep
 import RPi.GPIO as GPIO
 
-
-time.sleep(5) #+++++ time delay - for safety +++++++++++++++++++
-
 class Server:
     def __init__(self):
         log.add_log("Uruchamiam serwer MyHome...")
+        time.sleep(5) #+++++ time delay - for safety +++++++++++++++++++
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(22,GPIO.OUT)
         #-------------THREADS INIT--------------------------
-        self.LCD_thread_init()
-        self.NRF_thread_init()
+        self.lcd_thread_init()
+        self.nrf_thread_init()
         self.display_brightness_thread_init()
         self.settings_read_thread_init()
         self.timer_thread_init()
         self.check_sensors_thread_init()
-        #--------------MAIN FUNCTION------------------------------
+        #--------------MAIN FUNCTION------------------------
         self.start_server()
 
     def start_server(self):
@@ -45,12 +43,12 @@ class Server:
                 udp.server()
             ready = udp.readStatus()
 
-    def LCD_thread_init(self):
+    def lcd_thread_init(self):
         lcdTh = threading.Thread(target=gui.lcd)
         lcdTh.start()
 
-    def NRF_thread_init(self):
-        nrfTh = threading.Thread(target=nrf.server)
+    def nrf_thread_init(self):
+        nrfTh = threading.Thread(target=nrf.nrf24l01_thread)
         nrfTh.start()
 
     def display_brightness_thread_init(self):
@@ -69,8 +67,8 @@ class Server:
         nrfTh = threading.Thread(target=sensor.check_sensors)
         nrfTh.start()
 
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#-----START-------------------------------------------------------------------------------------------------------------------------------------------
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#+++++++++++++++++++++++++++++++++++++++++++++++
+#-----START-------------------------------------
+#+++++++++++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
     server = Server()
