@@ -9,12 +9,12 @@ except ImportError:
 from time import sleep
 from random import randint
 
-from libraries.log import *
-from libraries.weatherForecast import *
+from lib.log import *
+from lib.weatherForecast import *
 from devicesList import *
-from libraries.infoStrip import *
-from libraries.dateDecode import *
-from libraries.display import *
+from lib.infoStrip import *
+from lib.dateDecode import *
+from lib.display import *
 
 class GUI_CL:
     bgcolor=(255,255,255,255)
@@ -53,7 +53,7 @@ class GUI_CL:
                     if(px>17 and px<284 and py>15 and py<227):
                         display.set_background_colour(self.bgcolor)
                         obraz=0
-            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutsideTemperature.temp,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.swiatlo, int(spootLightRoom1.flag), int(spootLightRoom1.Jasnosc), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.Jasnosc), int(ledLightRoom2.flag), int(ledLightRoom2.Jasnosc), int(kitchenLight.flag),sensorOutsideTemperature.czas,sensorOutsideTemperature.error,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
+            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutsideTemperature.temp,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.swiatlo, int(spootLightRoom1.flag), int(spootLightRoom1.brightness), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.brightness), int(ledLightRoom2.flag), int(ledLightRoom2.brightness), int(kitchenLight.flag),sensorOutsideTemperature.czas,sensorOutsideTemperature.error,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
             if(obraz==0):
                 if self.tryb_nocny==False:
                     self.obraz_glowny()

@@ -14,8 +14,8 @@ try:
 except ImportError:
     print "Import error - displayBrightness"
 
-from libraries.log import *
-from libraries.gui import *
+from lib.log import *
+from lib.gui import *
 import rpi_backlight as backlight
 
 

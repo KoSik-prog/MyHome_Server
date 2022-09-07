@@ -5,6 +5,6 @@ import sys
 
 
 sys.path.append('..')
-from libraries.ikea import *
+from lib.ikea import *
 
 print("start!")

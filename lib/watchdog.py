@@ -8,7 +8,7 @@
 # Copyright:   (c) kosik 2020
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
-from libraries.log import *
+from lib.log import *
 
 
 import xml.etree.cElementTree as ET

@@ -15,11 +15,11 @@ import spidev
 
 from sensorFlower import *
 from deviceWaterCan import *
-from libraries.log import *
+from lib.log import *
 from devicesList import *
-from libraries.lib_nrf24 import NRF24
-from libraries.sqlDatabase import *
-from libraries.infoStrip import *
+from lib.lib_nrf24 import NRF24
+from lib.sqlDatabase import *
+from lib.infoStrip import *
 
 class NRF_CL():
     GPIO.setwarnings(False)
@@ -115,14 +115,14 @@ class NRF_CL():
                         log.add_log(("   Sensor3 sensorRoom2Temperature.temp: {}*C".format(string2)) + ("   Wilg3: {}%".format(string3)))
                     if stringNRF[3]== "?":
                         string2=(stringNRF[4:7])
-                        ledLightRoom2.Jasnosc=int(string2)
-                        if(ledLightRoom2.Jasnosc==0):
+                        ledLightRoom2.brightness=int(string2)
+                        if(ledLightRoom2.brightness==0):
                             ledLightRoom2.flag=0
                         else:
                             ledLightRoom2.flag=1
                         ledLightRoom2.flagManualControl=True
                         ledLightRoom2.error=0
-                        log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) + ("   PWM:{}".format(ledLightRoom2.Jasnosc)))
+                        log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) + ("   PWM:{}".format(ledLightRoom2.brightness)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="03":  #czujnik  zewnetrzny
                     if stringNRF[3]== "s":
@@ -179,9 +179,9 @@ class NRF_CL():
                         else:
                             ledStripRoom1.flag=1
                         if int(string2)>0:
-                            ledStripRoom1.Jasnosc=int(string2)
+                            ledStripRoom1.brightness=int(string2)
                         ledStripRoom1.error=0
-                        log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.flag)) + ("   Jasnosc:{}".format(ledStripRoom1.Jasnosc)))
+                        log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.flag)) + ("   Jasnosc:{}".format(ledStripRoom1.brightness)))
     #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "06":  #LED LAMPA
                     if stringNRF[3]== "?":
@@ -190,9 +190,9 @@ class NRF_CL():
                             spootLightRoom1.flag=0
                         else:
                             spootLightRoom1.flag=1
-                        #spootLightRoom1.Jasnosc=int(string2)
+                        #spootLightRoom1.brightness=int(string2)
                         spootLightRoom1.error=0
-                        log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.flag)) + ("   Jasnosc:{}".format(spootLightRoom1.Jasnosc)))
+                        log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.flag)) + ("   Jasnosc:{}".format(spootLightRoom1.brightness)))
         #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]== "07":  #LED KUCHNIA
                     if stringNRF[3]== "?":

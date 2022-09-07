@@ -6,7 +6,7 @@ except ImportError:
     log.add_log("Modul Import Error")
 
 from pygame.compat import geterror
-from libraries.log import *
+from lib.log import *
 
 ''' ICONS NR
 01d - clear sky

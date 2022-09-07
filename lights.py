@@ -14,11 +14,11 @@ try:
 except ImportError:
     print "Blad importu"
 
-from libraries.log import *
+from lib.log import *
 from devicesList import *
-from libraries.infoStrip import *
-from libraries.nrfConnect import *
-from libraries.ikea import *
+from lib.infoStrip import *
+from lib.nrfConnect import *
+from lib.ikea import *
 
 #addressy  ==>>
 addressLedTV = 1
@@ -81,7 +81,7 @@ class LIGHTS_CL:
         if address==spootLightRoom1.address:  # LAMPA 1 w salonie
             packet="#05K{}{:03d}".format(spootLightRoom1.setting, int(setting))
             if len(packet)>=5:
-                spootLightRoom1.Jasnosc=int(setting)
+                spootLightRoom1.brightness=int(setting)
                 log.add_log("Ustawiono Reflektor 1: {}".format(packet))
                 infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(spootLightRoom1.setting,int(setting)))
                 nrf.toSend(spootLightRoom1.address, packet, spootLightRoom1.nrfPower)

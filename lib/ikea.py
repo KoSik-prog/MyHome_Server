@@ -13,7 +13,7 @@ import sys, re, os, ConfigParser
 
 from tradfri import tradfriStatus
 from tradfri import tradfriActions
-from libraries.log import *
+from lib.log import *
 
 import subprocess as sp
 

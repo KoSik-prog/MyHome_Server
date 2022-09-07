@@ -15,7 +15,7 @@ try:
 except ImportError:
     print "UDP import error"
 
-from libraries.log import *
+from lib.log import *
 from lights import *
 
 class UDP_CL:
@@ -62,9 +62,9 @@ class UDP_CL:
         if(messag.find('swiatloSypialni.') != -1):   # SYPIALNIA
             strt=messag.find(".")+1
             chJasnosc=int(messag[strt:strt+3])
-            ledLightRoom2.Jasnosc=chJasnosc
-            light.set_light(ledLightRoom2Tradfri.address,ledLightRoom2.Jasnosc)
-            light.set_light(ledLightRoom2.address,ledLightRoom2.Jasnosc)
+            ledLightRoom2.brightness=chJasnosc
+            light.set_light(ledLightRoom2Tradfri.address,ledLightRoom2.brightness)
+            light.set_light(ledLightRoom2.address,ledLightRoom2.brightness)
             ledLightRoom2.flagManualControl=True
             decorationFlamingo.flagManualControl=True
             light.set_light(decorationFlamingo.address,messag[strt])
@@ -86,14 +86,14 @@ class UDP_CL:
             light.set_light(hallTradfri.address,chJasnosc)
         if(messag.find('reflektor1.') != -1): # REFLEKTOR LED COLOR
             spootLightRoom1.setting=messag[11:23]
-            spootLightRoom1.Jasnosc=messag[23:26]
-            light.set_light(spootLightRoom1.address, spootLightRoom1.Jasnosc)
+            spootLightRoom1.brightness=messag[23:26]
+            light.set_light(spootLightRoom1.address, spootLightRoom1.brightness)
         if(messag.find('reflektor1kolor.') != -1): # REFLEKTOR LED COLOR KOLOR
             spootLightRoom1.setting=messag[16:28]
-            light.set_light(spootLightRoom1.address,spootLightRoom1.Jasnosc)
+            light.set_light(spootLightRoom1.address,spootLightRoom1.brightness)
         if(messag.find('reflektor1jasn.') != -1): # REFLEKTOR LED COLOR JASNOSC
-            spootLightRoom1.Jasnosc=messag[15:18]
-            light.set_light(spootLightRoom1.address,spootLightRoom1.Jasnosc)
+            spootLightRoom1.brightness=messag[15:18]
+            light.set_light(spootLightRoom1.address,spootLightRoom1.brightness)
         if(messag.find('dekoracjePok1.') != -1): # DEKORACJE POKOJ 1
             strt=messag.find(".")+1
             light.set_light(decorationRoom1.address, messag[strt])
@@ -113,7 +113,7 @@ class UDP_CL:
             light.set_light(self.address,messag[strt])
         if(messag=='?m'):
             try:
-                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutsideTemperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.temp,sensorRoom1Temperature.humi,sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag),ledStripRoom1.setting,ledStripRoom1.Jasnosc)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag),ledLightRoom2.Jasnosc)+'lela{}{:03d}'.format(int(spootLightRoom1.flag),spootLightRoom1.Jasnosc), adres)
+                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutsideTemperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.temp,sensorRoom1Temperature.humi,sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag),ledStripRoom1.setting,ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag),ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag),spootLightRoom1.brightness), adres)
                 log.add_log("Wyslano dane UDP")
             except:
                 log.add_log("Blad danych dla UDP")
@@ -121,13 +121,13 @@ class UDP_CL:
             strt=messag.find(".")+1
             if int(messag[(strt+9):(strt+12)])>=0:
                 ledStripRoom1.setting=messag[(strt):(strt+9)]
-                ledStripRoom1.Jasnosc=int(messag[(strt+9):(strt+12)])
-            light.set_light(ledStripRoom1.address, ledStripRoom1.Jasnosc)
+                ledStripRoom1.brightness=int(messag[(strt+9):(strt+12)])
+            light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
             ledStripRoom1.flagManualControl=True
         if(messag.find('sterTVjasnosc.') != -1):
             zmien=messag[14:17]
             if int(zmien)>0:
-                ledStripRoom1.Jasnosc=int(zmien)
+                ledStripRoom1.brightness=int(zmien)
             light.set_light(ledStripRoom1.address, zmien)
             ledStripRoom1.flagManualControl=True
         if(messag.find('terrarium.') != -1):
@@ -159,7 +159,7 @@ class UDP_CL:
         if(messag.find('pok1max') != -1):
             packet="#05K255255255255"
             ledStripRoom1.setting="255255255"
-            ledStripRoom1.Jasnosc=255
+            ledStripRoom1.brightness=255
             log.add_log(packet)
             log.add_log(packet)
             nrf.toSend(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
@@ -170,7 +170,7 @@ class UDP_CL:
             strt=messag.find(".")+1
             packet="#15T" + messag[strt]
             nrf.toSend(dogHouse.address, packet, dogHouse.nrfPower)
-            #light.set_light(ledStripRoom1.address,ledStripRoom1.Jasnosc)
+            #light.set_light(ledStripRoom1.address,ledStripRoom1.brightness)
             #ledStripRoom1.flagManualControl=True
         if(messag.find('spij') != -1):
             light.set_light(ledStripRoom1.address, "000")

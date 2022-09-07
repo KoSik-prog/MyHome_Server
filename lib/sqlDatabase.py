@@ -6,7 +6,7 @@ try:
 except ImportError:
     print "Import error"
 
-from libraries.log import *
+from lib.log import *
 
 class SQL_CL:
     databaseLoc = '/var/www/html/home_database.db'

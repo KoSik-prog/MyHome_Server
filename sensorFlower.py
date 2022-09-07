@@ -12,8 +12,8 @@ try:
 except ImportError:
     print "Import error"
 
-from libraries.log import *
-from libraries.sqlDatabase import *
+from lib.log import *
+from lib.sqlDatabase import *
 
 class SENSOR_FLOWER_CL:
     light = 0

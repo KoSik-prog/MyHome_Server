@@ -15,8 +15,8 @@ except ImportError:
     print "Blad importu"
 
 
-from libraries.log import *
-from libraries.sqlDatabase import *
+from lib.log import *
+from lib.sqlDatabase import *
 from lights import *
 from devicesList import *
 
@@ -51,11 +51,11 @@ class TIMER_CL:
         format = '%H:%M:%S.%f'
         aktual=datetime.datetime.now().time()
         try:
-            zmiennaON = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.AutoON, format) # obliczenie roznicy czasu
+            zmiennaON = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.autoOn, format) # obliczenie roznicy czasu
         except ValueError as e:
             print('Blad czasu wł:', e)
         try:
-            zmiennaOFF = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.AutoOFF, format) # obliczenie roznicy czasu
+            zmiennaOFF = datetime.datetime.strptime(str(aktual), format) - datetime.datetime.strptime(klasa.autoOff, format) # obliczenie roznicy czasu
         except ValueError as e:
             print('Blad czasu wył:', e)
         #-----skasowanie flag ----------
@@ -64,7 +64,7 @@ class TIMER_CL:
         if(int(zmiennaOFF.total_seconds())>(-15) and int(zmiennaOFF.total_seconds())<0 and klasa.flagManualControl==True):
             klasa.flagManualControl=False
         #------SPRAWDZENIE------------------------
-        if(klasa.flag==0 and lightingAutomation.calculatedBrightness<klasa.autoLux_min and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.flagManualControl==False and klasa.error<20):
+        if(klasa.flag==0 and lightingAutomation.calculatedBrightness<klasa.autoLuxMin and (int(zmiennaON.total_seconds())>0) and (int(zmiennaOFF.total_seconds())<(-60)) and klasa.flagManualControl==False and klasa.error<20):
             log.add_log("AUTO {} -> ON".format(klasa.label))
             light.set_light(klasa.address, klasa.autoBrightness)
             klasa.flag=1

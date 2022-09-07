@@ -14,9 +14,9 @@ try:
 except ImportError:
     print "Blad importu"
 
-from libraries.log import *
+from lib.log import *
 from devicesList import *
-from libraries.infoStrip import *
+from lib.infoStrip import *
 
 class SENSORS_CL:
     minBatteryVoltage=2.55

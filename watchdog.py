@@ -8,8 +8,8 @@
 # Copyright:   (c) kosik 2020
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
-from libraries.log import *
-from libraries.watchdog import *
+from lib.log import *
+from lib.watchdog import *
 
 
 import xml.etree.cElementTree as ET
