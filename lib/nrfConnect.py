@@ -14,6 +14,7 @@ import RPi.GPIO as GPIO
 import spidev
 
 from sensorFlower import *
+from sensorOutside import *
 from deviceWaterCan import *
 from lib.log import *
 from devicesList import *
@@ -21,7 +22,7 @@ from lib.lib_nrf24 import NRF24
 from lib.sqlDatabase import *
 from lib.infoStrip import *
 
-class NRF_CL():
+class Nrf():
     GPIO.setwarnings(False)
     GPIO.setmode(GPIO.BCM)
     radio = NRF24(GPIO, spidev.SpiDev())
@@ -43,7 +44,7 @@ class NRF_CL():
 
     def nrf24l01_thread(self):
         rxBuffer = ""
-        while(1):
+        while server.read_server_active_flag() == True:
             self.radio.startListening()
             if len(rxBuffer) > 3:
                 self.decode_message(rxBuffer)
@@ -54,23 +55,23 @@ class NRF_CL():
             time.sleep(.001)
 
     def to_send(self, address, data, txPower):
-        for i in range(len(NRF_CL.txBuffer)):
-            if(NRF_CL.txBuffer[i][2] == ""):
-                NRF_CL.txBuffer[i][0] = address
-                NRF_CL.txBuffer[i][1] = txPower
-                NRF_CL.txBuffer[i][2] = data
+        for i in range(len(Nrf.txBuffer)):
+            if(Nrf.txBuffer[i][2] == ""):
+                Nrf.txBuffer[i][0] = address
+                Nrf.txBuffer[i][1] = txPower
+                Nrf.txBuffer[i][2] = data
                 break
 
     def send(self):
-        if NRF_CL.txBuffer[0][2] != "":
-            self.radio.openWritingPipe(NRF_CL.txBuffer[0][0])
-            self.radio.setPALevel(NRF_CL.txBuffer[0][2]) #zmiana mocy nadawania
+        if Nrf.txBuffer[0][2] != "":
+            self.radio.openWritingPipe(Nrf.txBuffer[0][0])
+            self.radio.setPALevel(Nrf.txBuffer[0][2]) #zmiana mocy nadawania
             time.sleep(.01)
-            print("NRF addr: {} / power: {} / send: {}".format(NRF_CL.txBuffer[0][0], NRF_CL.txBuffer[0][1], NRF_CL.txBuffer[0][2]))
-            self.transmit(NRF_CL.txBuffer[0][2])
-        for i in range(len(NRF_CL.txBuffer) - 1):
-            NRF_CL.txBuffer[i] = NRF_CL.txBuffer[i+1]
-        NRF_CL.txBuffer[len(NRF_CL.txBuffer) - 1] = [ [], 1, "" ]
+            print("NRF addr: {} / power: {} / send: {}".format(Nrf.txBuffer[0][0], Nrf.txBuffer[0][1], Nrf.txBuffer[0][2]))
+            self.transmit(Nrf.txBuffer[0][2])
+        for i in range(len(Nrf.txBuffer) - 1):
+            Nrf.txBuffer[i] = Nrf.txBuffer[i+1]
+        Nrf.txBuffer[len(Nrf.txBuffer) - 1] = [ [], 1, "" ]
 
     def transmit(self, data):
         self.radio.stopListening()
@@ -105,7 +106,7 @@ class NRF_CL():
                             string3=(stringNRF[7:9]+'.0')
                         sensorRoom2Temperature.temp=float(string2)
                         sensorRoom2Temperature.humi=float(string3)
-                        sql.addRecordSensorTemp(sensorRoom2Temperature.sqlRoom, sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)
+                        sql.add_record_sensor_temp(sensorRoom2Temperature.sqlRoom, sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)
                         sensorRoom2Temperature.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         sensorRoom2Temperature.error=False #kasowanie bledu
                         infoStrip.set_error(2,False)
@@ -122,34 +123,36 @@ class NRF_CL():
                         log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) + ("   PWM:{}".format(ledLightRoom2.brightness)))
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="03":  #czujnik  zewnetrzny
-                    if stringNRF[3]== "s":
+                    sensorOutside.add_record(stringNRF)
+                    """if stringNRF[3]== "s":
                         string1=(stringNRF[4:9])
-                        sensorOutsideTemperature.lux=int(string1)
+                        sensorOutside.light=int(string1)
                         string2=(stringNRF[9:14])
-                        sensorOutsideTemperature.ir=int(string2)
+                        sensorOutside.ir=int(string2)
                         string3=(stringNRF[14:18])
-                        sensorOutsideTemperature.batt=int(string3)
-                        sql.addRecordSensorOutdoorLight(sensorOutsideTemperature.lux,sensorOutsideTemperature.ir)
+                        sensorOutside.power=int(string3)
+                        sql.add_record_sensor_outdoor_light(sensorOutside.light,sensorOutside.ir)
                         self.calculate_light_value()
                         log.add_log("Obliczylem, ze swiatlo wynosci: {}".format(lightingAutomation.calculatedBrightness))
-                        log.add_log("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(sensorOutsideTemperature.lux,sensorOutsideTemperature.ir,sensorOutsideTemperature.batt))
+                        log.add_log("   Sensor1 zewnetrzny ->   Lux: {}    LuxIR: {}    Bateria: {}".format(sensorOutside.light,sensorOutside.ir,sensorOutside.power))
                     if stringNRF[3]== "t":
                         if(stringNRF[4]=="1"):
                             string2=('-'+stringNRF[5:7]+"."+stringNRF[7])
                         else:
                             string2=(stringNRF[5:7]+"."+stringNRF[7])
-                        sensorOutsideTemperature.temp=float(string2)
+                        sensorOutside.temperature=float(string2)
                         string3=(stringNRF[8:10]+"."+stringNRF[10])
-                        sensorOutsideTemperature.humi=float(string3)
-                        sql.add_record_sensor_outdoor_temp(sensorOutsideTemperature.temp,sensorOutsideTemperature.humi,sensorOutsideTemperature.windSpeed,sensorOutsideTemperature.windDirection)
+                        sensorOutside.humidity=float(string3)
+                        sql.add_record_sensor_outdoor_temp(sensorOutside.temperature,sensorOutside.humidity,sensorOutside.windSpeed,sensorOutside.windDirection)
                         string4=stringNRF[11:13]+'.'+stringNRF[13]
-                        sensorOutsideTemperature.windSpeed=float(string4)
+                        sensorOutside.windSpeed=float(string4)
                         string5=stringNRF[14:17]
-                        sensorOutsideTemperature.windDirection=int(string5)
-                        sensorOutsideTemperature.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
-                        sensorOutsideTemperature.error=False #kasowanie bledu
+                        sensorOutside.windDirection=int(string5)
+                        sensorOutside.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
+                        sensorOutside.errorFlag=False #kasowanie bledu
                         infoStrip.set_error(0,False)
-                        log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(sensorOutsideTemperature.temp, sensorOutsideTemperature.humi, sensorOutsideTemperature.windSpeed, sensorOutsideTemperature.windDirection))
+                        log.add_log("   Sensor1 zewnetrzny Temp: {}*C   Wilg: {}%   Wiatr: {}m/s   Kier:{}".format(sensorOutside.temperature, sensorOutside.humidity, sensorOutside.windSpeed, sensorOutside.windDirection))
+                    """
                 #------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3]=="04":  #czujnik temperatury 2 - pokoju
                     if stringNRF[3]== "t":
@@ -160,7 +163,7 @@ class NRF_CL():
                         sensorRoom1Temperature.temp=float(string2)
                         string3=(stringNRF[8:10]+'.'+stringNRF[10])
                         sensorRoom1Temperature.humi=float(string3)
-                        sql.addRecordSensorTemp(sensorRoom1Temperature.sqlRoom, sensorRoom1Temperature.temp,sensorRoom1Temperature.humi)
+                        sql.add_record_sensor_temp(sensorRoom1Temperature.sqlRoom, sensorRoom1Temperature.temp,sensorRoom1Temperature.humi)
                         string4=(stringNRF[11:14])
                         sensorRoom1Temperature.batt=int(string4)
                         sensorRoom1Temperature.time = datetime.datetime.now() #zapisanie czasu ostatniego odbioru
@@ -272,20 +275,20 @@ class NRF_CL():
                             fl1=(float(int1)/1000)
                             log.add_log('power: {:.3f}V  -> humidity: {}'.format(fl1,int2))
 
-    def calculate_light_value(self):
+    """def calculate_light_value(self):
         k=3 #wzmocnienie
         for i in range(4):
             lightingAutomation.LUXvalue[i]=lightingAutomation.LUXvalue[i+1]
-        lightingAutomation.LUXvalue[4]=sensorOutsideTemperature.lux
+        lightingAutomation.LUXvalue[4]=sensorOutside.light
         lightingAutomation.calculatedBrightness=lightingAutomation.LUXvalue[0]
         for i in range(4):
             lightingAutomation.calculatedBrightness=lightingAutomation.calculatedBrightness+lightingAutomation.LUXvalue[i+1]
         lightingAutomation.calculatedBrightness=(lightingAutomation.calculatedBrightness+((lightingAutomation.LUXvalue[4]*k)))/(5+k)
-        if lightingAutomation.calculatedBrightness<sensorOutsideTemperature.nightSetting:
-            sensorOutsideTemperature.flagNight=True
+        if lightingAutomation.calculatedBrightness<sensorOutside.nightSetting:
+            sensorOutside.nightFlag=True
         else:
-            sensorOutsideTemperature.flagNight=False
-        log.add_log("Swiatlo obliczone=  {}".format(lightingAutomation.calculatedBrightness) + " / {}".format(lightingAutomation.LUXvalue))
+            sensorOutside.nightFlag=False
+        log.add_log("Swiatlo obliczone=  {}".format(lightingAutomation.calculatedBrightness) + " / {}".format(lightingAutomation.LUXvalue))"""
 
 
-nrf = NRF_CL([0x11, 0x11, 0x11, 0x11, 0x11])
+nrf = Nrf([0x11, 0x11, 0x11, 0x11, 0x11])

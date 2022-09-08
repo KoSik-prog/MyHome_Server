@@ -1,16 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 #-------------------------------------------------------------------------------
-# Name:        module1
+# Name:        watchdog main program
 # Purpose:
 #
-# Author:      kosik
+# Author:      KoSik
 #
 # Created:     21.05.2020
 # Copyright:   (c) kosik 2020
-# Licence:     <your licence>
 #-------------------------------------------------------------------------------
 from lib.log import *
 from lib.watchdog import *
-
 
 import xml.etree.cElementTree as ET
 import time, os

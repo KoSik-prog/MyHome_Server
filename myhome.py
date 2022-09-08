@@ -49,13 +49,13 @@ class MyHome:
 
     def start_server(self):
         ready = udp.readStatus()
-        while(1):
+        while server.read_server_active_flag() == True:
             if ready[0]:
                 udp.server()
             ready = udp.readStatus()
 
     def lcd_thread_init(self):
-        lcdTh = threading.Thread(target=gui.lcd)
+        lcdTh = threading.Thread(target=gui.gui_thread)
         lcdTh.start()
 
     def nrf_thread_init(self):
@@ -71,7 +71,7 @@ class MyHome:
         nrfTh.start()
 
     def timer_thread_init(self):
-        nrfTh = threading.Thread(target=timer.timer_start)
+        nrfTh = threading.Thread(target=timer.timer_thread)
         nrfTh.start()
 
     def check_sensors_thread_init(self):

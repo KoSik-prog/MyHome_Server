@@ -40,12 +40,13 @@ class Weather:
     iconToday="01d"
     iconTomorrow="01d"
 
-    def __init__(self, city):
+    def __init__(self, city, id):
         self.city = city
+        self.id = id
 
     def weather_thread(self):
         while server.read_server_active_flag() == True:
-            weather.get_forecast('Rodgau')
+            weather.get_forecast(self.city, self.id)
             time.sleep(300)
 
     def forecast_today(self, forecastText):
@@ -96,8 +97,8 @@ class Weather:
             else:
                 log.add_log('nie znaleziono pogody na jutro')
 
-    def get_forecast(self, city):
-        url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID=85b527bafdfc28a92672434b32ead750&units=metric'.format(city)
+    def get_forecast(self, city, id):
+        url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID={}&units=metric'.format(city, id)
         try:
             json_data = requests.get(url).json()
             self.forecast_today(json_data)
@@ -106,4 +107,4 @@ class Weather:
         except:
             log.add_log("Blad polaczenia z serwerem pogody")
 
-weather = Weather("Rodgau")
+weather = Weather("Rodgau", "85b527bafdfc28a92672434b32ead750")

@@ -17,10 +17,13 @@ class Server():
     
     def read_server_active_flag(self):
         return self.serverActiveFlag
+
+    def set_server_active_flag(self, flag):
+        self.serverActiveFlag = flag
         
 server = Server()
 
-class SensorOutsideTemperature:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
+"""class SensorOutsideTemperature:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     temp = 1.1
     humi = 1.1
     batt = 1.1
@@ -32,7 +35,7 @@ class SensorOutsideTemperature:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     error = False
     flagNight = False
     nightSetting = 60  #ustawienie kiedy noc
-sensorOutsideTemperature = SensorOutsideTemperature()
+sensorOutsideTemperature = SensorOutsideTemperature()"""
 
 class SensorRoom1Temperature:  #SALON
     temp = 2.2

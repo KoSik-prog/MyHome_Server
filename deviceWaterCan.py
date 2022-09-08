@@ -39,7 +39,7 @@ class DEVICE_WATER_CAN_CL:
                 self.power = data[13:16]
                 self.watering = data[17]
 
-                sql.addRecordWateringCan(self.humidity, self.light, self.water, self.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
+                sql.add_record_watering_can(self.humidity, self.light, self.water, self.power, 0, 0) #ostatni parametr to podlanie poprawic!!!
                 self.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
 
                 log.add_log("   Kwiatek AutoKonewka wilgotnosc:{}  swiatlo:{}%  woda:{}x10ml  zas:{}%  podlanie:{}".format(self.humidity, self.light, self.water, self.power, self.watering))

@@ -17,8 +17,9 @@ except ImportError:
 
 from lib.log import *
 from lights import *
+from sensorOutside import *
 
-class UDP_CL:
+class Udp:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     def __init__(self, AddrOut):
@@ -32,7 +33,7 @@ class UDP_CL:
         try:
             message, address = self.s.recvfrom(1024)
             log.add_log(log.actualDate() +" " + "Polaczenie %s: %s" % (address, message))
-            self.transmisja(message, address)
+            self.transmit(message, address)
         except (KeyboardInterrupt, SystemExit):
             log.add_log('server UDP error')
 
@@ -40,7 +41,7 @@ class UDP_CL:
         ready = select.select([self.s], [], [], 0.5)
         return ready
 
-    def transmisja(self, messag, adres):
+    def transmit(self, messag, adres):
         if(messag.find('salonOswietlenie.') != -1):   # SALON
             strt=messag.find(".")+1
             chJasnosc=int(messag[strt:strt+3])
@@ -87,7 +88,7 @@ class UDP_CL:
             spootLightRoom1.setting=messag[11:23]
             spootLightRoom1.brightness=messag[23:26]
             light.set_light(spootLightRoom1.address, spootLightRoom1.brightness)
-        if(messag.find('reflektor1kolor.') != -1): # REFLEKTOR LED COLOR KOLOR
+        if(messag.find('reflektor1kolor.') != -1): # REFLEKTOR LED COLOR
             spootLightRoom1.setting=messag[16:28]
             light.set_light(spootLightRoom1.address,spootLightRoom1.brightness)
         if(messag.find('reflektor1jasn.') != -1): # REFLEKTOR LED COLOR JASNOSC
@@ -112,7 +113,7 @@ class UDP_CL:
             light.set_light(self.address,messag[strt])
         if(messag=='?m'):
             try:
-                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutsideTemperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.temp,sensorRoom1Temperature.humi,sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag),ledStripRoom1.setting,ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag),ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag),spootLightRoom1.brightness), adres)
+                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature,sensorOutside.humidity,sensorRoom1Temperature.temp,sensorRoom1Temperature.humi,sensorRoom2Temperature.temp,sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc),int(czujnikKwiatek.slonce),int(czujnikKwiatek.woda),int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag),ledStripRoom1.setting,ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag),ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag),spootLightRoom1.brightness), adres)
                 log.add_log("Wyslano dane UDP")
             except:
                 log.add_log("Blad danych dla UDP")
@@ -141,7 +142,7 @@ class UDP_CL:
             strt=messag.find("/I:")+1
             terrarium.uvi=float(messag[(strt+2):(strt+11)])
             log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  uvi: {}".format(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.uvi))
-            sql.addRecordTerrarium(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.uvi)
+            sql.add_record_terrarium(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.uvi)
         if(messag.find('ko2') != -1):
             packet="#05L" + messag[3:15]
             log.add_log(packet)
@@ -215,4 +216,4 @@ class UDP_CL:
             decoration2Room1.flagManualControl=True
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
 
-udp = UDP_CL(2222)
+udp = Udp(2222)

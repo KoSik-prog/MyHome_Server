@@ -17,9 +17,10 @@ except ImportError:
 from lib.log import *
 from devicesList import *
 from lib.infoStrip import *
+from sensorOutside import *
 
 class Sensors:
-    minBatteryVoltage=2.55
+    minBatteryVoltage = 2.55
     minHumidity = 10
 
     def check_sensors(self): #watek
@@ -44,7 +45,7 @@ class Sensors:
             infoStrip.set_error(errorNumber, False)
 
     def check_sensor(self):
-        self.set_receive_error_on_strip(sensorOutsideTemperature, 18, 0)
+        self.set_receive_error_on_strip(sensorOutside, 18, 0)
         self.set_receive_error_on_strip(sensorRoom1Temperature, 23, 1)
         self.set_receive_error_on_strip(sensorRoom2Temperature, 23, 2)
         self.set_receive_error_on_strip(sensorFlower2, 63, 4)
@@ -65,10 +66,11 @@ class Sensors:
         self.set_min_humidity_error_on_strip(sensorFlower5, 15)
         self.set_min_humidity_error_on_strip(sensorFlower6, 18)
         #sprawdzenie budy
-        if((datetime.datetime.now() - dogHouse.time)>(datetime.timedelta(minutes=2))):
-            dogHouse.temp1=0.0
-            dogHouse.temp2=0.0
-            dogHouse.temp3=0.0
-            dogHouse.czujnikZajetosciflaga=0
-            dogHouse.czujnikZajetosciRaw=0
+        if((datetime.datetime.now() - dogHouse.time) > (datetime.timedelta(minutes=2))):
+            dogHouse.temp1 = 0.0
+            dogHouse.temp2 = 0.0
+            dogHouse.temp3 = 0.0
+            dogHouse.czujnikZajetosciflaga = 0
+            dogHouse.czujnikZajetosciRaw = 0
+
 sensor = Sensors()
