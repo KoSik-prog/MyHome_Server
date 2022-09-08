@@ -18,7 +18,7 @@ from lib.log import *
 from devicesList import *
 from lib.infoStrip import *
 
-class SENSORS_CL:
+class Sensors:
     minBatteryVoltage=2.55
     minHumidity = 10
 
@@ -38,7 +38,7 @@ class SENSORS_CL:
             infoStrip.set_error(errorNumber, False)
 
     def set_min_humidity_error_on_strip(self, myClass, errorNumber):
-        if(myClass.humidity <= SENSORS_CL.minHumidity and myClass.light < 60):
+        if(myClass.humidity <= Sensors.minHumidity and myClass.light < 60):
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)
@@ -53,11 +53,11 @@ class SENSORS_CL:
         self.set_receive_error_on_strip(sensorFlower5, 63, 16)
         self.set_receive_error_on_strip(sensorFlower6, 63, 19)
         #sprawdzenie stanu baterii
-        self.set_power_error_on_strip(sensorFlower2, SENSORS_CL.minBatteryVoltage, 8)
-        self.set_power_error_on_strip(sensorFlower3, SENSORS_CL.minBatteryVoltage, 9)
-        self.set_power_error_on_strip(sensorFlower4, SENSORS_CL.minBatteryVoltage, 10)
-        self.set_power_error_on_strip(sensorFlower5, SENSORS_CL.minBatteryVoltage, 14)
-        self.set_power_error_on_strip(sensorFlower6, SENSORS_CL.minBatteryVoltage, 17)
+        self.set_power_error_on_strip(sensorFlower2, Sensors.minBatteryVoltage, 8)
+        self.set_power_error_on_strip(sensorFlower3, Sensors.minBatteryVoltage, 9)
+        self.set_power_error_on_strip(sensorFlower4, Sensors.minBatteryVoltage, 10)
+        self.set_power_error_on_strip(sensorFlower5, Sensors.minBatteryVoltage, 14)
+        self.set_power_error_on_strip(sensorFlower6, Sensors.minBatteryVoltage, 17)
         #sprawdzenie wilgotnosci
         self.set_min_humidity_error_on_strip(sensorFlower2, 11)
         self.set_min_humidity_error_on_strip(sensorFlower3, 12)
@@ -71,4 +71,4 @@ class SENSORS_CL:
             dogHouse.temp3=0.0
             dogHouse.czujnikZajetosciflaga=0
             dogHouse.czujnikZajetosciRaw=0
-sensor = SENSORS_CL()
+sensor = Sensors()

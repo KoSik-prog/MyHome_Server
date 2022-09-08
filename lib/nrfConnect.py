@@ -265,12 +265,12 @@ class NRF_CL():
                         dogHouse.time=datetime.datetime.now() #zapisanie czasu ostatniego odbioru
                         log.add_log(("   dogHouse t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(dogHouse.temp1,dogHouse.temp2,dogHouse.temp3,dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
     #------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3]== "99":  #testowy
+                if stringNRF[1:3]== "99":  #test module
                     if stringNRF[3]== ".":
                             int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
                             int2 = ''.join(str(chr(e)) for e in stringNRF[9:])
                             fl1=(float(int1)/1000)
-                            log.add_stuff_log('power: {:.3f}V  -> humidity: {}'.format(fl1,int2))
+                            log.add_log('power: {:.3f}V  -> humidity: {}'.format(fl1,int2))
 
     def calculate_light_value(self):
         k=3 #wzmocnienie

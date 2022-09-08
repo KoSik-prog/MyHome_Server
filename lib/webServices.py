@@ -139,9 +139,9 @@ class UDP_CL:
             strt=messag.find("/w:")+1
             terrarium.humiDN=float(messag[(strt+2):(strt+5)])
             strt=messag.find("/I:")+1
-            terrarium.UVI=float(messag[(strt+2):(strt+11)])
-            log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  UVI: {}".format(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.UVI))
-            sql.addRecordTerrarium(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.UVI)
+            terrarium.uvi=float(messag[(strt+2):(strt+11)])
+            log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  uvi: {}".format(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.uvi))
+            sql.addRecordTerrarium(terrarium.tempUP,terrarium.humiUP,terrarium.tempDN,terrarium.humiDN,terrarium.uvi)
         if(messag.find('ko2') != -1):
             packet="#05L" + messag[3:15]
             log.add_log(packet)
@@ -152,7 +152,7 @@ class UDP_CL:
             log.add_log(packet)
             nrf.to_send(ledStripRoom1.adress, packet, ledStripRoom1.nrfPower)
             ledStripRoom1.flagManualControl=True
-        if(messag.find('lelw')): # LAMPA LED BIALY
+        if(messag.find('lelw')): # LAMPA LED white
             packet="#06W" + messag[4:7]
             #nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
         if(messag.find('pok1max') != -1):

@@ -21,17 +21,10 @@ class Settings:
         self.path = path
 
     def start_read(self):
-        i = 0
-        self.save()
         while(1):
-            if i > 5:
-                i  =0
-            if i == 0:
-                weather.get_forecast('Rodgau')
             self.read()
             watchdog.reset()
             time.sleep(60)
-            i += 1
     
     def save(self):
         setings = ET.Element("settings")
@@ -77,7 +70,5 @@ class Settings:
         ledLightRoom2.autoLuxMin = int(root.find('ledLightRoom2autoLux_min').text)
         ledLightRoom2.autoOff = root.find('ledLightRoom2AutoOFF').text
         ledLightRoom2.autoOn = root.find('ledLightRoom2AutoON').text
-
-        log.add_log("Settings loaded")
 
 settings = Settings('/var/www/html/settings.xml')

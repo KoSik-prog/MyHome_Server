@@ -7,13 +7,20 @@
 # Created:     29.05.2022
 # Copyright:   (c) kosik 2022
 #-------------------------------------------------------------------------------
-
 import datetime
 from sensorFlower import *
 from deviceWaterCan import *
 from lib.lib_nrf24 import NRF24
 
-class sensorOutsideTemperatureCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
+class Server():
+    serverActiveFlag = True
+    
+    def read_server_active_flag(self):
+        return self.serverActiveFlag
+        
+server = Server()
+
+class SensorOutsideTemperature:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     temp = 1.1
     humi = 1.1
     batt = 1.1
@@ -25,55 +32,45 @@ class sensorOutsideTemperatureCl:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
     error = False
     flagNight = False
     nightSetting = 60  #ustawienie kiedy noc
-sensorOutsideTemperature = sensorOutsideTemperatureCl
+sensorOutsideTemperature = SensorOutsideTemperature()
 
-class sensorRoom1TemperatureCl:  #SALON
+class SensorRoom1Temperature:  #SALON
     temp = 2.2
     humi = 2.2
     batt = 2.2
     time = datetime.datetime.now()
     error = False
     sqlRoom = 'pok1Temp'
-sensorRoom1Temperature = sensorRoom1TemperatureCl
+sensorRoom1Temperature = SensorRoom1Temperature()
 
-class sensorRoom2TemperatureCl:   #SYPIALNIA
+class SensorRoom2Temperature:   #SYPIALNIA
     temp = 3.3
     humi = 3.3
     batt = 3.3
     time = datetime.datetime.now()
     error = False
     sqlRoom = 'pok2Temp'
-sensorRoom2Temperature = sensorRoom2TemperatureCl
-
-'''class czujnikKwiatekCl:   #KWIATEK
-    address = [0x33, 0x33, 0x33, 0x11, 0x22]
-    woda=0
-    light=0
-    humidity=100
-    power=100
-    time=datetime.datetime.now()
-    error = "blebleble"
-czujnikKwiatek=czujnikKwiatekCl'''
+sensorRoom2Temperature = SensorRoom2Temperature()
 
 #  DEVICES
 #automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
 #  SENSORS
-sensorFlower2 = SENSOR_FLOWER_CL(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
-sensorFlower3 = SENSOR_FLOWER_CL(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
-sensorFlower4 = SENSOR_FLOWER_CL(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
-sensorFlower5 = SENSOR_FLOWER_CL(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
-sensorFlower6 = SENSOR_FLOWER_CL(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
+sensorFlower2 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
+sensorFlower3 = SensorFlower(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
+sensorFlower4 = SensorFlower(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
+sensorFlower5 = SensorFlower(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
+sensorFlower6 = SensorFlower(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
 
-class terrariumCl:   #TERRARIUM
+class Terrarium:   #TERRARIUM
     tempUP = 0.0
     humiUP = 0.0
     tempDN = 0.0
     humiDN = 0.0
-    UVI = 0.0
-terrarium = terrariumCl
+    uvi = 0.0
+terrarium = Terrarium()
 
-class dogHouseCl:   #dogHouse
+class dogHouse:   #dogHouse
     address = [0x33, 0x33, 0x33, 0x11, 0x55]
     nrfPower = NRF24.PA_LOW
     temp1 = 0.0
@@ -83,9 +80,9 @@ class dogHouseCl:   #dogHouse
     czujnikZajetosciRaw = 0
     tryb = 0
     time = datetime.datetime.now()
-dogHouse = dogHouseCl
+dogHouse = dogHouse()
 
-class decorationRoom1Cl:     #Dekoracje w salonie Reka
+class DecorationRoom1:     #Dekoracje w salonie Reka
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:05:00.0000'
@@ -96,9 +93,9 @@ class decorationRoom1Cl:     #Dekoracje w salonie Reka
     address = [0x33, 0x33, 0x33, 0x33, 0x77]
     nrfPower = NRF24.PA_LOW
     label = "Lampa-reka"
-decorationRoom1 = decorationRoom1Cl
+decorationRoom1 = DecorationRoom1()
 
-class decoration2Room1Cl:     #Dekoracje 2 w salonie  Eifla i inne
+class Decoration2Room1:     #Dekoracje 2 w salonie  Eifla i inne
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:04:00.0000'
@@ -109,9 +106,9 @@ class decoration2Room1Cl:     #Dekoracje 2 w salonie  Eifla i inne
     address = [0x33, 0x33, 0x33, 0x33, 0x09]
     nrfPower = NRF24.PA_LOW
     label = "Dekoracje szafka"
-decoration2Room1 = decoration2Room1Cl
+decoration2Room1 = Decoration2Room1()
 
-class decorationFlamingoCl:     #Dekoracje w sypialni
+class DecorationFlamingo:     #Dekoracje w sypialni
     flag = 0
     autoOn = '21:30:00.0000'
     autoOff = '23:59:00.0000'
@@ -122,9 +119,9 @@ class decorationFlamingoCl:     #Dekoracje w sypialni
     address = [0x33, 0x33, 0x33, 0x33, 0x10]
     nrfPower = NRF24.PA_LOW
     label = 'Flaming'
-decorationFlamingo = decorationFlamingoCl
+decorationFlamingo = DecorationFlamingo()
 
-class usbPlugCl:     #USB Stick
+class UsbPlug:     #USB Stick
     autoOn = '17:00:00.0000'
     autoOff = '23:00:00.0000'
     autoLuxMin = 1100
@@ -135,9 +132,9 @@ class usbPlugCl:     #USB Stick
     address = [0x33, 0x33, 0x33, 0x33, 0x11]
     nrfPower = NRF24.PA_LOW
     label = 'USB-Stick'
-usbPlug = usbPlugCl
+usbPlug = UsbPlug()
 
-class hyroponicsCl:     #hyroponika
+class Hyroponics:     #hyroponika
     address = [0x33, 0x33, 0x33, 0x11, 0x88]
     nrfPower = NRF24.PA_LOW
     autoOn = '08:00:00.0000'
@@ -148,25 +145,25 @@ class hyroponicsCl:     #hyroponika
     autoBrightness = 1
     flagManualControl = False
     label = 'Hyroponika'
-hyroponics = hyroponicsCl
+hyroponics = Hyroponics()
 
-class ledStripRoom1Cl:     #LED TV
+class LedStripRoom1:     #LED TV
     nrfPower = NRF24.PA_LOW
     setting = "255255255"
-    Bialy = 000
+    white = 000
     brightness = 70
     flag = 0
     autoOn = '16:00:00.0000'
     autoOff = '23:00:00.0000'
-    autoLuxMin = 600 #ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    autoLuxMin = 600 #brightness setting for auto light
     flagManualControl = False
     autoBrightness = 70
     error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x33]
-    label="LED TV"
-ledStripRoom1 = ledStripRoom1Cl
+    label="LED strip"
+ledStripRoom1 = LedStripRoom1()
 
-class ledLightRoom2Cl:  # OSWIETLENIE SYPIALNI
+class LedLightRoom2:  # OSWIETLENIE SYPIALNI
     brightness = 0
     flag = 0
     autoOn = '21:00:00.0000'
@@ -178,9 +175,9 @@ class ledLightRoom2Cl:  # OSWIETLENIE SYPIALNI
     address = [0x33, 0x33, 0x33, 0x33, 0x44]
     nrfPower = NRF24.PA_LOW
     label = 'Sypialnia'
-ledLightRoom2 = ledLightRoom2Cl
+ledLightRoom2 = LedLightRoom2()
 
-class spootLightRoom1Cl:  # REFLEKTOR W SALONIE
+class SpootLightRoom1:  # REFLEKTOR W SALONIE
     setting = "000000000100"
     brightness = 0
     flag = 0
@@ -188,9 +185,9 @@ class spootLightRoom1Cl:  # REFLEKTOR W SALONIE
     address = [0x33, 0x33, 0x33, 0x00, 0x55]
     nrfPower = NRF24.PA_LOW
     label = 'Reflektor 1'
-spootLightRoom1 = spootLightRoom1Cl
+spootLightRoom1 = SpootLightRoom1()
 
-class kitchenLightCl:  # OSWIETLENIE KUCHNI
+class KitchenLight:  # OSWIETLENIE KUCHNI
     flag = 0
     autoOn = '15:00:00.0000'
     autoOff = '23:58:00.0000'
@@ -201,25 +198,25 @@ class kitchenLightCl:  # OSWIETLENIE KUCHNI
     address = [0, 0, 0, 0, 6]
     nrfPower = NRF24.PA_LOW
     label = 'Kuchnia'
-kitchenLight = kitchenLightCl
+kitchenLight = KitchenLight()
 
-class floorLampRoom1TradfriCl:
+class FloorLampRoom1Tradfri:
     address = "65537" #Adres="131079"  -> grupa
     status = False
-floorLampRoom1Tradfri = floorLampRoom1TradfriCl
+floorLampRoom1Tradfri = FloorLampRoom1Tradfri()
 
-class mainLightRoom1TradfriCl:
+class MainLightRoom1Tradfri:
     bulb = "65559"
     address = "131074"
     status = False
-mainLightRoom1Tradfri = mainLightRoom1TradfriCl
+mainLightRoom1Tradfri = MainLightRoom1Tradfri()
 
-class diningRoomTradfriCl:
+class DiningRoomTradfri:
     address = "131075"
     status = False
-diningRoomTradfri = diningRoomTradfriCl
+diningRoomTradfri = DiningRoomTradfri()
 
-class ledLightRoom2TradfriCl:  #SYPIALNIA
+class LedLightRoom2Tradfri:
     address = "131082"
     flag = 0
     autoOn = '21:10:00.0000'
@@ -229,15 +226,15 @@ class ledLightRoom2TradfriCl:  #SYPIALNIA
     autoBrightness = 5
     error = 0
     label = "Lampy sypialnia"
-ledLightRoom2Tradfri = ledLightRoom2TradfriCl
+ledLightRoom2Tradfri = LedLightRoom2Tradfri()
 
-class hallTradfriCl: #przedpokoj
+class HallTradfri:
     address = "131077"
     status = False
     label = "Oswietlenie przedpokoj"
-hallTradfri = hallTradfriCl
+hallTradfri = HallTradfri()
 
-class lightingAutomationCl:
+class LightingAutomation:
     LUXvalue = [2000,2000,2000,2000,2000]
     calculatedBrightness = 2000
-lightingAutomation = lightingAutomationCl()
+lightingAutomation = LightingAutomation()

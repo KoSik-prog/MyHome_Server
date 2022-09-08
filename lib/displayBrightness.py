@@ -15,12 +15,11 @@ except ImportError:
     print "Import error - displayBrightness"
 
 from lib.log import *
-from lib.gui import *
 import rpi_backlight as backlight
 
 
-class DISPLAY_BRIGHTNESS_CL:
-    swiatlo = 0
+class DisplayBrightness:
+    light = 0
 
     def read_brightness(self):
         bus = smbus.SMBus(1)
@@ -31,22 +30,26 @@ class DISPLAY_BRIGHTNESS_CL:
         ch0 = data[1] * 256 + data[0]
         return int(ch0)
 
-    def set_brightness(self): #----STEROWANIE WYSWIETLACZEM - WATEK
-        swiatlo_old=0
+    def set_brightness_thread(self): #----STEROWANIE WYSWIETLACZEM - WATEK
+        lightOld = 0
+        margin = 15
+
         while(1):
-            self.swiatlo = self.read_brightness()
-            gui.swiatlo = self.swiatlo
-            if self.swiatlo > (swiatlo_old+15) or self.swiatlo < (swiatlo_old - 15): 
-                if self.swiatlo < 7:
+            self.light = self.read_brightness()
+            if self.light > (lightOld+margin) or self.light < (lightOld-margin): 
+                if self.light < 7:
                     jasnoscwysw = 11
-                elif self.swiatlo >= 7 and self.swiatlo < 100:
-                    jasnoscwysw=int(((0.645 * self.swiatlo) + 5.4838) + 11)
-                elif self.swiatlo>=100 and self.swiatlo < 1000:
-                    jasnoscwysw=int(((0.193 * self.swiatlo) + 50.67) + 11)
-                elif self.swiatlo>=1000:
+                elif self.light >= 7 and self.light < 100:
+                    jasnoscwysw=int(((0.645 * self.light) + 5.4838) + 11)
+                elif self.light>=100 and self.light < 1000:
+                    jasnoscwysw=int(((0.193 * self.light) + 50.67) + 11)
+                elif self.light>=1000:
                     jasnoscwysw=255
-                backlight.set_brightness(jasnoscwysw, smooth=True, duration=2)  # ustawienie jasnosci LCD
-                #log.add_log("Jasnosc wyswietlacza:{}   / old:{}, new:{}".format(jasnoscwysw, swiatlo_old, self.swiatlo))
-                swiatlo_old = self.swiatlo
+                backlight.set_brightness(jasnoscwysw, smooth=True, duration=2) 
+                lightOld = self.light
             time.sleep(5)
-displayBrightness = DISPLAY_BRIGHTNESS_CL()
+
+    def get_light(self):
+        return self.light
+
+displayBrightness = DisplayBrightness()

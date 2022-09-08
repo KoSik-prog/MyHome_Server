@@ -1,4 +1,14 @@
- # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------------
+# Name:        myHome main program
+#
+# Author:      KoSik
+#
+# Created:     18.09.2021
+# Copyright:   (c) kosik 2021
+#-------------------------------------------------------------------------------
+
 try:
     import time, datetime, threading
 except ImportError:
@@ -19,7 +29,7 @@ from sensors import *
 from time import sleep
 import RPi.GPIO as GPIO
 
-class Server:
+class MyHome:
     def __init__(self):
         log.add_log("Uruchamiam serwer MyHome...")
         time.sleep(5) #+++++ time delay - for safety +++++++++++++++++++
@@ -33,6 +43,7 @@ class Server:
         self.settings_read_thread_init()
         self.timer_thread_init()
         self.check_sensors_thread_init()
+        self.check_weatherForecast_thread_init()
         #--------------MAIN FUNCTION------------------------
         self.start_server()
 
@@ -52,7 +63,7 @@ class Server:
         nrfTh.start()
 
     def display_brightness_thread_init(self):
-        nrfTh = threading.Thread(target=displayBrightness.set_brightness)
+        nrfTh = threading.Thread(target=displayBrightness.set_brightness_thread)
         nrfTh.start()
 
     def settings_read_thread_init(self):
@@ -67,8 +78,12 @@ class Server:
         nrfTh = threading.Thread(target=sensor.check_sensors)
         nrfTh.start()
 
+    def check_weatherForecast_thread_init(self):
+        nrfTh = threading.Thread(target=weather.weather_thread)
+        nrfTh.start()
+
 #+++++++++++++++++++++++++++++++++++++++++++++++
 #-----START-------------------------------------
 #+++++++++++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
-    server = Server()
+    myHome = MyHome()

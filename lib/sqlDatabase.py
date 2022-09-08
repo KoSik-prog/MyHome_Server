@@ -13,6 +13,22 @@ class SQL_CL:
     flagBusy = False
     kasowanieSQL_flaga=False
 
+    def add_record(self, databaseName, record):
+        for i in range(100):
+            if self.flagBusy == False:
+                break
+            time.sleep(.001)
+        self.flagBusy = True
+        conn = sqlite3.connect(self.databaseLoc)
+        curs = conn.cursor()
+        try:
+            curs.execute("INSERT INTO zewTemp values(datetime('now','localtime'),?,?,?,?)",[temp, humi, wiatr, kierunek])
+            conn.commit()
+        except sqlite3.IntegrityError:
+            log.add_log("SQL record exist")    
+        conn.close()
+        self.flagBusy = False
+
     def add_record_sensor_outdoor_temp (self, temp, humi, wiatr, kierunek):
         for i in range(100):
             if self.flagBusy == False:

@@ -15,8 +15,9 @@ from devicesList import *
 from lib.infoStrip import *
 from lib.dateDecode import *
 from lib.display import *
+from lib.displayBrightness import *
 
-class GUI_CL:
+class Gui:
     bgcolor=(255,255,255,255)
     pozycja_animacji = [[0,0],[60,-42],[120,-135],[160,-225],[180,-275],[190,-367],[230,-13],[350,-89],[390,-247],[430,-198],[500,-400],[560,-163],[620,-200],[650,-50],[700,-31],[750,-7],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]
     kolorPaskaInfo=(50,100,10,255)
@@ -27,8 +28,6 @@ class GUI_CL:
     kolorczcionki3=(0,0,0,255)
     kolorczcionki4=(60,60,60,200)
     kolorczcionki5=(255,255,255,255)
-
-    swiatlo = 0
 
     tfps=0
     posX=0
@@ -53,18 +52,18 @@ class GUI_CL:
                     if(px>17 and px<284 and py>15 and py<227):
                         display.set_background_colour(self.bgcolor)
                         obraz=0
-            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutsideTemperature.temp,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.swiatlo, int(spootLightRoom1.flag), int(spootLightRoom1.brightness), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.brightness), int(ledLightRoom2.flag), int(ledLightRoom2.brightness), int(kitchenLight.flag),sensorOutsideTemperature.czas,sensorOutsideTemperature.error,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
+            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutsideTemperature.temp,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutsideTemperature.humi,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.light, int(spootLightRoom1.flag), int(spootLightRoom1.brightness), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.brightness), int(ledLightRoom2.flag), int(ledLightRoom2.brightness), int(kitchenLight.flag),sensorOutsideTemperature.czas,sensorOutsideTemperature.error,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
             if(obraz==0):
                 if self.tryb_nocny==False:
                     self.obraz_glowny()
                 else:
                     self.obraz_nocny()
 
-            if self.tryb_nocny==False and self.swiatlo<2:
+            if self.tryb_nocny == False and displayBrightness.get_light() < 2:
                 self.tryb_nocny=True
                 display.set_background_colour((0,0,0,255))
-            elif self.tryb_nocny==True and self.swiatlo>5:
-                self.tryb_nocny=False
+            elif self.tryb_nocny == True and displayBrightness.get_light() > 5:
+                self.tryb_nocny = False
                 display.set_background_colour(self.bgcolor)
             display.update()
             time.sleep(self.tfps)
@@ -223,4 +222,4 @@ class GUI_CL:
         display.text_center_background(display.screen, str(time.strftime("%H:%M")),"Nimbus Sans L",360,400,210, self.kolorczcionki3,255,(0,0,0,255)) #czas
         display.text_background(display.screen, "Temperatura {:.1f}°C".format(sensorRoom1Temperature.temp),"Nimbus Sans L",70,20,410, self.kolorczcionki3,255,(0,0,0,255))
 
-gui = GUI_CL()
+gui = Gui()

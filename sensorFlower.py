@@ -15,7 +15,7 @@ except ImportError:
 from lib.log import *
 from lib.sqlDatabase import *
 
-class SENSOR_FLOWER_CL:
+class SensorFlower:
     light = 0
     humidity = 0
     power = 0

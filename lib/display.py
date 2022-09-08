@@ -98,7 +98,7 @@ class DISPLAY_CL:
         elif(iconName.find('50') != -1):  #mist - fog
             pic=self.DFog.convert()
         else:
-            self.save_error(iconName)
+            log.add_error_log("icon not found: {}".format(iconName))
             pic=self.NA.convert()
         return pic
 
@@ -126,7 +126,7 @@ class DISPLAY_CL:
         elif(iconName.find('50') != -1):  #mist - fog
             pic=self.Fog.convert()
         else:
-            self.save_error(iconName)
+            log.add_error_log("icon not found: {}".format(iconName))
             pic=self.NA.convert()
         return pic
 

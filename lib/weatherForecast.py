@@ -1,5 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#-------------------------------------------------------------------------------
+# Name:        weather forecast
+# Purpose:
+#
+# Author:      KoSik
+#
+# Created:     18.09.2021
+# Copyright:   (c) kosik 2021
+#-------------------------------------------------------------------------------
+
 try:
     import os, sys, locale, datetime, time, configparser, requests, json, pygame
 except ImportError:
@@ -7,6 +17,8 @@ except ImportError:
 
 from pygame.compat import geterror
 from lib.log import *
+from devicesList import *
+
 
 ''' ICONS NR
 01d - clear sky
@@ -20,7 +32,7 @@ from lib.log import *
 50d - mist
 '''
 
-class WEATHER_CL:
+class Weather:
     tempMinToday=0.0
     tempMinTomorrow=0.0
     tempMaxToday=0.0
@@ -28,68 +40,70 @@ class WEATHER_CL:
     iconToday="01d"
     iconTomorrow="01d"
 
+    def __init__(self, city):
+        self.city = city
+
+    def weather_thread(self):
+        while server.read_server_active_flag() == True:
+            weather.get_forecast('Rodgau')
+            time.sleep(300)
+
     def forecast_today(self, forecastText):
-        self.tempMaxToday=-50
-        self.tempMinToday=50
-        flag=0
+        self.tempMaxToday = -50
+        self.tempMinToday = 50
+        flag = 0
         select_data = forecastText['list']
 
         d = datetime.datetime.today()
         for box in select_data:
             if 'dt' in box:
-                if float(box['main']['temp_max'])>self.tempMaxToday:
-                    self.tempMaxToday=float(box['main']['temp_max'])
+                if float(box['main']['temp_max']) > self.tempMaxToday:
+                    self.tempMaxToday = float(box['main']['temp_max'])
                     if(self.tempMaxToday > -1 and self.tempMaxToday <= 0):
                         self.tempMaxToday = 0.0
-                if float(box['main']['temp_min'])<self.tempMinToday:
-                    self.tempMinToday=float(box['main']['temp_min'])
+                if float(box['main']['temp_min']) < self.tempMinToday:
+                    self.tempMinToday = float(box['main']['temp_min'])
                     if(self.tempMinToday > -1 and self.tempMinToday <= 0):
                         self.tempMinToday = 0.0
                 czas=datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
-                if flag==0:
-                    self.iconToday=box['weather'][0]['icon']
-                    flag=1
+                if flag == 0:
+                    self.iconToday = box['weather'][0]['icon']
+                    flag = 1
             else:
                 log.add_log('nie znaleziono pogody na dzis')
             break
 
     def forecast_tomorrow(self, forecastText):
-        self.tempMaxTomorrow=-50
-        self.tempMinTomorrow=50
+        self.tempMaxTomorrow = -50
+        self.tempMinTomorrow = 50
         select_data = forecastText['list']
         d = datetime.datetime.today() + datetime.timedelta(days=1)
         for box in select_data:
             if 'dt_txt' in box:
-                data=datetime.datetime.strptime(box['dt_txt'], '%Y-%m-%d %H:%M:%S')
-                if data.date()==d.date():
-                    if float(box['main']['temp_max'])>self.tempMaxTomorrow:
-                        self.tempMaxTomorrow=float(box['main']['temp_max'])
+                data = datetime.datetime.strptime(box['dt_txt'], '%Y-%m-%d %H:%M:%S')
+                if data.date() == d.date():
+                    if float(box['main']['temp_max']) > self.tempMaxTomorrow:
+                        self.tempMaxTomorrow = float(box['main']['temp_max'])
                         if(self.tempMaxTomorrow > -1 and self.tempMaxTomorrow <= 0):
                             self.tempMaxTomorrow = 0.0
-                    if float(box['main']['temp_min'])<self.tempMinTomorrow:
-                        self.tempMinTomorrow=float(box['main']['temp_min'])
+                    if float(box['main']['temp_min']) < self.tempMinTomorrow:
+                        self.tempMinTomorrow = float(box['main']['temp_min'])
                         if(self.tempMinTomorrow > -1 and self.tempMinTomorrow <= 0):
                             self.tempMinTomorrow = 0.0
-                    czas=datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
-                    if data.time()==czas.time():
-                        self.iconTomorrow=box['weather'][0]['icon']
+                    czas = datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
+                    if data.time() == czas.time():
+                        self.iconTomorrow = box['weather'][0]['icon']
             else:
                 log.add_log('nie znaleziono pogody na jutro')
 
-    def get_forecast(self, miasto):
-        #log.add_log("Pobieram progrnoze pogody...")
-        url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID=85b527bafdfc28a92672434b32ead750&units=metric'.format(miasto)
+    def get_forecast(self, city):
+        url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID=85b527bafdfc28a92672434b32ead750&units=metric'.format(city)
         try:
             json_data = requests.get(url).json()
             self.forecast_today(json_data)
             self.forecast_tomorrow(json_data)
-            log.add_log('Pobrano prognoze pogody dla miasta ' + miasto)
+            log.add_log('Pobrano prognoze pogody dla miasta ' + city)
         except:
             log.add_log("Blad polaczenia z serwerem pogody")
 
-    def save_error(self, error):
-        file = open('blad_pogody.txt', 'w')
-        file.write(error + '\n')
-        file.close()
-
-weather = WEATHER_CL()
+weather = Weather("Rodgau")
