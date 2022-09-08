@@ -82,8 +82,7 @@ class MyHome:
         nrfTh = threading.Thread(target=weather.weather_thread)
         nrfTh.start()
 
-#+++++++++++++++++++++++++++++++++++++++++++++++
+
 #-----START-------------------------------------
-#+++++++++++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
     myHome = MyHome()
