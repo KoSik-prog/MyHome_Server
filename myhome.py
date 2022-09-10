@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        myHome main program
 #
 # Author:      KoSik
 #
 # Created:     18.09.2021
 # Copyright:   (c) kosik 2021
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 try:
-    import time, datetime, threading
+    import time
+    import datetime
+    import threading
 except ImportError:
     print "Blad importu"
 
@@ -29,14 +31,15 @@ from sensors import *
 from time import sleep
 import RPi.GPIO as GPIO
 
+
 class MyHome:
     def __init__(self):
         log.add_log("Uruchamiam serwer MyHome...")
-        time.sleep(5) #+++++ time delay - for safety +++++++++++++++++++
+        time.sleep(5)  # +++++ time delay - for safety +++++++++++++++++++
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(22,GPIO.OUT)
-        #-------------THREADS INIT--------------------------
+        GPIO.setup(22, GPIO.OUT)
+        # -------------THREADS INIT--------------------------
         self.lcd_thread_init()
         self.nrf_thread_init()
         self.display_brightness_thread_init()
@@ -44,7 +47,7 @@ class MyHome:
         self.timer_thread_init()
         self.check_sensors_thread_init()
         self.check_weatherForecast_thread_init()
-        #--------------MAIN FUNCTION------------------------
+        # --------------MAIN FUNCTION------------------------
         self.start_server()
 
     def start_server(self):
@@ -75,7 +78,7 @@ class MyHome:
         nrfTh.start()
 
     def check_sensors_thread_init(self):
-        nrfTh = threading.Thread(target=sensor.check_sensors)
+        nrfTh = threading.Thread(target=sensor.check_sensors_thread)
         nrfTh.start()
 
     def check_weatherForecast_thread_init(self):
@@ -83,6 +86,6 @@ class MyHome:
         nrfTh.start()
 
 
-#-----START-------------------------------------
+# -----START-------------------------------------
 if __name__ == "__main__":
     myHome = MyHome()

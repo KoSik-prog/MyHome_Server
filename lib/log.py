@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        log.py
 # Purpose:
 #
@@ -8,8 +8,12 @@
 #
 # Created:     26.08.2022
 # Copyright:   (c) kosik 2022
-#-------------------------------------------------------------------------------
-import sys, os, datetime, time
+# -------------------------------------------------------------------------------
+import sys
+import os
+import datetime
+import time
+
 
 class Log:
     busyFlag = False
@@ -49,7 +53,7 @@ class Log:
             time.sleep(0.001)
         self.busyFlag = True
         actFile = open(self.filePath + '/watchdog_log.txt', 'a+')
-        actFile.write(self.actualTime() + ' ' + information +'\n')
+        actFile.write(self.actualTime() + ' ' + information + '\n')
         actFile.close()
         self.busyFlag = False
 
@@ -67,7 +71,7 @@ class Log:
             time.sleep(0.001)
         self.busyFlag = True
         actFile = open(self.filePath + '/error.txt', 'a+')
-        actFile.write(self.actualTime() + ' ' + information +'\n')
+        actFile.write(self.actualTime() + ' ' + information + '\n')
         actFile.close()
         self.busyFlag = False
 

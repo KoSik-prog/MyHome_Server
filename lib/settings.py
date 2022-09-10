@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        settings
 # Purpose:
 #
@@ -8,7 +8,7 @@
 #
 # Created:     17.05.2022
 # Copyright:   (c) kosik 2022
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 import xml.etree.cElementTree as ET
 from lib.log import *
 from lib.weatherForecast import *
@@ -25,7 +25,7 @@ class Settings:
             self.read()
             watchdog.reset()
             time.sleep(60)
-    
+
     def save(self):
         setings = ET.Element("settings")
 
@@ -51,7 +51,7 @@ class Settings:
         log.add_log("Settings saved")
 
     def read(self):
-        fileRaw = ET.ElementTree(file = self.path)
+        fileRaw = ET.ElementTree(file=self.path)
         root = fileRaw.getroot()
 
         ledStripRoom1.autoLuxMin = int(root.find('ledStripRoom1autoLuxMin').text)
@@ -70,5 +70,6 @@ class Settings:
         ledLightRoom2.autoLuxMin = int(root.find('ledLightRoom2autoLux_min').text)
         ledLightRoom2.autoOff = root.find('ledLightRoom2AutoOFF').text
         ledLightRoom2.autoOn = root.find('ledLightRoom2AutoON').text
+
 
 settings = Settings('/var/www/html/settings.xml')

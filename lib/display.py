@@ -1,8 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-import sys ,os
-import pygame, pygame.mixer, pygame.gfxdraw, glob
+# -------------------------------------------------------------------------------
+# Name:        display
+# Purpose:
+#
+# Author:      KoSik
+#
+# Created:     1.03.2021
+# Copyright:   (c) kosik 2021
+# -------------------------------------------------------------------------------
+import sys
+import os
+import pygame
+import pygame.mixer
+import pygame.gfxdraw
+import glob
 from pygame.locals import *
 from pygame.compat import unichr_, unicode_
 from pygame.locals import *
@@ -12,15 +24,16 @@ from lib.log import *
 
 pygame.init()
 
+
 class Display:
     pygame.display.set_caption('MojDom')
     resolution = 800, 480
     #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
-    screen = pygame.display.set_mode(resolution,1)
+    screen = pygame.display.set_mode(resolution, 1)
 
     def __init__(self, imgFolder):
-        self.screen.fill((255,255,255))
-        pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
+        self.screen.fill((255, 255, 255))
+        pygame.mouse.set_cursor((8, 8), (0, 0), (0, 0, 0, 0, 0, 0, 0, 0), (0, 0, 0, 0, 0, 0, 0, 0))
         self.imgFolder = imgFolder
 
         self.BrokenClouds = self.load_image(imgFolder, "Broken_Clouds.gif")
@@ -34,7 +47,7 @@ class Display:
         self.ShowerRain = self.load_image(imgFolder, "Shower_Rain.gif")
         self.Snow = self.load_image(imgFolder, "Snow.gif")
         self.Thunderstorm = self.load_image(imgFolder, "Thunderstorm.gif")
-        #---
+        # ---
         self.DCloudy = self.load_image(imgFolder, "Cloudy.jpg")
         self.DCloudyNight = self.load_image(imgFolder, "Cloudy_Night.jpg")
         self.DFewClouds = self.load_image(imgFolder, "Few_Clouds.jpg")
@@ -47,7 +60,7 @@ class Display:
         self.DTStorm2 = self.load_image(imgFolder, "T-Storm2.jpg")
         self.DClearSky = self.load_image(imgFolder, "Sun.jpg")
         self.DClearSkyNight = self.load_image(imgFolder, "Clear_Night.jpg")
-        #---
+        # ---
         self.NA = self.load_image(imgFolder, "na.gif")
         self.arrow_down = self.load_image(imgFolder, "arrow_down.gif")
         self.arrow_up = self.load_image(imgFolder, "arrow_up.gif")
@@ -58,111 +71,111 @@ class Display:
         self.snowflake5 = self.load_image(imgFolder, "snowflake5.gif")
         self.snowflake6 = self.load_image(imgFolder, "snowflake6.gif")
         self.RainAnim1 = self.load_image(imgFolder, "rain_anim1.gif")
-        #---
+        # ---
         self.tempin = self.load_image(imgFolder, "temp_in.gif")
         self.tempout = self.load_image(imgFolder, "temp_out.gif")
         self.wind = self.load_image(imgFolder, "wind.gif")
 
     def get_background(self, night, iconName):
-        iconName=iconName.lower()
-        if(iconName.find('01') != -1):  #CLEAR SKY
+        iconName = iconName.lower()
+        if(iconName.find('01') != -1):  # CLEAR SKY
             if(night == True):
-                pic=self.DClearSkyNight.convert()
+                pic = self.DClearSkyNight.convert()
             else:
-                pic=self.DClearSky.convert()
+                pic = self.DClearSky.convert()
         elif(iconName.find('02') != -1):  # FEW CLOUDS
-            if(night==True):
-                pic=self.DFewCloudsNight.convert()
+            if(night == True):
+                pic = self.DFewCloudsNight.convert()
             else:
-                pic=self.DFewClouds.convert()
-        elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
-            if(night==True):
-                pic=self.DCloudyNight.convert()
+                pic = self.DFewClouds.convert()
+        elif(iconName.find('03') != -1):  # SCATTERED CLOUDS
+            if(night == True):
+                pic = self.DCloudyNight.convert()
             else:
-                pic=self.DCloudy.convert()
-        elif(iconName.find('04') != -1):  #BROKEN CLOUDS
-            if(night==True):
-                pic=self.DCloudyNight.convert()
+                pic = self.DCloudy.convert()
+        elif(iconName.find('04') != -1):  # BROKEN CLOUDS
+            if(night == True):
+                pic = self.DCloudyNight.convert()
             else:
-                pic=self.DCloudy.convert()
-        elif(iconName.find('09') != -1): #SHOWER RAIN
-            pic=self.DRain.convert()
-        elif(iconName.find('10') != -1): #RAIN
-            pic=self.DRain.convert()
-        elif(iconName.find('11') != -1):  #THUNDERSTORM
-            pic=self.DTStorm.convert()
-        elif(iconName.find('13') != -1):  #SNOW
-            if(night==True):
-                pic=self.DSnowNight.convert()
+                pic = self.DCloudy.convert()
+        elif(iconName.find('09') != -1):  # SHOWER RAIN
+            pic = self.DRain.convert()
+        elif(iconName.find('10') != -1):  # RAIN
+            pic = self.DRain.convert()
+        elif(iconName.find('11') != -1):  # THUNDERSTORM
+            pic = self.DTStorm.convert()
+        elif(iconName.find('13') != -1):  # SNOW
+            if(night == True):
+                pic = self.DSnowNight.convert()
             else:
-                pic=self.DSnow.convert()
-        elif(iconName.find('50') != -1):  #mist - fog
-            pic=self.DFog.convert()
+                pic = self.DSnow.convert()
+        elif(iconName.find('50') != -1):  # mist - fog
+            pic = self.DFog.convert()
         else:
             log.add_error_log("image not found: {}".format(iconName))
-            pic=self.NA.convert()
+            pic = self.NA.convert()
         return pic
 
     def get_icon(self, night, iconName):
-        iconName=iconName.lower()
-        if(iconName.find('01') != -1):  #CLEAR SKY
-            if(night==True):
-                pic=self.ClearSkyNight.convert()
+        iconName = iconName.lower()
+        if(iconName.find('01') != -1):  # CLEAR SKY
+            if(night == True):
+                pic = self.ClearSkyNight.convert()
             else:
-                pic=self.ClearSky.convert()
+                pic = self.ClearSky.convert()
         elif(iconName.find('02') != -1):  # FEW CLOUDS
-            pic=self.FewClouds.convert()
-        elif(iconName.find('03') != -1):  #SCATTERED CLOUDS
-            pic=self.ScatteredClouds.convert()
-        elif(iconName.find('04') != -1):  #BROKEN CLOUDS
-            pic=self.BrokenClouds.convert()
-        elif(iconName.find('09') != -1): #SHOWER RAIN
-            pic=self.ShowerRain.convert()
-        elif(iconName.find('10') != -1): #RAIN
-            pic=self.Rain.convert()
-        elif(iconName.find('11') != -1):  #THUNDERSTORM
-            pic=self.Thunderstorm.convert()
-        elif(iconName.find('13') != -1):  #SNOW
-            pic=self.Snow.convert()
-        elif(iconName.find('50') != -1):  #mist - fog
-            pic=self.Fog.convert()
+            pic = self.FewClouds.convert()
+        elif(iconName.find('03') != -1):  # SCATTERED CLOUDS
+            pic = self.ScatteredClouds.convert()
+        elif(iconName.find('04') != -1):  # BROKEN CLOUDS
+            pic = self.BrokenClouds.convert()
+        elif(iconName.find('09') != -1):  # SHOWER RAIN
+            pic = self.ShowerRain.convert()
+        elif(iconName.find('10') != -1):  # RAIN
+            pic = self.Rain.convert()
+        elif(iconName.find('11') != -1):  # THUNDERSTORM
+            pic = self.Thunderstorm.convert()
+        elif(iconName.find('13') != -1):  # SNOW
+            pic = self.Snow.convert()
+        elif(iconName.find('50') != -1):  # mist - fog
+            pic = self.Fog.convert()
         else:
             log.add_error_log("image not found: {}".format(iconName))
-            pic=self.NA.convert()
+            pic = self.NA.convert()
         return pic
 
     def get_picture(self, iconName):
         if(iconName == "arrow_down"):
-            foto=self.arrow_down.convert()
+            foto = self.arrow_down.convert()
         elif(iconName == "arrow_up"):
-            foto=self.arrow_up.convert()
+            foto = self.arrow_up.convert()
         elif(iconName.find('anim') != -1):
-            foto=self.RainAnim1.convert()
+            foto = self.RainAnim1.convert()
         elif(iconName.find('snowflake1') != -1):
-            foto=self.snowflake1.convert()
+            foto = self.snowflake1.convert()
         elif(iconName.find('snowflake2') != -1):
-            foto=self.snowflake2.convert()
+            foto = self.snowflake2.convert()
         elif(iconName.find('snowflake3') != -1):
-            foto=self.snowflake3.convert()
+            foto = self.snowflake3.convert()
         elif(iconName.find('snowflake4') != -1):
-            foto=self.snowflake4.convert()
+            foto = self.snowflake4.convert()
         elif(iconName.find('snowflake5') != -1):
-            foto=self.snowflake5.convert()
+            foto = self.snowflake5.convert()
         elif(iconName.find('snowflake6') != -1):
-            foto=self.snowflake6.convert()
+            foto = self.snowflake6.convert()
         elif(iconName.find("DTStorm2") != -1):
-            foto=self.DTStorm2.convert()
+            foto = self.DTStorm2.convert()
         elif(iconName.find("temp_out") != -1):
-            foto=self.tempout.convert()
+            foto = self.tempout.convert()
         elif(iconName.find("temp_in") != -1):
-            foto=self.tempin.convert()
+            foto = self.tempin.convert()
         elif(iconName.find("wind") != -1):
-            foto=self.wind.convert()
+            foto = self.wind.convert()
         else:
-            foto=self.NA.convert()
+            foto = self.NA.convert()
         return foto
 
-    def load_image(self, folder, name):   # ZALADOWANIE IKONY
+    def load_image(self, folder, name):
         main_dir = os.path.split(os.path.abspath(__file__))[0]
         data_dir = os.path.join(main_dir, '../' + folder)
         fullname = os.path.join(data_dir, name)
@@ -180,31 +193,32 @@ class Display:
         screen.blit(picture, (osx, osy))
 
     def box(self, screen, x, y, w, h, color):
-        pygame.gfxdraw.box(screen, Rect((x, y),(w, h)), color)
+        pygame.gfxdraw.box(screen, Rect((x, y), (w, h)), color)
 
-    def text_center(self, screen, tekst, font, rozmiar, x, y, color, alpha):
-        a_sys_font = pygame.font.SysFont(font, rozmiar)
-        ren = a_sys_font.render(unicode(tekst,'utf-8'), True, color)
+    def text_center(self, screen, text, font, size, x, y, color, alpha):
+        a_sys_font = pygame.font.SysFont(font, size)
+        ren = a_sys_font.render(unicode(text, 'utf-8'), True, color)
         ren.set_alpha(alpha)
         screen.blit(ren, (x - ren.get_width() // 2, y - ren.get_height() // 2))
-    
-    def text_center_background(self, screen, tekst, font, rozmiar, x, y, color, alpha, bgcolor):
-        a_sys_font = pygame.font.SysFont(font, rozmiar)
-        ren = a_sys_font.render(unicode(tekst,'utf-8'), True, color)
+
+    def text_center_background(self, screen, text, font, size, x, y, color, alpha, bgcolor):
+        a_sys_font = pygame.font.SysFont(font, size)
+        ren = a_sys_font.render(unicode(text, 'utf-8'), True, color)
         ren.set_alpha(alpha)
-        self.box(screen, x - ren.get_width() // 2,y - ren.get_height() // 2,ren.get_width()+30,ren.get_height(),bgcolor)
+        self.box(screen, x - ren.get_width() // 2, y - ren.get_height() //
+                 2, ren.get_width()+30, ren.get_height(), bgcolor)
         screen.blit(ren, (x - ren.get_width() // 2, y - ren.get_height() // 2))
 
-    def text_background(self, screen, tekst, font, rozmiar, x, y, color, alpha,bgcolor):
-        a_sys_font = pygame.font.SysFont(font, rozmiar)
-        text = a_sys_font.render(unicode(tekst,'utf-8'),True, color)
+    def text_background(self, screen, text, font, size, x, y, color, alpha, bgcolor):
+        a_sys_font = pygame.font.SysFont(font, size)
+        text = a_sys_font.render(unicode(text, 'utf-8'), True, color)
         text.set_alpha(alpha)
-        self.box(screen, x,y,text.get_width()+30,text.get_height(),bgcolor)
+        self.box(screen, x, y, text.get_width()+30, text.get_height(), bgcolor)
         screen.blit(text, (x, y))
 
-    def text2(self, screen, tekst, font, rozmiar, x, y, color, alpha):
-        a_sys_font = pygame.font.SysFont(font, rozmiar)
-        text = a_sys_font.render(unicode(tekst,'utf-8'),True, color)
+    def text2(self, screen, text, font, size, x, y, color, alpha):
+        a_sys_font = pygame.font.SysFont(font, size)
+        text = a_sys_font.render(unicode(text, 'utf-8'), True, color)
         text.set_alpha(alpha)
         screen.blit(text, (x, y))
         return text.get_width()
@@ -214,4 +228,6 @@ class Display:
 
     def update(self):
         pygame.display.update()
+
+
 display = Display('assets/img')

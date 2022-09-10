@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        weather forecast
 # Purpose:
 #
@@ -8,17 +8,24 @@
 #
 # Created:     18.09.2021
 # Copyright:   (c) kosik 2021
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 try:
-    import os, sys, locale, datetime, time, configparser, requests, json, pygame
+    import os
+    import sys
+    import locale
+    import datetime
+    import time
+    import configparser
+    import requests
+    import json
+    import pygame
 except ImportError:
     log.add_log("Modul Import Error")
 
 from pygame.compat import geterror
 from lib.log import *
 from devicesList import *
-
 
 ''' ICONS NR
 01d - clear sky
@@ -33,12 +40,12 @@ from devicesList import *
 '''
 
 class Weather:
-    tempMinToday=0.0
-    tempMinTomorrow=0.0
-    tempMaxToday=0.0
-    tempMaxTomorrow=0.0
-    iconToday="01d"
-    iconTomorrow="01d"
+    tempMinToday = 0.0
+    tempMinTomorrow = 0.0
+    tempMaxToday = 0.0
+    tempMaxTomorrow = 0.0
+    iconToday = "01d"
+    iconTomorrow = "01d"
 
     def __init__(self, city, id):
         self.city = city
@@ -66,7 +73,7 @@ class Weather:
                     self.tempMinToday = float(box['main']['temp_min'])
                     if(self.tempMinToday > -1 and self.tempMinToday <= 0):
                         self.tempMinToday = 0.0
-                czas=datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
+                czas = datetime.datetime.strptime("2020-01-01 12:00:00", '%Y-%m-%d %H:%M:%S')
                 if flag == 0:
                     self.iconToday = box['weather'][0]['icon']
                     flag = 1
@@ -98,7 +105,7 @@ class Weather:
                 log.add_log('nie znaleziono pogody na jutro')
 
     def get_forecast(self, city, id):
-        url='https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID={}&units=metric'.format(city, id)
+        url = 'https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID={}&units=metric'.format(city, id)
         try:
             json_data = requests.get(url).json()
             self.forecast_today(json_data)
@@ -106,5 +113,12 @@ class Weather:
             log.add_log('Pobrano prognoze pogody dla miasta ' + city)
         except:
             log.add_log("Blad polaczenia z serwerem pogody")
+
+    def get_icon_today(self):
+        return self.iconToday
+
+    def get_icon_tomorrow(self):
+        return self.iconTomorrow
+
 
 weather = Weather("Rodgau", "85b527bafdfc28a92672434b32ead750")

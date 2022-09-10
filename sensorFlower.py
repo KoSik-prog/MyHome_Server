@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        sensorFlower
 # Author:      KoSik
 #
 # Created:     29.05.2022
 # Copyright:   (c) kosik 2022
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 try:
     import datetime
 except ImportError:
@@ -14,6 +14,7 @@ except ImportError:
 
 from lib.log import *
 from lib.sqlDatabase import *
+
 
 class SensorFlower:
     light = 0
@@ -29,7 +30,7 @@ class SensorFlower:
         self.time = datetime.datetime.now()
 
     def add_record(self, data):
-        if data[3]== "k":
+        if data[3] == "k":
             if len(data) >= 17:
                 self.light = int(data[4:7])
                 self.power = data[10]+"."+data[11:13]
@@ -37,7 +38,8 @@ class SensorFlower:
 
                 self.time = datetime.datetime.now()
                 sql.add_record_flower(2, self.humidity, self.light, self.power, data[14:17])
-                log.add_log("   Kwiatek {}({}) Slonce: {}%   Wilg: {}%   Zas: {}V".format(self.name, self.nr, self.light, self.humidity, self.power))
+                log.add_log("   Kwiatek {}({}) Slonce: {}%   Wilg: {}%   Zas: {}V".format(
+                    self.name, self.nr, self.light, self.humidity, self.power))
             else:
                 log.add_log("   Kwiatek {}({}) blad skladni!".format(self.name, self.nr))
 
@@ -53,7 +55,6 @@ class SensorFlower:
         elif(float(value) > max):
             return 100
         else:
-            diff= max - min
-            result=((100.0/diff)*float(value)) + ((-min)*(100.0/diff))
+            diff = max - min
+            result = ((100.0/diff)*float(value)) + ((-min)*(100.0/diff))
             return int(round(result))
-        

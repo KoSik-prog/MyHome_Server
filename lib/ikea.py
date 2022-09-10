@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        ikea
 # Purpose:
 #
@@ -8,8 +8,11 @@
 #
 # Created:     13.05.2022
 # Copyright:   (c) kosik 2022
-#-------------------------------------------------------------------------------
-import sys, re, os, ConfigParser
+# -------------------------------------------------------------------------------
+import sys
+import re
+import os
+import ConfigParser
 
 from lib.tradfri import tradfriStatus
 from lib.tradfri import tradfriActions
@@ -17,16 +20,17 @@ from lib.log import *
 
 import subprocess as sp
 
+
 class Ikea:
     user_id = ""
     security_user = ""
-    
+
     def __init__(self, mac, ip, password):
         self.MACaddress = mac
-        self.ipAddress = ip #static ip address
-        self.securityid = password #static pass
+        self.ipAddress = ip  # static ip address
+        self.securityid = password  # static pass
 
-        try:   
+        try:
             ipDynamicAddress = self.ikea_get_ip(self.MACaddress)
             if(ipDynamicAddress != -1):
                 self.ipAddress = ipDynamicAddress
@@ -38,7 +42,7 @@ class Ikea:
         self.connect()
 
     def ikea_get_ip(self, MACaddress):
-        pipe = sp.Popen( 'arp -a', shell=True, stdout=sp.PIPE, stderr=sp.PIPE )
+        pipe = sp.Popen('arp -a', shell=True, stdout=sp.PIPE, stderr=sp.PIPE)
         res = pipe.communicate()
 
         ipRetData = res[0]
@@ -46,10 +50,10 @@ class Ikea:
             pos = ipRetData.find('\n')
             ipData, ipRetData = ipRetData[:pos], ipRetData[pos+1:]
             if ipData.find(MACaddress) != -1:
-                ipAddress = ipData[ipData.find('(')+1 : ipData.find(')')]
+                ipAddress = ipData[ipData.find('(')+1: ipData.find(')')]
                 return ipAddress
-            else: 
-                return -1 
+            else:
+                return -1
 
     def connect(self):
         try:
@@ -66,18 +70,18 @@ class Ikea:
                 user_id = x
                 break
             except:
-                startPoint=0
+                startPoint = 0
         recData = str(security)
         securityData = recData.find("9091")
         startPoint = recData.find("u'", securityData)
         endPoint = recData.find("'", startPoint+2)
-        return (recData[startPoint+2 : endPoint], user_id)
-        
+        return (recData[startPoint+2: endPoint], user_id)
+
     def check_access(self, ipAddress, securityid, result):
         if result.find("v:") != -1:
             return "0", "0"
         else:
-            list = (tradfri_login(ipAddress, securityid))   #logowanie do bramy
+            list = (tradfri_login(ipAddress, securityid))  # logowanie do bramy
             user_id = list[1]
             security_user = list[0]
             log.add_log("Ikea Tradfri -> haslo wygaslo - nowe id: {}".format(user_id))
@@ -102,7 +106,7 @@ class Ikea:
         else:
             return "0", "0"
 
-    def ikea_dim_light(self, ipAddress, user_id, securityid, security_user, lightid,value):
+    def ikea_dim_light(self, ipAddress, user_id, securityid, security_user, lightid, value):
         result = tradfriActions.tradfri_dim_light(ipAddress, user_id, security_user, lightid, value)
         security_user, user_id = self.check_result(ipAddress, securityid, result)
         if user_id != "0":
@@ -111,7 +115,7 @@ class Ikea:
         else:
             return "0", "0"
 
-    def ikea_color_light(self, ipAddress, user_id, securityid, security_user, lightid,value):    # VALUE COLD/WARM/NORMAL
+    def ikea_color_light(self, ipAddress, user_id, securityid, security_user, lightid, value):    # VALUE COLD/WARM/NORMAL
         result = tradfriActions.tradfri_color_light(ipAddress, user_id, security_user, lightid, value)
         security_user, user_id = self.check_result(ipAddress, securityid, result)
         if user_id != "0":
@@ -138,7 +142,7 @@ class Ikea:
         else:
             return "0", "0"
 
-    def ikea_color_lamp(self, ipAddress, user_id, securityid, security_user, lightid,value1, value2):    # VALUE COLD/WARM/NORMAL
+    def ikea_color_lamp(self, ipAddress, user_id, securityid, security_user, lightid, value1, value2):    # VALUE COLD/WARM/NORMAL
         result = tradfriActions.tradfri_color_lamp(ipAddress, user_id, security_user, lightid, value1, value2)
         security_user, user_id = self.check_result(ipAddress, securityid, result)
         if user_id != "0":
@@ -165,7 +169,7 @@ class Ikea:
         else:
             return "0", "0"
 
-    def ikea_dim_group(self, ipAddress, user_id, securityid, security_user, groupid,value):
+    def ikea_dim_group(self, ipAddress, user_id, securityid, security_user, groupid, value):
         result = tradfriActions.tradfri_dim_group(ipAddress, user_id, security_user, groupid, value)
         security_user, user_id = self.check_result(ipAddress, securityid, result)
         if user_id != "0":
@@ -173,5 +177,6 @@ class Ikea:
             return security_user, user_id
         else:
             return "0", "0"
+
 
 ikea = Ikea('44:91:60:2c:b3:6f', '192.168.0.100', "B5dyJuhKqdgfDdkA")

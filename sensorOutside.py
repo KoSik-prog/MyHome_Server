@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Name:        sensorOutside
 # Author:      KoSik
 #
 # Created:     29.05.2022
 # Copyright:   (c) kosik 2022
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 try:
     import datetime
 except ImportError:
@@ -15,6 +15,7 @@ except ImportError:
 from lib.log import *
 from lib.sqlDatabase import *
 from lib.infoStrip import *
+
 
 class SensorOutside:
     temperature = 0.0
@@ -33,7 +34,7 @@ class SensorOutside:
         self.time = datetime.datetime.now()
 
     def add_record(self, data):
-        if data[3] ==  "s":
+        if data[3] == "s":
             self.light = int(data[4:9])
             self.ir = int(data[9:14])
             self.power = int(data[14:18])
@@ -55,21 +56,26 @@ class SensorOutside:
             self.time = datetime.datetime.now()
             self.errorFlag = False
             infoStrip.set_error(0, False)
-            log.add_log("Sensor outside -> temp: {}*C   humi: {}%   wind: {}m/s   dir:{}".format(self.temperature, self.humi, self.windSpeed, self.windDirection))
+            log.add_log("Sensor outside -> temp: {}*C   humi: {}%   wind: {}m/s   dir:{}".format(self.temperature,
+                                                                                                 self.humi, self.windSpeed, self.windDirection))
 
     def calculate_light(self):
-        k=3 #amplifier
+        k = 3  # amplifier
         for i in range(4):
             lightingAutomation.LUXvalue[i] = lightingAutomation.LUXvalue[i+1]
         lightingAutomation.LUXvalue[4] = self.light
         lightingAutomation.calculatedBrightness = lightingAutomation.LUXvalue[0]
         for i in range(4):
-            lightingAutomation.calculatedBrightness = lightingAutomation.calculatedBrightness + lightingAutomation.LUXvalue[i+1]
-        lightingAutomation.calculatedBrightness = (lightingAutomation.calculatedBrightness + ((lightingAutomation.LUXvalue[4]*k))) / (5+k)
+            lightingAutomation.calculatedBrightness = lightingAutomation.calculatedBrightness + \
+                lightingAutomation.LUXvalue[i+1]
+        lightingAutomation.calculatedBrightness = (
+            lightingAutomation.calculatedBrightness + ((lightingAutomation.LUXvalue[4]*k))) / (5+k)
         if lightingAutomation.calculatedBrightness < self.nightSetting:
             self.nightFlag = True
         else:
             self.nightFlag = False
-        log.add_log("Calculated outside light: {}".format(lightingAutomation.calculatedBrightness) + " / {}".format(lightingAutomation.LUXvalue))
+        log.add_log("Calculated outside light: {}".format(lightingAutomation.calculatedBrightness) +
+                    " / {}".format(lightingAutomation.LUXvalue))
+
 
 sensorOutside = SensorOutside()
