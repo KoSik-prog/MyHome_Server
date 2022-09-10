@@ -9,10 +9,12 @@
 # -------------------------------------------------------------------------------
 try:
     import datetime
+    from lib.lib_nrf24 import NRF24
     from sensorFlower import *
+    from lib.sensorOutside import *
     from lib.sensorRoom import *
     from deviceWaterCan import *
-    from lib.lib_nrf24 import NRF24
+    from lib.sensorRoom import *
 except ImportError:
     print "Import error - devices list"
 
@@ -43,29 +45,28 @@ server = Server()
     nightSetting = 60  #ustawienie kiedy noc
 sensorOutsideTemperature = SensorOutsideTemperature()"""
 
-
-class SensorRoom1Temperature:  # SALON
+"""class SensorRoom1Temperature:  # SALON
     temp = 2.2
     humi = 2.2
     batt = 2.2
     time = datetime.datetime.now()
     error = False
     sqlRoom = 'pok1Temp'
+sensorRoom1Temperature = SensorRoom1Temperature()"""
 
-
-sensorRoom1Temperature = SensorRoom1Temperature()
-
-
-class SensorRoom2Temperature:  # SYPIALNIA
+"""class SensorRoom2Temperature:  # SYPIALNIA
     temp = 3.3
     humi = 3.3
     batt = 3.3
     time = datetime.datetime.now()
     error = False
     sqlRoom = 'pok2Temp'
+sensorRoom2Temperature = SensorRoom2Temperature()"""
 
+sensorOutside = SensorOutside()
 
-sensorRoom2Temperature = SensorRoom2Temperature()
+sensorRoom1Temperature = SensorRoom('Salon', 'pok1Temp')
+sensorRoom2Temperature = SensorRoom('Sypialnia', 'pok2Temp')
 
 #  DEVICES
 #automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
@@ -108,7 +109,7 @@ class DecorationRoom1:  # Dekoracje w salonie Reka
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:05:00.0000'
-    autoLuxMin = 600  # ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
+    autoLuxMin = 600 
     flagManualControl = False
     autoBrightness = 1
     error = 0
@@ -124,7 +125,7 @@ class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:04:00.0000'
-    autoLuxMin = 500  # ustawienie minimum oswietlenia przy ktorym zalaczy sie swiatlo
+    autoLuxMin = 500
     flagManualControl = False
     autoBrightness = 1
     error = 0
@@ -142,7 +143,7 @@ class DecorationFlamingo:  # Dekoracje w sypialni
     autoOff = '23:59:00.0000'
     flagManualControl = False
     autoBrightness = 1
-    autoLuxMin = 300  # ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    autoLuxMin = 300 
     error = 0
     address = [0x33, 0x33, 0x33, 0x33, 0x10]
     nrfPower = NRF24.PA_LOW
@@ -208,7 +209,7 @@ class LedLightRoom2:  # OSWIETLENIE SYPIALNI
     flag = 0
     autoOn = '21:00:00.0000'
     autoOff = '23:50:00.0000'
-    autoLuxMin = 200  # ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    autoLuxMin = 200
     flagManualControl = False
     autoBrightness = 5
     error = 0
@@ -239,7 +240,7 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
     autoOff = '23:58:00.0000'
     flagManualControl = False
     autoBrightness = 1
-    autoLuxMin = 1300  # ustawienie minimum oswietlenia przy ktrym zalaczy sie swiatlo
+    autoLuxMin = 1300 
     error = 0
     address = [0, 0, 0, 0, 6]
     nrfPower = NRF24.PA_LOW
@@ -250,7 +251,7 @@ kitchenLight = KitchenLight()
 
 
 class FloorLampRoom1Tradfri:
-    address = "65537"  # Adres="131079"  -> grupa
+    address = "65537"  # address="131079"  -> group
     status = False
 
 
@@ -296,11 +297,3 @@ class HallTradfri:
 
 
 hallTradfri = HallTradfri()
-
-
-class LightingAutomation:
-    LUXvalue = [2000, 2000, 2000, 2000, 2000]
-    calculatedBrightness = 2000
-
-
-lightingAutomation = LightingAutomation()

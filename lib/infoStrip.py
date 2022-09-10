@@ -23,7 +23,7 @@ class InfoStrip:
                    [False, "blad czujnika salonu"],
                    [False, "blad czujnika sypialni"],
                    [False, "blad czujnika kwiatka (Konewka)"],
-                   [False, "blad czujnika kwiatka 12 (" + sensorFlower2.name + ")"],
+                   [False, "blad czujnika kwiatka 12 (Palma)"],
                    [False, "blad czujnika kwiatka 13 (Pachira)"],
                    [False, "blad czujnika kwiatka 14 (Pokrzywa)"],
                    [False, "minimalny poziom baterii kwiatka (konewka)"],

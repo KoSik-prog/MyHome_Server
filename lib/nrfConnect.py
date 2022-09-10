@@ -104,7 +104,8 @@ class Nrf():
                 flaga_NRFOdebral = 0
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "02":  # czujnik temperatury 3 - sypialni
-                    if stringNRF[3] == "y":
+                    sensorRoom2Temperature.decode_data(stringNRF)
+                    """if stringNRF[3] == "y":
                         string2 = (stringNRF[4:6]+"."+stringNRF[6])
                         if(len(stringNRF) > 9):
                             string3 = (stringNRF[7:10])
@@ -129,13 +130,14 @@ class Nrf():
                         ledLightRoom2.flagManualControl = True
                         ledLightRoom2.error = 0
                         log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) +
-                                    ("   PWM:{}".format(ledLightRoom2.brightness)))
+                                    ("   PWM:{}".format(ledLightRoom2.brightness)))"""
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "03":  #outside sensor
                     sensorOutside.add_record(stringNRF)
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "04":  # czujnik temperatury 2 - pokoju
-                    if stringNRF[3] == "t":
+                    sensorRoom1Temperature.decode_data(stringNRF)
+                    """if stringNRF[3] == "t":
                         if(stringNRF[4] == "1"):
                             string2 = ('-'+stringNRF[5:7]+'.'+stringNRF[7])
                         else:
@@ -151,7 +153,7 @@ class Nrf():
                         sensorRoom1Temperature.error = False  # kasowanie bledu
                         infoStrip.set_error(1, False)
                         log.add_log(("   Sensor2 sensorRoom1Temperature.temp: {}*C".format(string2)) +
-                                    ("   Wilg2: {}%".format(string3)) + ("   Batt: {}".format(string4)))
+                                    ("   Wilg2: {}%".format(string3)) + ("   Batt: {}".format(string4)))"""
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "05":  # LED - tv
                     if stringNRF[3] == "?":

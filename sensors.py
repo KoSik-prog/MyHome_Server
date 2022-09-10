@@ -14,9 +14,9 @@ try:
     from lib.log import *
     from devicesList import *
     from lib.infoStrip import *
-    from sensorOutside import *
+    from lib.sensorOutside import *
 except ImportError:
-    print "Import error - sensor"
+    print "Import error - sensors"
 
 
 class Sensors:
@@ -53,25 +53,17 @@ class Sensors:
         self.set_receive_error_on_strip(sensorFlower4, 63, 6)
         self.set_receive_error_on_strip(sensorFlower5, 63, 16)
         self.set_receive_error_on_strip(sensorFlower6, 63, 19)
-        # sprawdzenie stanu baterii
+        # power check
         self.set_power_error_on_strip(sensorFlower2, Sensors.minBatteryVoltage, 8)
         self.set_power_error_on_strip(sensorFlower3, Sensors.minBatteryVoltage, 9)
         self.set_power_error_on_strip(sensorFlower4, Sensors.minBatteryVoltage, 10)
         self.set_power_error_on_strip(sensorFlower5, Sensors.minBatteryVoltage, 14)
         self.set_power_error_on_strip(sensorFlower6, Sensors.minBatteryVoltage, 17)
-        # sprawdzenie wilgotnosci
+        # flowers humidity check
         self.set_min_humidity_error_on_strip(sensorFlower2, 11)
         self.set_min_humidity_error_on_strip(sensorFlower3, 12)
         self.set_min_humidity_error_on_strip(sensorFlower4, 13)
         self.set_min_humidity_error_on_strip(sensorFlower5, 15)
         self.set_min_humidity_error_on_strip(sensorFlower6, 18)
-        # sprawdzenie budy
-        if((datetime.datetime.now() - dogHouse.time) > (datetime.timedelta(minutes=2))):
-            dogHouse.temp1 = 0.0
-            dogHouse.temp2 = 0.0
-            dogHouse.temp3 = 0.0
-            dogHouse.czujnikZajetosciflaga = 0
-            dogHouse.czujnikZajetosciRaw = 0
-
 
 sensor = Sensors()

@@ -57,3 +57,6 @@ class SensorFlower:
             diff = max - min
             result = ((100.0/diff)*float(value)) + ((-min)*(100.0/diff))
             return int(round(result))
+        
+    def get_name(self):
+        return self.name

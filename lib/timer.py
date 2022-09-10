@@ -62,7 +62,7 @@ class Timer:
         if(int(stampOff.total_seconds()) > (-15) and int(stampOff.total_seconds()) < 0 and deviceClass.flagManualControl == True):
             deviceClass.flagManualControl = False
         # ------CHECK------------------------
-        if(deviceClass.flag == 0 and lightingAutomation.calculatedBrightness < deviceClass.autoLuxMin and (int(stampOn.total_seconds()) > 0) and (int(stampOff.total_seconds()) < (-60)) and deviceClass.flagManualControl == False and deviceClass.error < 20):
+        if(deviceClass.flag == 0 and sensorOutside.get_calulated_brightness() < deviceClass.autoLuxMin and (int(stampOn.total_seconds()) > 0) and (int(stampOff.total_seconds()) < (-60)) and deviceClass.flagManualControl == False and deviceClass.error < 20):
             log.add_log("AUTO {} -> ON".format(deviceClass.label))
             light.set_light(deviceClass.address, deviceClass.autoBrightness)
             deviceClass.flag = 1
