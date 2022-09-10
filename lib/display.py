@@ -12,55 +12,56 @@ from lib.log import *
 
 pygame.init()
 
-class DISPLAY_CL:
+class Display:
     pygame.display.set_caption('MojDom')
     resolution = 800, 480
     #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
     screen = pygame.display.set_mode(resolution,1)
 
-    def __init__(self):
+    def __init__(self, imgFolder):
         self.screen.fill((255,255,255))
         pygame.mouse.set_cursor((8,8),(0,0),(0,0,0,0,0,0,0,0),(0,0,0,0,0,0,0,0))
+        self.imgFolder = imgFolder
 
-        self.BrokenClouds = self.load_image('assets/pic', "Broken_Clouds.gif")
-        self.ClearSky = self.load_image('assets/pic', "Clear_Sky.gif")
-        self.ClearSkyNight = self.load_image('assets/pic', "Clear_Sky_Night.gif")
-        self.FewClouds = self.load_image('assets/pic', "Few_Clouds.gif")
-        self.Fog = self.load_image('assets/pic', "Mist.gif")
-        self.Rain = self.load_image('assets/pic', "Rain.gif")
-        self.ScatteredClouds = self.load_image('assets/pic', "Scattered_Clouds.gif")
-        self.ScatteredCloudsNight = self.load_image('assets/pic', "Scattered_Clouds_Night.gif")
-        self.ShowerRain = self.load_image('assets/pic', "Shower_Rain.gif")
-        self.Snow = self.load_image('assets/pic', "Snow.gif")
-        self.Thunderstorm = self.load_image('assets/pic', "Thunderstorm.gif")
+        self.BrokenClouds = self.load_image(imgFolder, "Broken_Clouds.gif")
+        self.ClearSky = self.load_image(imgFolder, "Clear_Sky.gif")
+        self.ClearSkyNight = self.load_image(imgFolder, "Clear_Sky_Night.gif")
+        self.FewClouds = self.load_image(imgFolder, "Few_Clouds.gif")
+        self.Fog = self.load_image(imgFolder, "Mist.gif")
+        self.Rain = self.load_image(imgFolder, "Rain.gif")
+        self.ScatteredClouds = self.load_image(imgFolder, "Scattered_Clouds.gif")
+        self.ScatteredCloudsNight = self.load_image(imgFolder, "Scattered_Clouds_Night.gif")
+        self.ShowerRain = self.load_image(imgFolder, "Shower_Rain.gif")
+        self.Snow = self.load_image(imgFolder, "Snow.gif")
+        self.Thunderstorm = self.load_image(imgFolder, "Thunderstorm.gif")
         #---
-        self.DCloudy = self.load_image('assets/img', "Cloudy.jpg")
-        self.DCloudyNight = self.load_image('assets/img', "Cloudy_Night.jpg")
-        self.DFewClouds = self.load_image('assets/img', "Few_Clouds.jpg")
-        self.DFewCloudsNight = self.load_image('assets/img', "Few_Clouds_Night.jpg")
-        self.DFog = self.load_image('assets/img', "Fog.jpg")
-        self.DRain = self.load_image('assets/img', "Rain.jpg")
-        self.DSnow = self.load_image('assets/img', "Snow.jpg")
-        self.DSnowNight = self.load_image('assets/img', "Snow_Night.jpg")
-        self.DTStorm = self.load_image('assets/img', "T-Storm.jpg")
-        self.DTStorm2 = self.load_image('assets/img', "T-Storm2.jpg")
-        self.DClearSky = self.load_image('assets/img', "Sun.jpg")
-        self.DClearSkyNight = self.load_image('assets/img', "Clear_Night.jpg")
+        self.DCloudy = self.load_image(imgFolder, "Cloudy.jpg")
+        self.DCloudyNight = self.load_image(imgFolder, "Cloudy_Night.jpg")
+        self.DFewClouds = self.load_image(imgFolder, "Few_Clouds.jpg")
+        self.DFewCloudsNight = self.load_image(imgFolder, "Few_Clouds_Night.jpg")
+        self.DFog = self.load_image(imgFolder, "Fog.jpg")
+        self.DRain = self.load_image(imgFolder, "Rain.jpg")
+        self.DSnow = self.load_image(imgFolder, "Snow.jpg")
+        self.DSnowNight = self.load_image(imgFolder, "Snow_Night.jpg")
+        self.DTStorm = self.load_image(imgFolder, "T-Storm.jpg")
+        self.DTStorm2 = self.load_image(imgFolder, "T-Storm2.jpg")
+        self.DClearSky = self.load_image(imgFolder, "Sun.jpg")
+        self.DClearSkyNight = self.load_image(imgFolder, "Clear_Night.jpg")
         #---
-        self.NA = self.load_image('assets/pic', "na.gif")
-        self.arrow_down = self.load_image('assets/pic', "arrow_down.gif")
-        self.arrow_up = self.load_image('assets/pic', "arrow_up.gif")
-        self.snowflake1 = self.load_image('assets/img', "snowflake1.gif")
-        self.snowflake2 = self.load_image('assets/img', "snowflake2.gif")
-        self.snowflake3 = self.load_image('assets/img', "snowflake3.gif")
-        self.snowflake4 = self.load_image('assets/img', "snowflake4.gif")
-        self.snowflake5 = self.load_image('assets/img', "snowflake5.gif")
-        self.snowflake6 = self.load_image('assets/img', "snowflake6.gif")
-        self.RainAnim1 = self.load_image('assets/img', "rain_anim1.gif")
+        self.NA = self.load_image(imgFolder, "na.gif")
+        self.arrow_down = self.load_image(imgFolder, "arrow_down.gif")
+        self.arrow_up = self.load_image(imgFolder, "arrow_up.gif")
+        self.snowflake1 = self.load_image(imgFolder, "snowflake1.gif")
+        self.snowflake2 = self.load_image(imgFolder, "snowflake2.gif")
+        self.snowflake3 = self.load_image(imgFolder, "snowflake3.gif")
+        self.snowflake4 = self.load_image(imgFolder, "snowflake4.gif")
+        self.snowflake5 = self.load_image(imgFolder, "snowflake5.gif")
+        self.snowflake6 = self.load_image(imgFolder, "snowflake6.gif")
+        self.RainAnim1 = self.load_image(imgFolder, "rain_anim1.gif")
         #---
-        self.tempin = self.load_image('assets/pic', "temp_in.gif")
-        self.tempout = self.load_image('assets/pic', "temp_out.gif")
-        self.wind = self.load_image('assets/pic', "wind.gif")
+        self.tempin = self.load_image(imgFolder, "temp_in.gif")
+        self.tempout = self.load_image(imgFolder, "temp_out.gif")
+        self.wind = self.load_image(imgFolder, "wind.gif")
 
     def get_background(self, night, iconName):
         iconName=iconName.lower()
@@ -98,7 +99,7 @@ class DISPLAY_CL:
         elif(iconName.find('50') != -1):  #mist - fog
             pic=self.DFog.convert()
         else:
-            log.add_error_log("icon not found: {}".format(iconName))
+            log.add_error_log("image not found: {}".format(iconName))
             pic=self.NA.convert()
         return pic
 
@@ -126,7 +127,7 @@ class DISPLAY_CL:
         elif(iconName.find('50') != -1):  #mist - fog
             pic=self.Fog.convert()
         else:
-            log.add_error_log("icon not found: {}".format(iconName))
+            log.add_error_log("image not found: {}".format(iconName))
             pic=self.NA.convert()
         return pic
 
@@ -213,4 +214,4 @@ class DISPLAY_CL:
 
     def update(self):
         pygame.display.update()
-display = DISPLAY_CL()
+display = Display('assets/img')
