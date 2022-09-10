@@ -16,7 +16,7 @@ try:
     import time
     import os
 except ImportError:
-    print "Import error - watchdog main"
+    print("Import error - watchdog main")
 
 
 if __name__ == "__main__":

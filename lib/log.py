@@ -15,7 +15,7 @@ try:
     import datetime
     import time
 except ImportError:
-    print "Import error - log"
+    print("Import error - log")
 
 
 class Log:

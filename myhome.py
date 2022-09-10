@@ -27,7 +27,7 @@ try:
     from lib.timer import *
     from sensors import *
 except ImportError:
-    print "Import error - My Home"
+    print("Import error - My Home")
 
 
 class MyHome:

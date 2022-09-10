@@ -17,7 +17,7 @@ try:
     from lib.nrfConnect import *
     from lib.ikea import *
 except ImportError:
-    print "Modul Import Error"
+    print("Modul Import Error")
 
 class Set_light_with_delay(threading.Thread):
     def __init__(self, address, brightness, time):

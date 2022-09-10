@@ -19,7 +19,7 @@ try:
     from lib.log import *
     import subprocess as sp
 except ImportError:
-    print "Import error - ikea"
+    print("Import error - ikea")
     
 
 class Ikea:
@@ -82,7 +82,7 @@ class Ikea:
         if result.find("v:") != -1:
             return "0", "0"
         else:
-            list = (tradfri_login(ipAddress, securityid))  # logowanie do bramy
+            list = (self.tradfri_login(ipAddress, securityid))  # logowanie do bramy
             user_id = list[1]
             security_user = list[0]
             log.add_log("Ikea Tradfri -> haslo wygaslo - nowe id: {}".format(user_id))

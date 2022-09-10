@@ -15,7 +15,7 @@ try:
     from lib.log import *
     import rpi_backlight as backlight
 except ImportError:
-    print "Import error - displayBrightness"
+    print("Import error - displayBrightness")
 
 class DisplayBrightness:
     light = 0

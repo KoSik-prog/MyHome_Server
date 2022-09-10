@@ -12,7 +12,7 @@ try:
     from lib.log import *
     from lib.sqlDatabase import *
 except ImportError:
-    print "Import error - sensor flower"
+    print("Import error - sensor flower")
 
 
 class SensorFlower:

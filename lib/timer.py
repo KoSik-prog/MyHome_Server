@@ -16,7 +16,7 @@ try:
     from lights import *
     from devicesList import *
 except ImportError:
-    print "Import error - timer"
+    print("Import error - timer")
 
 
 class Timer:

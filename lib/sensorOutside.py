@@ -14,7 +14,7 @@ try:
     from lib.sqlDatabase import *
     from lib.infoStrip import *
 except ImportError:
-    print "Import error - sensor outside"
+    print("Import error - sensor outside")
 
 
 class SensorOutside:
@@ -42,7 +42,6 @@ class SensorOutside:
             self.power = int(data[14:18])
             sql.add_record_sensor_outdoor_light(self.light, self.ir)
             self.calculate_light()
-            log.add_log("Calculated light: {}".format(self.calculatedBrightness))
             log.add_log("Sensor outside -> light: {}    lightIR: {}    power: {}".format(self.light, self.ir, self.power))
         if data[3] == "t":
             if(data[4] == "1"):

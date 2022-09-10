@@ -16,7 +16,7 @@ try:
     from devicesList import *
     from lib.watchdog import *
 except ImportError:
-    print "Import error - settings"
+    print("Import error - settings")
     
 
 class Settings:

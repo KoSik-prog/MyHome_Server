@@ -17,7 +17,7 @@ try:
     import os
     import time
 except ImportError:
-    print "Import error"
+    print("Import error - sql")
 from lib.log import *
 
 

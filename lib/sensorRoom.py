@@ -14,7 +14,7 @@ try:
     from lib.log import *
     from lib.infoStrip import *
 except ImportError:
-    print "Import error - room sensor"
+    print("Import error - room sensor")
 
 
 class SensorRoom:
@@ -45,18 +45,18 @@ class SensorRoom:
             log.add_log(("Sensor {}  temp: {}°C  humi: {}%  power: {}".format(self.sensorName, self.temp, self.humi, self.batt)))
         if rxData[3] == "y":  # for bedroom sensor
             bufTemp = ("{}.{}".format(rxData[4:6], rxData[6]))
-            print("test ---> {}".format(rxData[7:10]))
+            log.add_log("test ---> humidity in room 2: {}%".format(rxData[7:10]))  #!!!!!!!!!!!!!!!!!!! TEST
             if(len(rxData) > 9):
                 bufHumi = (rxData[7:10])
             else:
                 bufHumi = (rxData[7:9])  # +'.0')
             self.temp = float(bufTemp)
             self.humi = float(bufHumi)
-            sql.add_record_sensor_temp(self.sqlRoom, self.temp, self.humi)
+            sql.add_record_sensor_temp(self.databaseName, self.temp, self.humi)
             self.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
             self.error = False 
             infoStrip.set_error(2, False)
-            log.add_log("Sensor {}  temp: {}°C humi: {}%".format(self.sensorName, sekf.temp, self.humi))
+            log.add_log("Sensor {}  temp: {}°C humi: {}%".format(self.sensorName, self.temp, self.humi))
         if rxData[3] == "?":
             ledLightRoom2.brightness = int(rxData[4:7])
             if(ledLightRoom2.brightness == 0):

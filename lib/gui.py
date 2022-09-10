@@ -24,7 +24,7 @@ try:
     from lib.displayBrightness import *
     from sensorOutside import *
 except ImportError:
-    print "Import error - gui"
+    print("Import error - gui")
 
 class Gui:
     backgroundColour = (255, 255, 255, 255)

@@ -22,7 +22,7 @@ try:
     from lib.sqlDatabase import *
     from lib.infoStrip import *
 except ImportError:
-    print "Import error - nrf connect"
+    print("Import error - nrf connect")
 
 
 class Nrf():

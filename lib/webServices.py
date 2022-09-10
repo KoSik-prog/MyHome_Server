@@ -16,7 +16,7 @@ try:
     from lights import *
     from sensorOutside import *
 except ImportError:
-    print "Import error - web services"
+    print("Import error - web services")
 
 
 class Udp:

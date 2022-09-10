@@ -12,7 +12,8 @@
 try:
     from devicesList import *
 except ImportError:
-    print "Import error - info strip"
+    print("Import error - info strip")
+
 
 class InfoStrip:
     actualInformation = ""
@@ -53,7 +54,7 @@ class InfoStrip:
             self.errorPosition += 1
             if self.errorPosition > len(self.errorsArray)-1:
                 self.errorPosition = 0
-            if(self.errorsArray[self.errorPosition][0] == True):
+            if (self.errorsArray[self.errorPosition][0] == True):
                 error = self.errorsArray[self.errorPosition][1]
                 break
         return error
@@ -70,5 +71,6 @@ class InfoStrip:
         for i in range(len(self.informations) - 1):
             self.informations[i] = self.informations[i+1]
         return info
+
 
 infoStrip = InfoStrip()

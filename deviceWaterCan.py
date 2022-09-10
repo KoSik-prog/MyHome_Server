@@ -14,7 +14,7 @@ try:
     from lib.log import *
     from lib.sqlDatabase import *
 except ImportError:
-    print "Import error - water can"
+    print("Import error - water can")
 
 
 class WaterCan:

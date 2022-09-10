@@ -16,7 +16,7 @@ try:
     from lib.infoStrip import *
     from lib.sensorOutside import *
 except ImportError:
-    print "Import error - sensors"
+    print("Import error - sensors")
 
 
 class Sensors:

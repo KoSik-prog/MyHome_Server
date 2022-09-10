@@ -16,7 +16,7 @@ try:
     from deviceWaterCan import *
     from lib.sensorRoom import *
 except ImportError:
-    print "Import error - devices list"
+    print("Import error - devices list")
 
 
 class Server():

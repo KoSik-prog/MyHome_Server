@@ -14,7 +14,7 @@ try:
     import os
     import sys
 except ImportError:
-    print "Import error - watchdog"
+    print("Import error - watchdog")
 
 
 class Watchdog:
