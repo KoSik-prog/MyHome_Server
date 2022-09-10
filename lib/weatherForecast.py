@@ -47,9 +47,9 @@ class Weather:
     iconToday = "01d"
     iconTomorrow = "01d"
 
-    def __init__(self, city, id):
+    def __init__(self, city, path):
         self.city = city
-        self.id = id
+        self.id = self.read_auth_key(path)
 
     def weather_thread(self):
         while server.read_server_active_flag() == True:
@@ -119,6 +119,10 @@ class Weather:
 
     def get_icon_tomorrow(self):
         return self.iconTomorrow
+    
+    def read_auth_key(self, path):
+        f = open(path + "/forecastAuth.key", "r")
+        return f.read()
 
 
-weather = Weather("Rodgau", "85b527bafdfc28a92672434b32ead750")
+weather = Weather("Rodgau", 'Desktop/Home')

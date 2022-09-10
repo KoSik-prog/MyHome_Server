@@ -19,7 +19,9 @@ import sys
 
 class Watchdog:
     watchdogFlag = 0
-    path = 'Desktop/Home/watchdog.xml'
+    
+    def __init__(self, path):
+        self.path = path
 
     def start(self):
         log.add_watchdog_log("Uruchamiam watchdog...")
@@ -36,7 +38,7 @@ class Watchdog:
                 os.system('sudo shutdown -r now')
 
     def read(self):
-        tree = ET.ElementTree(file=self.path)
+        tree = ET.ElementTree(file=self.path + "/watchdog.xml")
         root = tree.getroot()
         self.watchdogFlag = int(root.find("watchdogFlag").text)
 
@@ -44,13 +46,13 @@ class Watchdog:
         setings = ET.Element("settings")
         ET.SubElement(setings, "watchdogFlag").text = str(0)
         tree2 = ET.ElementTree(setings)
-        tree2.write(self.path)
+        tree2.write(self.path + "/watchdog.xml")
 
     def reset(self):
         setings = ET.Element("settings")
         ET.SubElement(setings, "watchdogFlag").text = str(1)
         tree2 = ET.ElementTree(setings)
-        tree2.write(self.path)
+        tree2.write(self.path + "/watchdog.xml")
 
 
-watchdog = Watchdog()
+watchdog = Watchdog('Desktop/Home')
