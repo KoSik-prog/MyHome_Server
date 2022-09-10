@@ -9,12 +9,15 @@
 # Created:     17.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-import xml.etree.cElementTree as ET
-from lib.log import *
-from lib.weatherForecast import *
-from devicesList import *
-from lib.watchdog import *
-
+try:
+    import xml.etree.cElementTree as ET
+    from lib.log import *
+    from lib.weatherForecast import *
+    from devicesList import *
+    from lib.watchdog import *
+except ImportError:
+    print "Import error - settings"
+    
 
 class Settings:
     def __init__(self, path):

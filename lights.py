@@ -11,14 +11,13 @@
 # -------------------------------------------------------------------------------
 try:
     import threading
+    from lib.log import *
+    from devicesList import *
+    from lib.infoStrip import *
+    from lib.nrfConnect import *
+    from lib.ikea import *
 except ImportError:
-    print "Blad importu"
-
-from lib.log import *
-from devicesList import *
-from lib.infoStrip import *
-from lib.nrfConnect import *
-from lib.ikea import *
+    print "Modul Import Error"
 
 class Set_light_with_delay(threading.Thread):
     def __init__(self, address, brightness, time):

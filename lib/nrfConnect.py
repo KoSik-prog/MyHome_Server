@@ -9,18 +9,20 @@
 # Created:     17.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-from time import sleep
-import RPi.GPIO as GPIO
-import spidev
-
-from sensorFlower import *
-from sensorOutside import *
-from deviceWaterCan import *
-from lib.log import *
-from devicesList import *
-from lib.lib_nrf24 import NRF24
-from lib.sqlDatabase import *
-from lib.infoStrip import *
+try:
+    from time import sleep
+    import RPi.GPIO as GPIO
+    import spidev
+    from sensorFlower import *
+    from sensorOutside import *
+    from deviceWaterCan import *
+    from lib.log import *
+    from devicesList import *
+    from lib.lib_nrf24 import NRF24
+    from lib.sqlDatabase import *
+    from lib.infoStrip import *
+except ImportError:
+    print "Import error - nrf connect"
 
 
 class Nrf():

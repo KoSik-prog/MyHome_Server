@@ -9,7 +9,10 @@
 # Created:     26.03.2021
 # Copyright:   (c) kosik 2021
 # -------------------------------------------------------------------------------
-from devicesList import *
+try:
+    from devicesList import *
+except ImportError:
+    print "Import error - info strip"
 
 class InfoStrip:
     actualInformation = ""

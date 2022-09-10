@@ -1,20 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
-# Name:        module1
-# Purpose:
-#
-# Author:      kosik
+# Name:        watchdog
+# Author:      KoSik
 #
 # Created:     21.05.2020
 # Copyright:   (c) kosik 2020
-# Licence:     <your licence>
 # -------------------------------------------------------------------------------
-from lib.log import *
-
-
-import xml.etree.cElementTree as ET
-import time
-import os
-import sys
+try:
+    from lib.log import *
+    import xml.etree.cElementTree as ET
+    import time
+    import os
+    import sys
+except ImportError:
+    print "Import error - watchdog"
 
 
 class Watchdog:

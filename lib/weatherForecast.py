@@ -78,7 +78,7 @@ class Weather:
                     self.iconToday = box['weather'][0]['icon']
                     flag = 1
             else:
-                log.add_log('nie znaleziono pogody na dzis')
+                log.add_log('no weather forecast for today found')
             break
 
     def forecast_tomorrow(self, forecastText):
@@ -102,7 +102,7 @@ class Weather:
                     if data.time() == czas.time():
                         self.iconTomorrow = box['weather'][0]['icon']
             else:
-                log.add_log('nie znaleziono pogody na jutro')
+                log.add_log('no weather forecast for tomorrow found')
 
     def get_forecast(self, city, id):
         url = 'https://api.openweathermap.org/data/2.5/forecast?q={}&mode=json&APPID={}&units=metric'.format(city, id)
@@ -110,9 +110,9 @@ class Weather:
             json_data = requests.get(url).json()
             self.forecast_today(json_data)
             self.forecast_tomorrow(json_data)
-            log.add_log('Pobrano prognoze pogody dla miasta ' + city)
+            log.add_log('Weather forecast for {} has been downloaded'.format(city))
         except:
-            log.add_log("Blad polaczenia z serwerem pogody")
+            log.add_log("Connection error with the weather server")
 
     def get_icon_today(self):
         return self.iconToday

@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
-# Name:        sensorFlower
+# Name:        devices list
 # Author:      KoSik
 #
-# Created:     29.05.2022
+# Created:     29.07.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-import datetime
-from sensorFlower import *
-from deviceWaterCan import *
-from lib.lib_nrf24 import NRF24
+try:
+    import datetime
+    from sensorFlower import *
+    from lib.sensorRoom import *
+    from deviceWaterCan import *
+    from lib.lib_nrf24 import NRF24
+except ImportError:
+    print "Import error - devices list"
 
 
 class Server():

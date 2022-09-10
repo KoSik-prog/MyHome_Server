@@ -9,17 +9,18 @@
 # Created:     13.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-import sys
-import re
-import os
-import ConfigParser
-
-from lib.tradfri import tradfriStatus
-from lib.tradfri import tradfriActions
-from lib.log import *
-
-import subprocess as sp
-
+try:
+    import sys
+    import re
+    import os
+    import ConfigParser
+    from lib.tradfri import tradfriStatus
+    from lib.tradfri import tradfriActions
+    from lib.log import *
+    import subprocess as sp
+except ImportError:
+    print "Import error - ikea"
+    
 
 class Ikea:
     user_id = ""

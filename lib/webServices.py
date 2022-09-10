@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
-# Name:        nrf_connect
+# Name:        web services
 # Purpose:
 #
 # Author:      KoSik
@@ -12,12 +12,11 @@
 try:
     import socket
     import select
+    from lib.log import *
+    from lights import *
+    from sensorOutside import *
 except ImportError:
-    print "UDP import error"
-
-from lib.log import *
-from lights import *
-from sensorOutside import *
+    print "Import error - web services"
 
 
 class Udp:

@@ -9,10 +9,13 @@
 # Created:     26.08.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-import sys
-import os
-import datetime
-import time
+try:
+    import sys
+    import os
+    import datetime
+    import time
+except ImportError:
+    print "Import error - log"
 
 
 class Log:

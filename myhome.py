@@ -13,23 +13,21 @@ try:
     import time
     import datetime
     import threading
+    from time import sleep
+    import RPi.GPIO as GPIO
+    from lib.log import *
+    from lib.gui import *
+    from devicesList import *
+    from lib.infoStrip import *
+    from lib.sqlDatabase import *
+    from lib.nrfConnect import *
+    from lib.webServices import *
+    from lib.settings import *
+    from lib.displayBrightness import *
+    from lib.timer import *
+    from sensors import *
 except ImportError:
-    print "Blad importu"
-
-from lib.log import *
-from lib.gui import *
-from devicesList import *
-from lib.infoStrip import *
-from lib.sqlDatabase import *
-from lib.nrfConnect import *
-from lib.webServices import *
-from lib.settings import *
-from lib.displayBrightness import *
-from lib.timer import *
-from sensors import *
-
-from time import sleep
-import RPi.GPIO as GPIO
+    print "Import error - My Home"
 
 
 class MyHome:

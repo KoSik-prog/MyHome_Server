@@ -9,12 +9,11 @@
 # -------------------------------------------------------------------------------
 try:
     import datetime
+    from lib.log import *
+    from lib.sqlDatabase import *
+    from lib.infoStrip import *
 except ImportError:
-    print "Import error"
-
-from lib.log import *
-from lib.sqlDatabase import *
-from lib.infoStrip import *
+    print "Import error - sensor outside"
 
 
 class SensorOutside:

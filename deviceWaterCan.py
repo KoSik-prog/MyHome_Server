@@ -11,14 +11,13 @@
 # -------------------------------------------------------------------------------
 try:
     import datetime
+    from lib.log import *
+    from lib.sqlDatabase import *
 except ImportError:
-    print "Import error"
-
-from lib.log import *
-from lib.sqlDatabase import *
+    print "Import error - water can"
 
 
-class DEVICE_WATER_CAN_CL:
+class WaterCan:
     humidity = 0
     light = 0
     water = 0

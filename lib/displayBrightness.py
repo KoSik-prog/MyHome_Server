@@ -12,11 +12,10 @@
 try:
     import time
     import smbus
+    from lib.log import *
+    import rpi_backlight as backlight
 except ImportError:
     print "Import error - displayBrightness"
-
-from lib.log import *
-import rpi_backlight as backlight
 
 class DisplayBrightness:
     light = 0

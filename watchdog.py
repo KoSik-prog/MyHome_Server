@@ -9,12 +9,15 @@
 # Created:     21.05.2020
 # Copyright:   (c) kosik 2020
 # -------------------------------------------------------------------------------
-from lib.log import *
-from lib.watchdog import *
+try:
+    from lib.log import *
+    from lib.watchdog import *
+    import xml.etree.cElementTree as ET
+    import time
+    import os
+except ImportError:
+    print "Import error - watchdog main"
 
-import xml.etree.cElementTree as ET
-import time
-import os
 
 if __name__ == "__main__":
     watchdog.start()

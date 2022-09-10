@@ -11,13 +11,12 @@
 # -------------------------------------------------------------------------------
 try:
     import datetime
+    from lib.log import *
+    from devicesList import *
+    from lib.infoStrip import *
+    from sensorOutside import *
 except ImportError:
-    print "Blad importu"
-
-from lib.log import *
-from devicesList import *
-from lib.infoStrip import *
-from sensorOutside import *
+    print "Import error - sensor"
 
 
 class Sensors:
