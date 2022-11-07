@@ -105,55 +105,12 @@ class Nrf():
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "02":  # czujnik temperatury 3 - sypialni
                     sensorRoom2Temperature.decode_data(stringNRF)
-                    """if stringNRF[3] == "y":
-                        string2 = (stringNRF[4:6]+"."+stringNRF[6])
-                        if(len(stringNRF) > 9):
-                            string3 = (stringNRF[7:10])
-                        else:
-                            string3 = (stringNRF[7:9]+'.0')
-                        sensorRoom2Temperature.temp = float(string2)
-                        sensorRoom2Temperature.humi = float(string3)
-                        sql.add_record_sensor_temp(sensorRoom2Temperature.sqlRoom,
-                                                   sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)
-                        sensorRoom2Temperature.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
-                        sensorRoom2Temperature.error = False  # kasowanie bledu
-                        infoStrip.set_error(2, False)
-                        log.add_log(("   Sensor3 sensorRoom2Temperature.temp: {}*C".format(string2)) +
-                                    ("   Wilg3: {}%".format(string3)))
-                    if stringNRF[3] == "?":
-                        string2 = (stringNRF[4:7])
-                        ledLightRoom2.brightness = int(string2)
-                        if(ledLightRoom2.brightness == 0):
-                            ledLightRoom2.flag = 0
-                        else:
-                            ledLightRoom2.flag = 1
-                        ledLightRoom2.flagManualControl = True
-                        ledLightRoom2.error = 0
-                        log.add_log(("   Led Sypialni ON/OFF:{}".format(ledLightRoom2.flag)) +
-                                    ("   PWM:{}".format(ledLightRoom2.brightness)))"""
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "03":  #outside sensor
                     sensorOutside.add_record(stringNRF)
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "04":  # czujnik temperatury 2 - pokoju
                     sensorRoom1Temperature.decode_data(stringNRF)
-                    """if stringNRF[3] == "t":
-                        if(stringNRF[4] == "1"):
-                            string2 = ('-'+stringNRF[5:7]+'.'+stringNRF[7])
-                        else:
-                            string2 = (stringNRF[5:7]+'.'+stringNRF[7])
-                        sensorRoom1Temperature.temp = float(string2)
-                        string3 = (stringNRF[8:10]+'.'+stringNRF[10])
-                        sensorRoom1Temperature.humi = float(string3)
-                        sql.add_record_sensor_temp(sensorRoom1Temperature.sqlRoom,
-                                                   sensorRoom1Temperature.temp, sensorRoom1Temperature.humi)
-                        string4 = (stringNRF[11:14])
-                        sensorRoom1Temperature.batt = int(string4)
-                        sensorRoom1Temperature.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
-                        sensorRoom1Temperature.error = False  # kasowanie bledu
-                        infoStrip.set_error(1, False)
-                        log.add_log(("   Sensor2 sensorRoom1Temperature.temp: {}*C".format(string2)) +
-                                    ("   Wilg2: {}%".format(string3)) + ("   Batt: {}".format(string4)))"""
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "05":  # LED - tv
                     if stringNRF[3] == "?":

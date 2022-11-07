@@ -31,38 +31,6 @@ class Server():
 
 server = Server()
 
-"""class SensorOutsideTemperature:   #CZUJNIK TEMPERATURY ZEWNETRZNEJ
-    temp = 1.1
-    humi = 1.1
-    batt = 1.1
-    lux = 0
-    ir = 0
-    windSpeed = 0
-    windDirection = 0
-    time = datetime.datetime.now()
-    error = False
-    flagNight = False
-    nightSetting = 60  #ustawienie kiedy noc
-sensorOutsideTemperature = SensorOutsideTemperature()"""
-
-"""class SensorRoom1Temperature:  # SALON
-    temp = 2.2
-    humi = 2.2
-    batt = 2.2
-    time = datetime.datetime.now()
-    error = False
-    sqlRoom = 'pok1Temp'
-sensorRoom1Temperature = SensorRoom1Temperature()"""
-
-"""class SensorRoom2Temperature:  # SYPIALNIA
-    temp = 3.3
-    humi = 3.3
-    batt = 3.3
-    time = datetime.datetime.now()
-    error = False
-    sqlRoom = 'pok2Temp'
-sensorRoom2Temperature = SensorRoom2Temperature()"""
-
 sensorOutside = SensorOutside()
 
 sensorRoom1Temperature = SensorRoom('Salon', 'pok1Temp')
@@ -72,11 +40,11 @@ sensorRoom2Temperature = SensorRoom('Sypialnia', 'pok2Temp')
 #automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
 #  SENSORS
-sensorFlower2 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0)
+sensorFlower2 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0) 
 sensorFlower3 = SensorFlower(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
-sensorFlower4 = SensorFlower(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
-sensorFlower5 = SensorFlower(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0)
-sensorFlower6 = SensorFlower(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0)
+#sensorFlower4 = SensorFlower(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
+sensorFlower5 = SensorFlower(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0) 
+sensorFlower6 = SensorFlower(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0) 
 
 
 class Terrarium:  # TERRARIUM

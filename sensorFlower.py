@@ -36,11 +36,11 @@ class SensorFlower:
                 self.humidity = self.get_val_from_min_max(self.humiMin, self.humiMax, data[14:17])
 
                 self.time = datetime.datetime.now()
-                sql.add_record_flower(2, self.humidity, self.light, self.power, data[14:17])
-                log.add_log("   Kwiatek {}({}) Slonce: {}%   Wilg: {}%   Zas: {}V".format(
+                sql.add_record_flower(self.nr, self.humidity, self.light, self.power, data[14:17])
+                log.add_log("   Flower {}({}) Sun: {}%   Humi: {}%   Power: {}V".format(
                     self.name, self.nr, self.light, self.humidity, self.power))
             else:
-                log.add_log("   Kwiatek {}({}) blad skladni!".format(self.name, self.nr))
+                log.add_log("   Flower {}({}) data error!".format(self.name, self.nr))
 
     def return_humiMin(self):
         return self.humiMin

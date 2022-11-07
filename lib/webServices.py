@@ -42,6 +42,38 @@ class Udp:
         return ready
 
     def transmit(self, messag, adres):
+        if(messag.find('set#') != -1):
+            if(messag.find('hydroponics.') != -1):  # hyroponics
+                strt = messag.find(".")+1
+                usbPlug.flagManualControl = True
+                light.set_light(hyroponics.address, messag[strt])
+            if(messag.find('sterTV.') != -1):
+                strt = messag.find(".")+1
+                if int(messag[(strt+9):(strt+12)]) >= 0:
+                    ledStripRoom1.setting = messag[(strt):(strt+9)]
+                    ledStripRoom1.brightness = int(messag[(strt+9):(strt+12)])
+                light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
+                ledStripRoom1.flagManualControl = True
+            if(messag.find('sterTVjasnosc.') != -1):
+                zmien = messag[14:17]
+                if int(zmien) > 0:
+                    ledStripRoom1.brightness = int(zmien)
+                light.set_light(ledStripRoom1.address, zmien)
+                ledStripRoom1.flagManualControl = True
+        if(messag.find('test') != -1):
+            print(adres[0])
+            self.s.connect((adres[0], adres[1]))
+            msg = "działa!"
+            MSGLEN = len(msg)
+            totalsent = 0
+            while totalsent < MSGLEN:
+                sent = self.s.send(msg[totalsent:])
+                if sent == 0:
+                    raise RuntimeError("socket connection broken")
+                totalsent = totalsent + sent
+            data = "działa!!!"
+            self.s.send(data.encode())
+        #---------------------------------------------------------------------------------
         if(messag.find('salonOswietlenie.') != -1):   # SALON
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
@@ -107,10 +139,10 @@ class Udp:
             strt = messag.find(".")+1
             usbPlug.flagManualControl = True
             light.set_light(usbPlug.address, messag[strt])
-        if(messag.find('hyroponics.') != -1):  # hyroponics
+        if(messag.find('hydroponics.') != -1):  # hyroponics
             strt = messag.find(".")+1
             usbPlug.flagManualControl = True
-            light.set_light(self.address, messag[strt])
+            light.set_light(hyroponics.address, messag[strt])
         if(messag == '?m'):
             try:
                 self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
@@ -181,19 +213,17 @@ class Udp:
             ledStripRoom1.flagManualControl = True
             light.set_light(mainLightRoom1Tradfri.address, 0)
             light.set_light(mainLightRoom1Tradfri.bulb, 15)
-            # light.set_light(diningRoomTradfri.address,0)
-            # light.set_light(hallTradfri.address,100)
             light.set_light(floorLampRoom1Tradfri.address, 0)
             light.set_light(decorationRoom1.address, 0)
             light.set_light(decoration2Room1.address, 0)
-            # light.set_light(spootLightRoom1.address,0)
             decorationRoom1.flagManualControl = True
             decoration2Room1.flagManualControl = True
             decoration2Room1.flagManualControl = True
             Set_light_with_delay(mainLightRoom1Tradfri.address, 0, 30).start()
-            #Set_light_with_delay(hallTradfri.address, 0, 31).start()
-            Set_light_with_delay(decorationFlamingo.address, 0, 15*60).start()
+            Set_light_with_delay(decorationFlamingo.address, 0, 5*60).start()
             decorationFlamingo.flagManualControl = True
+            Set_light_with_delay(kitchenLight.address, 0, 5*60).start()
+            kitchenLight.flagManualControl = True
             log.add_log("Tryb swiatel: spij")
         if(messag.find('romantyczny') != -1):
             if(random.randint(0, 1) == 1):
