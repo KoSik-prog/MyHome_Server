@@ -170,11 +170,11 @@ class Nrf():
                         usbPlug.error = 0
                         log.add_log(("   Uniwersalny USB ON/OFF:{}".format(usbPlug.flag)))
         # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "18":  # hyroponics
+                if stringNRF[1:3] == "18":  # hydroponics
                     if stringNRF[3] == "?":
-                        hyroponics.flag = int(stringNRF[4])
-                        hyroponics.error = 0
-                        log.add_log(("   hyroponics ON/OFF:{}".format(hyroponics.flag)))
+                        hydroponics.flag = int(stringNRF[4])
+                        hydroponics.error = 0
+                        log.add_log(("   hydroponics ON/OFF:{}".format(hydroponics.flag)))
     # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "12":  # kwiatek 2  addres 12
                     sensorFlower2.add_record(stringNRF)

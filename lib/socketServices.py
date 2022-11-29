@@ -1,46 +1,79 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -------------------------------------------------------------------------------
-# Name:        web services
+# Name:        socket services
 # Purpose:
 #
 # Author:      KoSik
 #
-# Created:     17.05.2022
+# Created:     07.11.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
 try:
     import socket
     import select
+    import json
     from lib.log import *
     from lights import *
     from sensorOutside import *
+    from devicesList import *
     from lib.tasmota import *
 except ImportError:
-    print("Import error - web services")
+    print("Import error - socket services")
 
 
-class Udp:
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+class Socket:
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
-    def __init__(self, AddrOut):
-        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        self.s.bind(('', AddrOut))
-        self.s.setblocking(0)
-        ready = select.select([self.s], [], [], 1)
+    def __init__(self, host, port):
+        self.host = '192.168.0.99'
+        self.port = 2223
+        self.backlog = 5 
+        self.size = 1024
+        
+        self.s.bind((self.host, self.port)) 
+        self.s.listen(self.backlog)
 
-    def server(self):
-        try:
-            message, address = self.s.recvfrom(1024)
-            log.add_log(log.actualDate() + " " + "Polaczenie %s: %s" % (address, message))
-            self.transmit(message, address)
-        except (KeyboardInterrupt, SystemExit):
-            log.add_log('server UDP error')
+    def server_thread(self):
+        while server.read_server_active_flag() == True:
+            try:
+                client, address = self.s.accept() 
+                receivedData = client.recv(self.size) 
+                if receivedData: 
+                    #log.add_log("Socket rx: {}".format(receivedData))
+                    if(receivedData[0] == "!"):
+                        self.returnSocketData(client, receivedData) 
+                client.close()
+            except (KeyboardInterrupt, SystemExit):
+                log.add_log('server UDP error')
 
+    def sendSocketMsg(client, msg):
+        log.add_log("Socket tx: {}".format(msg))
+        client.send(msg) 
+        
     def readStatus(self):
         ready = select.select([self.s], [], [], 0.5)
         return ready
+    
+    def returnSocketData(self, client, message):
+        if(message.find("test") != -1):
+            toSend = "temp: {}".format(sensorRoom1Temperature.temp)
+            client.send(toSend)
+        if(message.find("getMyHomeData") != -1):
+            jsonData = []
+            jsonData.append(sensorRoom1Temperature.get_json_data())
+            jsonData.append(sensorRoom2Temperature.get_json_data())
+            jsonData.append(sensorOutside.get_json_data())
+            toSend = json.dumps(jsonData)
+            client.send(toSend)
+            
+        if(message.find("getTasmotaData") != -1):
+            toSend = json.dumps(tasmota.get_json_data())
+            client.send(toSend)
+            
+    def __del__(self):
+        self.s.shutdown(socket.SHUT_RDWR)
+        self.s.close()
 
     def transmit(self, messag, adres):
         if(messag.find('set#') != -1):
@@ -48,14 +81,18 @@ class Udp:
                 strt = messag.find(".")+1
                 hydroponics.flagManualControl = True
                 light.set_light(hydroponics.address, messag[strt])
-            if(messag.find('sterTV.') != -1):
+            if(messag.find('kitchenlight.') != -1):  # KUCHNIA
+                strt = messag.find(".")+1
+                kitchenLight.flagManualControl = True
+                light.set_light(kitchenLight.address, messag[strt])
+            if(messag.find('ledstripecolor.') != -1):
                 strt = messag.find(".")+1
                 if int(messag[(strt+9):(strt+12)]) >= 0:
                     ledStripRoom1.setting = messag[(strt):(strt+9)]
                     ledStripRoom1.brightness = int(messag[(strt+9):(strt+12)])
                 light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
                 ledStripRoom1.flagManualControl = True
-            if(messag.find('sterTVjasnosc.') != -1):
+            if(messag.find('ledstripebrightness.') != -1):
                 zmien = messag[14:17]
                 if int(zmien) > 0:
                     ledStripRoom1.brightness = int(zmien)
@@ -72,7 +109,6 @@ class Udp:
                 if sent == 0:
                     raise RuntimeError("socket connection broken")
                 totalsent = totalsent + sent
-            print(tasmota.get_data())
             data = "działa!!!"
             self.s.send(data.encode())
         #---------------------------------------------------------------------------------
@@ -253,4 +289,4 @@ class Udp:
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
 
 
-udp = Udp(2222)
+socket = Socket("192.168.0.99", 2225)

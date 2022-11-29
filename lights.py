@@ -183,15 +183,15 @@ class LIGHTS_CL:
                 ledLightRoom2Tradfri.flag = True
             log.add_log("Tradfri Sypialnia ->: {}".format(setting))
             infoStrip.add_info("oświetlenie w sypialni: {}".format(setting))
-        if address == hyroponics.address:  # hyroponics
+        if address == hydroponics.address:  # hydroponics
             if int(setting) > 1:
                 packet = "#17P1"  # wlacz pompe
             else:
                 packet = "#17A{:01d}".format(int(setting))
             if len(packet) >= 5:
                 log.add_log("Ustawiono Hydroponike: {}".format(packet))
-                infoStrip.add_info("hyroponics: {}".format(setting))
-                nrf.to_send(hyroponics.address, packet, hyroponics.nrfPower)
+                infoStrip.add_info("hydroponics: {}".format(setting))
+                nrf.to_send(hydroponics.address, packet, hydroponics.nrfPower)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
 

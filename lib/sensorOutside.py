@@ -34,6 +34,18 @@ class SensorOutside:
 
     def __init__(self):
         self.time = datetime.datetime.now()
+        
+    def get_json_data(self):
+        retData = {
+            "name": "sensorOutside",
+            "temperature": self.temperature,
+            "humidity": self.humidity,
+            "power": self.power,
+            "light": self.light,
+            "ir": self.ir,
+            "windspeed": self.windSpeed
+            } 
+        return retData
 
     def add_record(self, data):
         if data[3] == "s":

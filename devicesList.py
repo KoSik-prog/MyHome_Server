@@ -137,7 +137,7 @@ class UsbPlug:  # USB Stick
 usbPlug = UsbPlug()
 
 
-class Hyroponics:  # hyroponika
+class Hydroponics:  # hydroponika
     address = [0x33, 0x33, 0x33, 0x11, 0x88]
     nrfPower = NRF24.PA_LOW
     autoOn = '08:00:00.0000'
@@ -147,10 +147,10 @@ class Hyroponics:  # hyroponika
     error = 0
     autoBrightness = 1
     flagManualControl = False
-    label = 'Hyroponika'
+    label = 'Hydroponika'
 
 
-hyroponics = Hyroponics()
+hydroponics = Hydroponics()
 
 
 class LedStripRoom1:  # LED TV

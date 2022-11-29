@@ -28,6 +28,15 @@ class SensorRoom:
         self.sensorName = sensorName
         self.databaseName = databaseName
         self.time = datetime.datetime.now()
+        
+    def get_json_data(self):
+        retData = {
+            "name": self.sensorName,
+            "temperature": self.temp,
+            "humidity": self.humi,
+            "power": self.batt
+            } 
+        return retData
 
     def decode_data(self, rxData):
         if rxData[3] == "t":

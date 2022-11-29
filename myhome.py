@@ -22,9 +22,11 @@ try:
     from lib.sqlDatabase import *
     from lib.nrfConnect import *
     from lib.webServices import *
+    from lib.socketServices import *
     from lib.settings import *
     from lib.displayBrightness import *
     from lib.timer import *
+    from lib.tasmota import *
     from sensors import *
 except ImportError:
     print("Import error - My Home")
@@ -45,6 +47,8 @@ class MyHome:
         self.timer_thread_init()
         self.check_sensors_thread_init()
         self.check_weatherForecast_thread_init()
+        self.socket_thread_init()
+        self.tasmota_thread_init()
         # --------------MAIN FUNCTION------------------------
         self.start_server()
 
@@ -62,6 +66,14 @@ class MyHome:
     def nrf_thread_init(self):
         nrfTh = threading.Thread(target=nrf.nrf24l01_thread)
         nrfTh.start()
+        
+    def socket_thread_init(self):
+        socketTh = threading.Thread(target=socket.server_thread)
+        socketTh.start()
+        
+    def tasmota_thread_init(self):
+        tasmotaTh = threading.Thread(target=tasmota.tasmota_thread)
+        tasmotaTh.start()
 
     def display_brightness_thread_init(self):
         nrfTh = threading.Thread(target=displayBrightness.set_brightness_thread)

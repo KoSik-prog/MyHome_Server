@@ -40,7 +40,7 @@ class Timer:
         self.auto_timer(decorationFlamingo)
         self.auto_timer(ledLightRoom2Tradfri)
         # self.auto_timer(ledLightRoom2)#---- LED SYPIALNI
-        self.auto_timer(hyroponics)
+        self.auto_timer(hydroponics)
         self.auto_timer(kitchenLight)
         # self.auto_timer(usbPlug)#----USB Stick
 
