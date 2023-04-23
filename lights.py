@@ -45,6 +45,15 @@ class LIGHTS_CL:
                 ledStripRoom1.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == ledDeskRoom3.address:  # LED biurka
+            packet = "#19P{:03d}".format(int(setting))
+            if len(packet) >= 5:
+                log.add_log("Ustawiono Led Biurka: {}".format(packet))
+                infoStrip.add_info("światło biurka: {}".format(setting))
+                nrf.to_send(ledDeskRoom3.address, packet, ledDeskRoom3.nrfPower)
+                ledDeskRoom3.error += 1
+            else:
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == ledLightRoom2.address:  # SYPIALNIA
             packet = "#S{:03d}".format(int(setting))
             if len(packet) >= 5:
@@ -60,6 +69,7 @@ class LIGHTS_CL:
                 log.add_log("Ustawiono Led Kuchni: {}".format(packet))
                 infoStrip.add_info("światło w kuchni: {}".format(setting))
                 nrf.to_send(kitchenLight.address, packet, kitchenLight.nrfPower)
+                kitchenLight.flag = int(setting)
                 kitchenLight.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -84,6 +94,7 @@ class LIGHTS_CL:
                 infoStrip.add_info("dekoracje 1 w salonie: {}".format(setting))
                 nrf.to_send(decorationRoom1.address, packet, decorationRoom1.nrfPower)
                 spootLightRoom1.error += 1
+                decorationRoom1.flag = int(setting)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == decoration2Room1.address:  # dekoracje pok 1 / Eifla i inne
@@ -92,7 +103,8 @@ class LIGHTS_CL:
                 log.add_log("Ustawiono Lampa 2: {}".format(packet))
                 infoStrip.add_info("dekoracje 2 w salonie: {}".format(setting))
                 nrf.to_send(decoration2Room1.address, packet, decoration2Room1.nrfPower)
-                decorationRoom1.error += 1
+                decoration2Room1.error += 1
+                decoration2Room1.flag = int(setting)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == decorationFlamingo.address:  # FLAMING

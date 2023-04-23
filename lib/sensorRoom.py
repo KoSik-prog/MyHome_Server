@@ -53,8 +53,7 @@ class SensorRoom:
             infoStrip.set_error(1, False)
             log.add_log(("Sensor {}  temp: {}°C  humi: {}%  power: {}".format(self.sensorName, self.temp, self.humi, self.batt)))
         if rxData[3] == "y":  # for bedroom sensor
-            bufTemp = ("{}.{}".format(rxData[4:6], rxData[6]))
-            log.add_log("test ---> humidity in room 2: {}%".format(rxData[7:10]))  #!!!!!!!!!!!!!!!!!!! TEST
+            bufTemp = ("{}.{}".format(rxData[5:7], rxData[7]))
             if(len(rxData) > 9):
                 bufHumi = (rxData[7:10])
             else:

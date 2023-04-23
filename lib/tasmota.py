@@ -10,9 +10,10 @@
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
 try:
-    from devicesList import *
     from urllib import urlopen
+    from devicesList import *
     from lib.log import *
+    from time import gmtime, localtime, strftime
     import json
     import time
 except ImportError:
@@ -54,7 +55,7 @@ class Tasmota:
             
             while len(self.energyArray) > 60:
                 self.energyArray.pop(0)
-            self.energyArray.append(self.power)
+            self.energyArray.append([strftime("%H:%M", localtime()), self.power])
         except:
             log.add_log("Tasmota -> can't read device")
         

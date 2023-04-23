@@ -61,16 +61,16 @@ class SensorOutside:
             else:
                 tempVal = (data[5:7] + "." + data[7])
             self.temperature = float(tempVal)
-            self.humi = float(data[8:10] + "." + data[10])
+            self.humidity = float(data[8:10] + "." + data[10])
 
-            sql.add_record_sensor_outdoor_temp(self.temperature, self.humi, self.windSpeed, self.windDirection)
+            sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.windSpeed, self.windDirection)
             self.windSpeed = float(data[11:13]+'.'+data[13])
             self.windDirection = int(data[14:17])
             self.time = datetime.datetime.now()
             self.errorFlag = False
             infoStrip.set_error(0, False)
             log.add_log("Sensor outside -> temp: {}°C   humi: {}%   wind: {}m/s   dir:{}".format(self.temperature,
-                                                                                                 self.humi, self.windSpeed, self.windDirection))
+                                                                                                 self.humidity, self.windSpeed, self.windDirection))
 
     def calculate_light(self):
         k = 3  # amplifier

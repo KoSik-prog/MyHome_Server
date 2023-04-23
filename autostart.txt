@@ -10,5 +10,5 @@ Zawartosc:
 @lxpanel --profile LXDE-pi
 @pcmanfm --desktop --profile LXDE-pi 
 @xscreensaver -no-splash
-@sudo python /home/pi/Desktop/Home/watchdog.py
-@sudo python /home/pi/Desktop/Home/myhome.py
+@sudo python -u /home/pi/Desktop/Home/watchdog.py &>> /home/pi/Desktop/Home/log_watchdog.log
+@sudo python -u /home/pi/Desktop/Home/myhome.py >> /home/pi/Desktop/Home/log_myhome.log 2>&1 &

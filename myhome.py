@@ -35,7 +35,7 @@ except ImportError:
 class MyHome:
     def __init__(self):
         log.add_log("Uruchamiam serwer MyHome...")
-        time.sleep(5)  # +++++ time delay - for safety +++++++++++++++++++
+        time.sleep(2)  # +++++ time delay - for safety +++++++++++++++++++
         GPIO.setwarnings(False)
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(22, GPIO.OUT)

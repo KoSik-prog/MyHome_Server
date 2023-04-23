@@ -71,8 +71,7 @@ class Nrf():
             self.radio.openWritingPipe(Nrf.txBuffer[0][0])
             self.radio.setPALevel(Nrf.txBuffer[0][2])  # zmiana mocy nadawania
             time.sleep(.01)
-            print(
-                "NRF addr: {} / power: {} / send: {}".format(Nrf.txBuffer[0][0], Nrf.txBuffer[0][1], Nrf.txBuffer[0][2]))
+            log.add_log("NRF addr: {} / power: {} / send: {}".format(Nrf.txBuffer[0][0], Nrf.txBuffer[0][1], Nrf.txBuffer[0][2]))
             self.transmit(Nrf.txBuffer[0][2])
         for i in range(len(Nrf.txBuffer) - 1):
             Nrf.txBuffer[i] = Nrf.txBuffer[i+1]
@@ -124,7 +123,7 @@ class Nrf():
                         ledStripRoom1.error = 0
                         log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.flag)) +
                                     ("   Jasnosc:{}".format(ledStripRoom1.brightness)))
-    # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "06":  # LED LAMPA
                     if stringNRF[3] == "?":
                         string2 = (stringNRF[13:16])
@@ -136,7 +135,7 @@ class Nrf():
                         spootLightRoom1.error = 0
                         log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.flag)) +
                                     ("   Jasnosc:{}".format(spootLightRoom1.brightness)))
-        # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "07":  # LED KUCHNIA
                     if stringNRF[3] == "?":
                         if (int(stringNRF[4]) == 1 or int(stringNRF[4]) == 2):
@@ -157,25 +156,31 @@ class Nrf():
                         decoration2Room1.flag = int(stringNRF[4])
                         decoration2Room1.error = 0
                         log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(decorationRoom1.flag)))
-        # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "10":  # FLAMING
                     if stringNRF[3] == "?":
                         decorationFlamingo.flag = int(stringNRF[4])
                         decorationFlamingo.error = 0
                         log.add_log(("   Flaming ON/OFF:{}".format(decorationFlamingo.flag)))
-        # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "11":  # Uniwersalny modul USB
                     if stringNRF[3] == "?":
                         usbPlug.flag = int(stringNRF[4])
                         usbPlug.error = 0
                         log.add_log(("   Uniwersalny USB ON/OFF:{}".format(usbPlug.flag)))
-        # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "18":  # hydroponics
                     if stringNRF[3] == "?":
                         hydroponics.flag = int(stringNRF[4])
                         hydroponics.error = 0
                         log.add_log(("   hydroponics ON/OFF:{}".format(hydroponics.flag)))
-    # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3] == "19":  # table light
+                    if stringNRF[3] == "?":
+                        ledDeskRoom3.flag = int(stringNRF[4])
+                        ledDeskRoom3.error = 0
+                        log.add_log(("   Desk LED ON/OFF:{}".format(ledDeskRoom3.flag)))
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "12":  # kwiatek 2  addres 12
                     sensorFlower2.add_record(stringNRF)
                     infoStrip.set_error(4, False)  # poprawic - przeniesc do klasy urzadzenia
@@ -183,10 +188,6 @@ class Nrf():
                 if stringNRF[1:3] == "13":  # kwiatek 3 adres 13
                     sensorFlower3.add_record(stringNRF)
                     infoStrip.set_error(5, False)
-    # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "14":  # kwiatek 4 adres 14
-                    sensorFlower4.add_record(stringNRF)
-                    infoStrip.set_error(6, False)
     # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "16":  # kwiatek 5 adres 16
                     sensorFlower5.add_record(stringNRF)
