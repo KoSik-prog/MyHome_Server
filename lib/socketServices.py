@@ -21,6 +21,7 @@ try:
     from devicesList import *
     from lib.tasmota import *
     from lib.nrfConnect import *
+    from lib.infoStrip import *
 except ImportError:
     print("Import error - socket services")
 
@@ -86,6 +87,10 @@ class Socket:
             toSend = json.dumps(tasmota.get_json_data())
             client.send(toSend)
             
+        if(message.find("getErrorsData") != -1):
+            toSend = json.dumps(infoStrip.get_errors_array())
+            client.send(toSend)
+            
         if(message.find('setTerrariumData.') != -1):
             receivedMessage = message[message.find(".")+1:]
             dataList = json.loads(receivedMessage)
@@ -108,8 +113,11 @@ class Socket:
             
         if(message.find('sendToNrf.') != -1):
             strt = message.find(".")+1
-            log.add_log("TEST!!!  {}".format(message[strt:]))
-            #nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+            rxData = json.loads(message[strt:])
+            mydata = rxData["address"]
+            mymessage = rxData["message"]
+            log.add_log("TEST!!! {}/{}/{}".format(mydata, rxData["message"], rxData["power"]))
+            nrf.to_send(mydata, str(mymessage), int(rxData["power"]))
             
         if(message.find('set^') != -1):
             if(message.find('hydroponics.') != -1):  # hydroponics
@@ -165,6 +173,20 @@ class Socket:
                 ledDeskRoom3.brightness = setting
                 light.set_light(ledDeskRoom3.address, str(setting))
                 ledDeskRoom3.flagManualControl = True
+            elif(message.find('ledHeart.') != -1):
+                strt = message.find(".")+1
+                settingBuffer = message[strt:]
+                if(settingBuffer.isdigit()):
+                    if int(settingBuffer) > 100:
+                        settingBuffer = 100
+                    setting = int(settingBuffer)
+                    client.send("ok")
+                else:
+                    setting = 0
+                    client.send("setting error")  
+                ledPhotosHeart.brightness = setting
+                light.set_light(ledPhotosHeart.address, str(setting))
+                ledPhotosHeart.flagManualControl = True
             elif(message.find('room1TradfriLampBrightness.') != -1):   # TRADFRI
                 strt = message.find(".")+1
                 brightness = int(message[strt:])
@@ -339,13 +361,13 @@ class Socket:
             strt = messag.find(".")+1
             usbPlug.flagManualControl = True
             light.set_light(hydroponics.address, messag[strt])
-        if(messag == '?m'):
-            try:
-                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
-                    czujnikKwiatek.slonce), int(czujnikKwiatek.woda), int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag), ledStripRoom1.setting, ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag), ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag), spootLightRoom1.brightness), client)
-                log.add_log("Wyslano dane UDP")
-            except:
-                log.add_log("Blad danych dla UDP")
+        #if(messag == '?m'):
+        #    try:
+        #        self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
+        #            czujnikKwiatek.slonce), int(czujnikKwiatek.woda), int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag), ledStripRoom1.setting, ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag), ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag), spootLightRoom1.brightness), client)
+        #        log.add_log("Wyslano dane UDP")
+        #    except:
+        #        log.add_log("Blad danych dla UDP")
         if(messag.find('sterTV.') != -1):
             strt = messag.find(".")+1
             if int(messag[(strt+9):(strt+12)]) >= 0:

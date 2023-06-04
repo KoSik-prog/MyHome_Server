@@ -40,7 +40,7 @@ sensorRoom2Temperature = SensorRoom('Sypialnia', 'pok2Temp')
 #automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
 
 #  SENSORS
-sensorFlower2 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0) 
+#sensorFlower2 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0) 
 sensorFlower3 = SensorFlower(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
 #sensorFlower4 = SensorFlower(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
 sensorFlower5 = SensorFlower(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0) 
@@ -347,6 +347,37 @@ class LedDeskRoom3:  # LED biurka
         return retData
 
 ledDeskRoom3 = LedDeskRoom3()
+
+
+class LedPhotosHeart:  # LED serce w sypialni
+    label = "LED serce"
+    flag = 0
+    autoOn = '20:00:00.0000'
+    autoOff = '23:00:00.0000'
+    autoLuxMin = 600  # brightness setting for auto light
+    autoBrightness = 10
+    flagManualControl = False
+    error = 0
+    address = [0x33, 0x33, 0x33, 0x00, 0x44]
+    nrfPower = NRF24.PA_LOW
+    brightness = 70
+    
+    def get_json_data(self):
+        retData = {
+            "name": self.label,
+            "flag": self.flag,
+            "autoOn": self.autoOn,
+            "autoOff": self.autoOff,
+            "autoLuxMin": self.autoLuxMin,
+            "autoBrightness": self.autoBrightness,
+            "flagManualControl": self.flagManualControl,
+            "error": self.error,
+            "address": self.address,
+            "brightness": self.brightness
+            } 
+        return retData
+
+ledPhotosHeart = LedPhotosHeart()
 
 
 class FloorLampRoom1Tradfri:

@@ -54,6 +54,15 @@ class LIGHTS_CL:
                 ledDeskRoom3.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == ledPhotosHeart.address:  # LED serce w sypialni
+            packet = "#04P{:03d}".format(int(setting))
+            if len(packet) >= 5:
+                log.add_log("Ustawiono Led Serce: {}".format(packet))
+                infoStrip.add_info("światło serce: {}".format(setting))
+                nrf.to_send(ledPhotosHeart.address, packet, ledPhotosHeart.nrfPower)
+                ledPhotosHeart.error += 1
+            else:
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == ledLightRoom2.address:  # SYPIALNIA
             packet = "#S{:03d}".format(int(setting))
             if len(packet) >= 5:

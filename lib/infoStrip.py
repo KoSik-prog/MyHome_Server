@@ -71,6 +71,13 @@ class InfoStrip:
         for i in range(len(self.informations) - 1):
             self.informations[i] = self.informations[i+1]
         return info
+    
+    def get_errors_array(self):
+        activeErrors = []
+        for element in self.errorsArray:
+            if element[0] == True:
+                activeErrors.append(element[1])
+        return {"errors":activeErrors}
 
 
 infoStrip = InfoStrip()
