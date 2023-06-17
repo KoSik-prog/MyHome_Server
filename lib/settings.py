@@ -44,10 +44,10 @@ class Settings:
 
         ET.SubElement(setings, "spootLightRoom1Jasnosc").text = str(spootLightRoom1.brightness)
 
-        ET.SubElement(setings, "ledLightRoom2autoBrightness").text = str(ledLightRoom2.autoBrightness)
-        ET.SubElement(setings, "ledLightRoom2autoLux_min").text = str(ledLightRoom2.autoLuxMin)
-        ET.SubElement(setings, "ledLightRoom2AutoOFF").text = str(ledLightRoom2.autoOff)
-        ET.SubElement(setings, "ledLightRoom2AutoON").text = str(ledLightRoom2.autoOn)
+        ET.SubElement(setings, "ledPhotosHeartAutoBrightness").text = str(ledPhotosHeart.autoBrightness)
+        ET.SubElement(setings, "ledPhotosHeartAutoLux_min").text = str(ledPhotosHeart.autoLuxMin)
+        ET.SubElement(setings, "ledPhotosHeartAutoOFF").text = str(ledPhotosHeart.autoOff)
+        ET.SubElement(setings, "ledPhotosHeartAutoON").text = str(ledPhotosHeart.autoOn)
 
         fileRaw = ET.ElementTree(setings)
         fileRaw.write(self.path)
@@ -69,10 +69,10 @@ class Settings:
 
         spootLightRoom1.brightness = int(root.find('spootLightRoom1Jasnosc').text)
 
-        ledLightRoom2.autoBrightness = int(root.find('ledLightRoom2autoBrightness').text)
-        ledLightRoom2.autoLuxMin = int(root.find('ledLightRoom2autoLux_min').text)
-        ledLightRoom2.autoOff = root.find('ledLightRoom2AutoOFF').text
-        ledLightRoom2.autoOn = root.find('ledLightRoom2AutoON').text
+        ledPhotosHeart.autoBrightness = int(root.find('ledPhotosHeartAutoBrightness').text)
+        ledPhotosHeart.autoLuxMin = int(root.find('ledPhotosHeartAutoLux_min').text)
+        ledPhotosHeart.autoOff = root.find('ledPhotosHeartAutoOFF').text
+        ledPhotosHeart.autoOn = root.find('ledPhotosHeartAutoON').text
 
 
 settings = Settings('/var/www/html/settings.xml')

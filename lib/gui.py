@@ -63,7 +63,7 @@ class Gui:
                     if(px > 17 and px < 284 and py > 15 and py < 227):
                         display.set_background_colour(self.backgroundColour)
                         currentTab = 0
-            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutside.temperature,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutside.humidity,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.light, int(spootLightRoom1.flag), int(spootLightRoom1.brightness), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.brightness), int(ledLightRoom2.flag), int(ledLightRoom2.brightness), int(kitchenLight.flag),sensorOutside.czas,sensorOutside.errorFlag,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
+            #flaga_odczyt_ustawien=wysw.odswiez(sensorOutside.temperature,sensorRoom1Temperature.temp,sensorRoom2Temperature.temp,sensorOutside.humidity,sensorRoom1Temperature.humi,sensorRoom2Temperature.humi,czujnikKwiatek.wilgotnosc,czujnikKwiatek.slonce,czujnikKwiatek.woda,czujnikKwiatek.power, self.light, int(spootLightRoom1.flag), int(spootLightRoom1.brightness), int(spootLightRoom1.setting), int(ledStripRoom1.flag), int(ledStripRoom1.brightness), int(kitchenLight.flag),sensorOutside.czas,sensorOutside.errorFlag,sensorRoom1Temperature.error,sensorRoom2Temperature.error)
             if(currentTab == 0):
                 if self.nightMode == False:
                     self.display_main_tab()

@@ -39,8 +39,8 @@ class Timer:
         self.auto_timer(decoration2Room1)
         self.auto_timer(decorationFlamingo)
         self.auto_timer(ledLightRoom2Tradfri)
-        # self.auto_timer(ledLightRoom2)#---- LED SYPIALNI
-        self.auto_timer(hydroponics)
+        self.auto_timer(ledPhotosHeart)#---- LED SYPIALNI - serce ze zdjęciami
+        # self.auto_timer(hydroponics)
         self.auto_timer(kitchenLight)
         # self.auto_timer(usbPlug)#----USB Stick
 

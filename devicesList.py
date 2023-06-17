@@ -259,21 +259,6 @@ class LedStripRoom1:  # LED TV
 ledStripRoom1 = LedStripRoom1()
 
 
-class LedLightRoom2:  # OSWIETLENIE SYPIALNI
-    brightness = 0
-    flag = 0
-    autoOn = '21:00:00.0000'
-    autoOff = '23:50:00.0000'
-    autoLuxMin = 200
-    flagManualControl = False
-    autoBrightness = 5
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x33, 0x44]
-    nrfPower = NRF24.PA_LOW
-    label = 'Sypialnia'
-
-
-ledLightRoom2 = LedLightRoom2()
 
 
 class SpootLightRoom1:  # REFLEKTOR W SALONIE
@@ -358,7 +343,7 @@ class LedPhotosHeart:  # LED serce w sypialni
     autoBrightness = 10
     flagManualControl = False
     error = 0
-    address = [0x33, 0x33, 0x33, 0x00, 0x44]
+    address = [0x00, 0x00, 0x00, 0x00, 0x22]
     nrfPower = NRF24.PA_LOW
     brightness = 70
     
@@ -378,6 +363,21 @@ class LedPhotosHeart:  # LED serce w sypialni
         return retData
 
 ledPhotosHeart = LedPhotosHeart()
+# class LedLightRoom2:  # OSWIETLENIE SYPIALNI
+#     brightness = 0
+#     flag = 0
+#     autoOn = '21:00:00.0000'
+#     autoOff = '23:50:00.0000'
+#     autoLuxMin = 200
+#     flagManualControl = False
+#     autoBrightness = 5
+#     error = 0
+#     address = [0x33, 0x33, 0x33, 0x33, 0x44]
+#     nrfPower = NRF24.PA_LOW
+#     label = 'Sypialnia'
+
+
+# ledLightRoom2 = LedLightRoom2()
 
 
 class FloorLampRoom1Tradfri:

@@ -312,10 +312,10 @@ class Socket:
         if(messag.find('swiatloSypialni.') != -1):   # SYPIALNIA
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
-            ledLightRoom2.brightness = chJasnosc
-            light.set_light(ledLightRoom2Tradfri.address, ledLightRoom2.brightness)
-            light.set_light(ledLightRoom2.address, ledLightRoom2.brightness)
-            ledLightRoom2.flagManualControl = True
+            ledPhotosHeart.brightness = chJasnosc
+            light.set_light(ledLightRoom2Tradfri.address, ledPhotosHeart.brightness)
+            light.set_light(ledPhotosHeart.address, ledPhotosHeart.brightness)
+            ledPhotosHeart.flagManualControl = True
             decorationFlamingo.flagManualControl = True
             light.set_light(decorationFlamingo.address, messag[strt])
         if(messag.find('swiatloSypialniTradfri.') != -1):   # SYPIALNIA TRADFRI

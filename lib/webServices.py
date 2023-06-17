@@ -96,10 +96,10 @@ class Udp:
         if(messag.find('swiatloSypialni.') != -1):   # SYPIALNIA
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
-            ledLightRoom2.brightness = chJasnosc
-            light.set_light(ledLightRoom2Tradfri.address, ledLightRoom2.brightness)
-            light.set_light(ledLightRoom2.address, ledLightRoom2.brightness)
-            ledLightRoom2.flagManualControl = True
+            ledPhotosHeart.brightness = chJasnosc
+            light.set_light(ledLightRoom2Tradfri.address, ledPhotosHeart.brightness)
+            light.set_light(ledPhotosHeart.address, ledPhotosHeart.brightness)
+            ledPhotosHeart.flagManualControl = True
             decorationFlamingo.flagManualControl = True
             light.set_light(decorationFlamingo.address, messag[strt])
         if(messag.find('swiatloSypialniTradfri.') != -1):   # SYPIALNIA TRADFRI
@@ -147,8 +147,7 @@ class Udp:
             light.set_light(hydroponics.address, messag[strt])
         if(messag == '?m'):
             try:
-                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
-                    czujnikKwiatek.slonce), int(czujnikKwiatek.woda), int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag), ledStripRoom1.setting, ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag), ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag), spootLightRoom1.brightness), adres)
+                self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'letv{}{}{}'.format(int(ledStripRoom1.flag), ledStripRoom1.setting, ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledPhotosHeart.flag), ledPhotosHeart.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag), spootLightRoom1.brightness), adres)
                 log.add_log("Wyslano dane UDP")
             except:
                 log.add_log("Blad danych dla UDP")
