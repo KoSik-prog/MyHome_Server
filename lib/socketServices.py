@@ -80,6 +80,8 @@ class Socket:
             jsonData.append(hydroponics.get_json_data())
             jsonData.append(ledStripRoom1.get_json_data())
             jsonData.append(kitchenLight.get_json_data())
+            jsonData.append(ledDeskRoom3.get_json_data())
+            jsonData.append(ledPhotosHeart.get_json_data())
             toSend = json.dumps(jsonData)
             client.send(toSend)
             
@@ -170,9 +172,23 @@ class Socket:
                 else:
                     setting = 0
                     client.send("setting error")  
-                ledDeskRoom3.brightness = setting
+                # ledDeskRoom3.brightness = setting
                 light.set_light(ledDeskRoom3.address, str(setting))
                 ledDeskRoom3.flagManualControl = True
+            elif(message.find('ledTerrace.') != -1):
+                strt = message.find(".")+1
+                settingBuffer = message[strt:]
+                if(settingBuffer.isdigit()):
+                    if int(settingBuffer) > 100:
+                        settingBuffer = 100
+                    setting = int(settingBuffer)
+                    client.send("ok")
+                else:
+                    setting = 0
+                    client.send("setting error")  
+                # ledDeskRoom3.brightness = setting
+                light.set_light(ledTerrace.address, str(setting))
+                ledTerrace.flagManualControl = True
             elif(message.find('ledHeart.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -218,6 +234,7 @@ class Socket:
                 Set_light_with_delay(decorationFlamingo.address, 0, 5*60).start()
                 kitchenLight.flagManualControl = True
                 Set_light_with_delay(kitchenLight.address, 0, 5*60).start()
+                Set_light_with_delay(ledPhotosHeart.address, 0, 2*60).start()
                 log.add_log("Theme: sleep")
             elif(message.find('themeRomantic') != -1):
                 if(random.randint(0, 1) == 1):

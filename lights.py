@@ -51,6 +51,10 @@ class LIGHTS_CL:
                 log.add_log("Ustawiono Led Biurka: {}".format(packet))
                 infoStrip.add_info("światło biurka: {}".format(setting))
                 nrf.to_send(ledDeskRoom3.address, packet, ledDeskRoom3.nrfPower)
+                if int(setting) == 0:
+                    ledDeskRoom3.flag = 0
+                else:
+                    ledDeskRoom3.flag = 1
                 ledDeskRoom3.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
@@ -60,18 +64,13 @@ class LIGHTS_CL:
                 log.add_log("Ustawiono Led Serce: {}".format(packet))
                 infoStrip.add_info("światło serce: {}".format(setting))
                 nrf.to_send(ledPhotosHeart.address, packet, ledPhotosHeart.nrfPower)
+                if int(setting) == 0:
+                    ledPhotosHeart.flag = 0
+                else:
+                    ledPhotosHeart.flag = 1
                 ledPhotosHeart.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
-        # if address == ledLightRoom2.address:  # SYPIALNIA
-        #     packet = "#S{:03d}".format(int(setting))
-        #     if len(packet) >= 5:
-        #         log.add_log("Ustawiono Led Sypialni: {}".format(packet))
-        #         infoStrip.add_info("światło w sypialni: {}".format(setting))
-        #         nrf.to_send(ledLightRoom2.address, packet, ledLightRoom2.nrfPower)
-        #         ledLightRoom2.error += 1
-        #     else:
-        #         log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == kitchenLight.address:  # KUCHNIA
             packet = "#06T{:01d}".format(int(setting))
             if len(packet) >= 5:

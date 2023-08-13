@@ -44,6 +44,10 @@ class DisplayBrightness:
                     displayBrightness = int(((0.193 * self.light) + 50.67) + 11)
                 elif self.light >= 1000:
                     displayBrightness = 255
+                
+                if displayBrightness > 80: # power save! when the power supply is weak
+                    displayBrightness = 80
+
                 backlight.set_brightness(displayBrightness, smooth=True, duration=2)
                 lightOld = self.light
             time.sleep(5)

@@ -32,11 +32,11 @@ class SensorFlower:
         if data[3] == "k":
             if len(data) >= 17:
                 self.light = int(data[4:7])
-                self.power = data[10]+"."+data[11:13]
-                self.humidity = self.get_val_from_min_max(self.humiMin, self.humiMax, data[14:17])
+                self.power = data[11]+"."+data[12:14]
+                self.humidity = self.get_val_from_min_max(self.humiMin, self.humiMax, data[7:11])
 
                 self.time = datetime.datetime.now()
-                sql.add_record_flower(self.nr, self.humidity, self.light, self.power, data[14:17])
+                sql.add_record_flower(self.nr, self.humidity, self.light, self.power)
                 log.add_log("   Flower {}({}) Sun: {}%   Humi: {}%   Power: {}V".format(
                     self.name, self.nr, self.light, self.humidity, self.power))
             else:

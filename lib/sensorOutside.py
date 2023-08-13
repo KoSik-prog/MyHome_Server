@@ -51,17 +51,18 @@ class SensorOutside:
         if data[3] == "s":
             self.light = int(data[4:9])
             self.ir = int(data[9:14])
-            self.power = int(data[14:18])
+            self.power = int(data[14:17])
+            powerRAW = int(data[17:21])
             sql.add_record_sensor_outdoor_light(self.light, self.ir)
             self.calculate_light()
-            log.add_log("Sensor outside -> light: {}    lightIR: {}    power: {}".format(self.light, self.ir, self.power))
+            log.add_log("Sensor outside -> light: {}    lightIR: {}    power: {}   RAW: {}".format(self.light, self.ir, self.power, powerRAW))
         if data[3] == "t":
             if(data[4] == "1"):
                 tempVal = ('-' + data[5:7] + "." + data[7])
             else:
                 tempVal = (data[5:7] + "." + data[7])
             self.temperature = float(tempVal)
-            self.humidity = float(data[8:10] + "." + data[10])
+            self.humidity = float(data[8:11])
 
             sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.windSpeed, self.windDirection)
             self.windSpeed = float(data[11:13]+'.'+data[13])

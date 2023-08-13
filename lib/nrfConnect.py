@@ -103,7 +103,18 @@ class Nrf():
                 flaga_NRFOdebral = 0
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "02":  # czujnik temperatury 3 - sypialni
-                    sensorRoom2Temperature.decode_data(stringNRF)
+                    if stringNRF[3] == "t":
+                        sensorRoom2Temperature.decode_data(stringNRF)
+                    if stringNRF[3] == "s":
+                        if stringNRF[4:7].isdigit():
+                            ledPhotosHeart.brightness = int(stringNRF[4:7])
+                        else:
+                            ledPhotosHeart.brightness = 0
+                        if ledPhotosHeart.brightness != 0:
+                            ledPhotosHeart.flag = True
+                        else:
+                            ledPhotosHeart.flag = False
+                        log.add_log(("   Led Heart ON/OFF:{} Jasność: {}".format(ledPhotosHeart.flag, ledPhotosHeart.brightness)))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "03":  #outside sensor
                     sensorOutside.add_record(stringNRF)
@@ -177,26 +188,40 @@ class Nrf():
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "19":  # table light
                     if stringNRF[3] == "?":
-                        ledDeskRoom3.flag = int(stringNRF[4])
-                        ledDeskRoom3.error = 0
-                        log.add_log(("   Desk LED ON/OFF:{}".format(ledDeskRoom3.flag)))
+                        if stringNRF[4:7].isdigit():
+                            ledDeskRoom3.brightness = int(stringNRF[4:7])
+                        else:
+                            ledDeskRoom3.brightness = 0
+                        if ledDeskRoom3.brightness != 0:
+                            ledDeskRoom3.flag = True
+                        else:
+                            ledDeskRoom3.flag = False
+                        log.add_log(("   Desk LED ON/OFF:{} Jasność: {}".format(ledDeskRoom3.flag, ledDeskRoom3.brightness)))
+                # ------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3] == "20":  # terrace light
+                    if stringNRF[3] == "?":
+                        if stringNRF[4:7].isdigit():
+                            ledTerrace.brightness = int(stringNRF[4:7])
+                        else:
+                            ledTerrace.brightness = 0
+                        if ledTerrace.brightness != 0:
+                            ledTerrace.flag = True
+                        else:
+                            ledTerrace.flag = False
+                        log.add_log(("   Terrace LED ON/OFF:{} Jasność: {}".format(ledTerrace.flag, ledTerrace.brightness)))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "12":  # kwiatek 2  addres 12
-                    sensorFlower2.add_record(stringNRF)
+                    sensorFlower1.add_record(stringNRF)
                     infoStrip.set_error(4, False)  # poprawic - przeniesc do klasy urzadzenia
-    # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "13":  # kwiatek 3 adres 13
-                    sensorFlower3.add_record(stringNRF)
+                    sensorFlower2.add_record(stringNRF)
                     infoStrip.set_error(5, False)
-    # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "16":  # kwiatek 5 adres 16
-                    sensorFlower5.add_record(stringNRF)
+                # ------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3] == "14":  # kwiatek 5 adres 14
+                    sensorFlower3.add_record(stringNRF)
                     infoStrip.set_error(16, False)
-    # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "17":  # kwiatek 6 adres 17
-                    sensorFlower6.add_record(stringNRF)
-                    infoStrip.set_error(19, False)
-    # ------------------------------------------------------------------------------------------------------------
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "15":  # dogHouse 15
                     if stringNRF[3] == "s":
                         string2 = (stringNRF[4:7])

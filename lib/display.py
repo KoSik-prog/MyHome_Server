@@ -29,8 +29,8 @@ pygame.init()
 class Display:
     pygame.display.set_caption('MojDom')
     resolution = 800, 480
-    screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
-    # screen = pygame.display.set_mode(resolution, 1)
+    #screen = pygame.display.set_mode(resolution, pygame.FULLSCREEN)
+    screen = pygame.display.set_mode(resolution, 1)
 
     def __init__(self, imgFolder):
         self.screen.fill((255, 255, 255))

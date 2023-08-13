@@ -35,12 +35,8 @@ class Sql:
     def add_record_sensor_temp(self, room, temp, humi):
         self.add_record(room, "{}, {}, 0".format(temp, humi))
 
-    def add_record_watering_can(self, humidity, sun, water,  power, humidity_raw, watering):
-        self.add_record("kwiatek1", "{}, {}, {}, {}, {}, {}".format(
-            humidity, sun, water, power, humidity_raw, watering))
-
-    def add_record_flower(self, flowerNumber, humidity, sun, power, humidity_raw):
-        self.add_record("kwiatek{}".format(flowerNumber), "{}, {}, {}, {}".format(humidity, sun, power, humidity_raw))
+    def add_record_flower(self, flowerNumber, humidity, sun, power):
+        self.add_record("flower{}".format(flowerNumber), "{}, {}, {}, {}".format(humidity, sun, power, 0))
 
     def add_record_terrarium(self, tempUP, humiUP, tempDN, humiDN, uvi):
         self.add_record("terrarium", "{}, {}, {}, {}, {}".format(tempUP, humiUP, tempDN, humiDN, uvi))
@@ -71,7 +67,7 @@ class Sql:
         curs = conn.cursor()
         try:
             databases = ["pok1Temp", "Pok2Temp", "zewSwiatlo", "zewTemp", "terrarium",
-                         "kwiatek1", "kwiatek2", "kwiatek3", "kwiatek4", "kwiatek5", "kwiatek6"]
+                         "flower1", "flower2", "flower3", "kwiatek3", "kwiatek4", "kwiatek5", "kwiatek6"]
             for i in range(len(databases)):
                 request = "DELETE FROM {} WHERE timestamp < datetime('now', '-{} days')".format(databases[i], days)
                 curs.execute(request)
