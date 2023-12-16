@@ -36,7 +36,7 @@ class Sql:
         self.add_record(room, "{}, {}, 0".format(temp, humi))
 
     def add_record_flower(self, flowerNumber, humidity, sun, power):
-        self.add_record("flower{}".format(flowerNumber), "{}, {}, {}, {}".format(humidity, sun, power, 0))
+        self.add_record("flower{}".format(flowerNumber), "{}, {}, {}".format(sun, humidity, power))
 
     def add_record_terrarium(self, tempUP, humiUP, tempDN, humiDN, uvi):
         self.add_record("terrarium", "{}, {}, {}, {}, {}".format(tempUP, humiUP, tempDN, humiDN, uvi))

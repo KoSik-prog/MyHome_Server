@@ -15,7 +15,30 @@ import subprocess
 global coap
 coap = '/usr/local/bin/coap-client'
 
-def tradfri_power_light(hubip, user_id, securityid, lightbulbid, value):
+def send_tradfriMsg(api, timeout):
+    if os.path.exists(coap):
+        if os.path.exists(coap):
+            try:
+                process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
+                (output, error) = process.communicate()
+            except subprocess.CalledProcessError as e:
+                sys.stderr.write('[-] Command failed with error code {}\n'.format(e.returncode))
+                return None
+            except:
+                # Python 2.7 way to handle timeouts
+                sys.stderr.write('[-] Timeout expired\n')
+                process.terminate()
+                process.wait()
+                return None
+            if process.returncode:
+                sys.stderr.write('[-] Command failed with error code {}\n'.format(process.returncode))
+                return None
+    else:
+        sys.stderr.write('[-] libcoap: could not find libcoap\n')
+        sys.exit(1)
+    return output
+
+def tradfri_power_light(hubip, user_id, securityid, lightbulbid, value, timeout=10):
     tradfriHub = 'coaps://{}:5684/15001/{}' .format(hubip, lightbulbid)
 
     if value == 1:
@@ -25,33 +48,19 @@ def tradfri_power_light(hubip, user_id, securityid, lightbulbid, value):
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"' .format(coap, user_id, securityid,
                                                                           payload, tradfriHub)
-
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
+    return send_tradfriMsg(api, timeout)
 
 
-def tradfri_dim_light(hubip, user_id, securityid, lightbulbid, value):
+def tradfri_dim_light(hubip, user_id, securityid, lightbulbid, value, timeout=10):
     """ function for dimming tradfri lightbulb """
     dim = float(value) * 2.55
     tradfriHub = 'coaps://{}:5684/15001/{}'.format(hubip, lightbulbid)
     payload = '{ "3311" : [{ "5851" : %s }] }' % int(dim)
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid,payload, tradfriHub)
+    return send_tradfriMsg(api, timeout)
 
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
-
-def tradfri_color_light(hubip, user_id, securityid, lightbulbid, value):
+def tradfri_color_light(hubip, user_id, securityid, lightbulbid, value, timeout=10):
     """ function for color temperature tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15001/{}'.format(hubip, lightbulbid)
 
@@ -63,32 +72,18 @@ def tradfri_color_light(hubip, user_id, securityid, lightbulbid, value):
         payload = '{ "3311" : [{ "5709" : %s, "5710": %s }] }' % ("24930", "24684")
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid, payload, tradfriHub)
+    return send_tradfriMsg(api, timeout)
 
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
-
-def tradfri_color_lamp(hubip, user_id, securityid, lightbulbid, value1, value2):
+def tradfri_color_lamp(hubip, user_id, securityid, lightbulbid, value1, value2, timeout=10):
     """ function for color temperature tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15001/{}'.format(hubip, lightbulbid)
 
     payload = '{ "3311" : [{ "5709" : %s, "5710": %s }] }' % (value1, value2)
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid, payload, tradfriHub)
+    return send_tradfriMsg(api, timeout)
 
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
-
-def tradfri_RGB_lamp(hubip, user_id, securityid, lightbulbid, r ,g ,b):
+def tradfri_RGB_lamp(hubip, user_id, securityid, lightbulbid, r ,g ,b, timeout=10):
     """ function for color temperature tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15001/{}'.format(hubip, lightbulbid)
 
@@ -109,16 +104,9 @@ def tradfri_RGB_lamp(hubip, user_id, securityid, lightbulbid, r ,g ,b):
     payload = '{ "3311" : [{ "5709" : %s, "5710": %s }] }' % (xyX, xyY)
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid, payload, tradfriHub)
+    return send_tradfriMsg(api, timeout)
 
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
-
-def tradfri_light_brightness(hubip, user_id, securityid, lightbulbid, value):
+def tradfri_light_brightness(hubip, user_id, securityid, lightbulbid, value, timeout=10):
     """ function for power on/off tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15001/{}' .format(hubip, lightbulbid)
 
@@ -126,33 +114,19 @@ def tradfri_light_brightness(hubip, user_id, securityid, lightbulbid, value):
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"' .format(coap, user_id, securityid,
                                                                           payload, tradfriHub)
+    return send_tradfriMsg(api, timeout)
 
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
-
-def tradfri_light_color(hubip, user_id, securityid, lightbulbid, value1):
+def tradfri_light_color(hubip, user_id, securityid, lightbulbid, value1, timeout=10):
     """ function for color temperature tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15001/{}'.format(hubip, lightbulbid)
 
     payload = '{ "3311" : [{ "5706" : %s,}] }' % (value1)
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid, payload, tradfriHub)
-
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
+    return send_tradfriMsg(api, timeout)
 
 
-def tradfri_power_group(hubip, user_id, securityid, groupid, value):
+def tradfri_power_group(hubip, user_id, securityid, groupid, value, timeout=10):
     """ function for power on/off tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15004/{}' .format(hubip, groupid)
 
@@ -162,29 +136,14 @@ def tradfri_power_group(hubip, user_id, securityid, groupid, value):
         payload = '{ "5850" : 0 }'
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"' .format(coap, user_id, securityid, payload, tradfriHub)
-
-    if os.path.exists(coap):
-        #result = os.popen(api)
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
+    return send_tradfriMsg(api, timeout)
 
 
-def tradfri_dim_group(hubip,user_id, securityid, groupid, value):
+def tradfri_dim_group(hubip,user_id, securityid, groupid, value, timeout=10):
     """ function for dimming tradfri lightbulb """
     tradfriHub = 'coaps://{}:5684/15004/{}'.format(hubip, groupid)
     dim = float(value) * 2.55
     payload = '{ "5851" : %s }' % int(dim)
 
     api = '{} -m put -u "IDENT{}" -k "{}" -e \'{}\' "{}"'.format(coap, user_id, securityid, payload, tradfriHub)
-
-    if os.path.exists(coap):
-        process = subprocess.Popen(api, stdout=subprocess.PIPE, shell=True)
-        (output, error) = process.communicate()
-    else:
-        sys.stderr.write('[-] libcoap: could not find libcoap\n')
-        sys.exit(1)
-    return output
+    return send_tradfriMsg(api, timeout)

@@ -58,6 +58,19 @@ class LIGHTS_CL:
                 ledDeskRoom3.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == ledTerrace.address:  # LED balkon
+            packet = "#20P{:03d}".format(int(setting))
+            if len(packet) >= 5:
+                log.add_log("Ustawiono Led Balkonu: {}".format(packet))
+                infoStrip.add_info("światło balkon: {}".format(setting))
+                nrf.to_send(ledTerrace.address, packet, ledTerrace.nrfPower)
+                if int(setting) == 0:
+                    ledTerrace.flag = 0
+                else:
+                    ledTerrace.flag = 1
+                ledTerrace.error += 1
+            else:
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == ledPhotosHeart.address:  # LED serce w sypialni
             packet = "#02P{:03d}".format(int(setting))
             if len(packet) >= 5:
@@ -124,13 +137,14 @@ class LIGHTS_CL:
                 decorationFlamingo.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
-        if address == usbPlug.address:  # Dekoracje - uniwersalny modul USB
+        if address == usbPlug.address:  # Uniwersalny modul USB
             packet = "#11T{:1d}".format(int(setting))
             if len(packet) >= 5:
                 log.add_log("Ustawiono Uniwersalny USB: {}".format(packet))
                 infoStrip.add_info("uniwersalny USB: {}".format(setting))
                 nrf.to_send(usbPlug.address, packet, usbPlug.nrfPower)
                 usbPlug.error += 1
+                usbPlug.flag = int(setting)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == mainLightRoom1Tradfri.address:  # Tradfri Salon

@@ -28,7 +28,7 @@ except ImportError:
 
 class Socket:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307", "dawid" : "dave"}
+    usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307"}
 
     def __init__(self, host, port):
         self.host = '192.168.0.99'
@@ -54,6 +54,11 @@ class Socket:
                 client.close()
             except (KeyboardInterrupt, SystemExit):
                 log.add_log('server UDP error')
+
+    def stop_server(self):
+        if self.s:
+            self.s.close()
+            print("Server socket closed.")
 
     def sendSocketMsg(client, msg):
         log.add_log("Socket tx: {}".format(msg))
@@ -82,6 +87,8 @@ class Socket:
             jsonData.append(kitchenLight.get_json_data())
             jsonData.append(ledDeskRoom3.get_json_data())
             jsonData.append(ledPhotosHeart.get_json_data())
+            jsonData.append(ledTerrace.get_json_data())
+            jsonData.append(usbPlug.get_json_data())
             toSend = json.dumps(jsonData)
             client.send(toSend)
             
@@ -127,6 +134,10 @@ class Socket:
                 hydroponics.flagManualControl = True
                 light.set_light(hydroponics.address, message[strt])
                 client.send("ok")
+            elif(message.find('usbPlug.') != -1):  # uniwersalny modul USB
+                strt = message.find(".")+1
+                usbPlug.flagManualControl = True
+                light.set_light(usbPlug.address, message[strt])
             elif(message.find('kitchenlight.') != -1):  # KUCHNIA
                 strt = message.find(".")+1
                 kitchenLight.flagManualControl = True
@@ -186,7 +197,7 @@ class Socket:
                 else:
                     setting = 0
                     client.send("setting error")  
-                # ledDeskRoom3.brightness = setting
+                # ledTerrace.brightness = setting
                 light.set_light(ledTerrace.address, str(setting))
                 ledTerrace.flagManualControl = True
             elif(message.find('ledHeart.') != -1):
@@ -289,20 +300,20 @@ class Socket:
                 strt = messag.find(".")+1
                 hydroponics.flagManualControl = True
                 light.set_light(hydroponics.address, messag[strt])
-            if(messag.find('kitchenlight.') != -1):  # KUCHNIA
+            elif(messag.find('kitchenlight.') != -1):  # KUCHNIA
                 strt = messag.find(".")+1
                 kitchenLight.flagManualControl = True
                 light.set_light
                 (kitchenLight.address, messag[strt])
                 client.send("ok")
-            if(messag.find('ledstripecolor.') != -1):
+            elif(messag.find('ledstripecolor.') != -1):
                 strt = messag.find(".")+1
                 if int(messag[(strt+9):(strt+12)]) >= 0:
                     ledStripRoom1.setting = messag[(strt):(strt+9)]
                     ledStripRoom1.brightness = int(messag[(strt+9):(strt+12)])
                 light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
                 ledStripRoom1.flagManualControl = True
-            if(messag.find('ledstripebrightness.') != -1):
+            elif(messag.find('ledstripebrightness.') != -1):
                 zmien = messag[14:17]
                 if int(zmien) > 0:
                     ledStripRoom1.brightness = int(zmien)
@@ -370,13 +381,9 @@ class Socket:
             strt = messag.find(".")+1
             decorationFlamingo.flagManualControl = True
             light.set_light(decorationFlamingo.address, messag[strt])
-        if(messag.find('dekoracjeUSB.') != -1):  # uniwersalny modul USB
-            strt = messag.find(".")+1
-            usbPlug.flagManualControl = True
-            light.set_light(usbPlug.address, messag[strt])
         if(messag.find('hydroponics.') != -1):  # hydroponics
             strt = messag.find(".")+1
-            usbPlug.flagManualControl = True
+            hydroponics.flagManualControl = True
             light.set_light(hydroponics.address, messag[strt])
         #if(messag == '?m'):
         #    try:
@@ -433,8 +440,8 @@ class Socket:
             log.add_log(packet)
             log.add_log(packet)
             nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
-            ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid,
-                                ikea.security_user, tradfriDev.salon, 100)
+            # ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid,
+            #                     ikea.security_user, tradfriDev.salon, 100)
             ledStripRoom1.flagManualControl = True
             log.add_log("Tryb swiatel: Pokoj 1 max")
         if(messag.find('dogHouseTryb.') != -1):
@@ -446,11 +453,11 @@ class Socket:
         if(messag.find('spij') != -1):
             light.set_light(ledStripRoom1.address, "000")
             ledStripRoom1.flagManualControl = True
+            light.set_light(decorationRoom1.address, 0)
+            light.set_light(decoration2Room1.address, 0)
             light.set_light(mainLightRoom1Tradfri.address, 0)
             light.set_light(mainLightRoom1Tradfri.bulb, 15)
             light.set_light(floorLampRoom1Tradfri.address, 0)
-            light.set_light(decorationRoom1.address, 0)
-            light.set_light(decoration2Room1.address, 0)
             decorationRoom1.flagManualControl = True
             decoration2Room1.flagManualControl = True
             decoration2Room1.flagManualControl = True

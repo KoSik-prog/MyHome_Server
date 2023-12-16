@@ -36,15 +36,10 @@ sensorOutside = SensorOutside()
 sensorRoom1Temperature = SensorRoom('Salon', 'pok1Temp')
 sensorRoom2Temperature = SensorRoom('Sypialnia', 'pok2Temp')
 
-#  DEVICES
-#automatycznaKonewka = DEVICE_WATER_CAN_CL([0x33, 0x33, 0x33, 0x11, 0x22], "Konewka - Palma")
-
 #  SENSORS
-sensorFlower1 = SensorFlower(2, [0x33, 0x33, 0x33, 0x11, 0x33], "Palma", 120.0, 500.0) 
-sensorFlower2 = SensorFlower(3, [0x33, 0x33, 0x33, 0x11, 0x44], "Pachira", 380.0, 500.0)
-sensorFlower3 = SensorFlower(4, [0x33, 0x33, 0x33, 0x11, 0x66], "Pokrzywa", 280.0, 580.0)
-# sensorFlower5 = SensorFlower(5, [0x33, 0x33, 0x33, 0x11, 0x77], "Benjamin", 400.0, 550.0) 
-# sensorFlower6 = SensorFlower(6, [0x33, 0x33, 0x33, 0x11, 0x88], "Szeflera", 260.0, 500.0) 
+sensorFlower1 = SensorFlower(1, [0x22, 0x22, 0x22, 0x22, 0x22], "Bonsai", 200.0, 1000.0) #fake address
+sensorFlower2 = SensorFlower(2, [0x22, 0x22, 0x22, 0x22, 0x22], "Strelicja", 200.0, 1000.0)
+sensorFlower3 = SensorFlower(3, [0x22, 0x22, 0x22, 0x22, 0x22], "Szeflera", 200.0, 1000.0)
 
 
 class Terrarium:  # TERRARIUM
@@ -163,8 +158,8 @@ class DecorationFlamingo:  # Dekoracje w sypialni
 decorationFlamingo = DecorationFlamingo()
 
 
-class UsbPlug:  # USB Stick
-    label = 'USB-Stick'
+class UsbPlug:  # USB Wtyk
+    label = 'USB-Plug'
     flag = 0
     autoOn = '17:00:00.0000'
     autoOff = '23:00:00.0000'
@@ -189,15 +184,14 @@ class UsbPlug:  # USB Stick
             } 
         return retData
 
-
 usbPlug = UsbPlug()
 
 
 class Hydroponics:  # hydroponika
     label = 'Hydroponika'
     flag = 0
-    autoOn = '08:00:00.0000'
-    autoOff = '19:00:00.0000'
+    autoOn = '09:00:00.0000'
+    autoOff = '17:00:00.0000'
     autoLuxMin = 65000
     autoBrightness = 1
     flagManualControl = False
@@ -235,7 +229,7 @@ class LedStripRoom1:  # LED TV
     address = [0x33, 0x33, 0x33, 0x33, 0x33]
     nrfPower = NRF24.PA_LOW
     white = 000
-    brightness = 70
+    brightness = 0
     setting = "255255255"
     
     def get_json_data(self):
@@ -314,7 +308,7 @@ class LedDeskRoom3:  # LED biurka
     error = 0
     address = [0x33, 0x33, 0x33, 0x11, 0x99]
     nrfPower = NRF24.PA_LOW
-    brightness = 70
+    brightness = 0
     
     def get_json_data(self):
         retData = {
@@ -337,15 +331,15 @@ ledDeskRoom3 = LedDeskRoom3()
 class LedTerrace:  # LED balkon
     label = "LED Terrace"
     flag = 0
-    autoOn = '16:00:00.0000'
+    autoOn = '20:00:00.0000'
     autoOff = '23:00:00.0000'
     autoLuxMin = 600  # brightness setting for auto light
-    autoBrightness = 70
+    autoBrightness = 100
     flagManualControl = False
     error = 0
     address = [0x00, 0x00, 0x00, 0x20, 0x20]
     nrfPower = NRF24.PA_LOW
-    brightness = 70
+    brightness = 0
     
     def get_json_data(self):
         retData = {

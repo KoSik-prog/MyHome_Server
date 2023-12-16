@@ -28,12 +28,12 @@ class SensorFlower:
         self.humiMax = humiMax
         self.time = datetime.datetime.now()
 
-    def add_record(self, data):
+    def add_record(self, data): #12k 000 0998 306
         if data[3] == "k":
-            if len(data) >= 17:
+            if len(data) >= 14:
                 self.light = int(data[4:7])
-                self.power = data[11]+"."+data[12:14]
                 self.humidity = self.get_val_from_min_max(self.humiMin, self.humiMax, data[7:11])
+                self.power = data[11]+"."+data[12:14]
 
                 self.time = datetime.datetime.now()
                 sql.add_record_flower(self.nr, self.humidity, self.light, self.power)

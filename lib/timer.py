@@ -40,9 +40,10 @@ class Timer:
         self.auto_timer(decorationFlamingo)
         self.auto_timer(ledLightRoom2Tradfri)
         self.auto_timer(ledPhotosHeart)#---- LED SYPIALNI - serce ze zdjęciami
-        # self.auto_timer(hydroponics)
+        self.auto_timer(hydroponics)
         self.auto_timer(kitchenLight)
-        # self.auto_timer(usbPlug)#----USB Stick
+        self.auto_timer(usbPlug)#----USB Stick
+        # self.auto_timer(ledTerrace)
 
     def auto_timer(self, deviceClass):
         format = '%H:%M:%S.%f'

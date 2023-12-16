@@ -137,7 +137,7 @@ class Udp:
             strt = messag.find(".")+1
             decorationFlamingo.flagManualControl = True
             light.set_light(decorationFlamingo.address, messag[strt])
-        if(messag.find('dekoracjeUSB.') != -1):  # uniwersalny modul USB
+        if(messag.find('usbPlug.') != -1):  # uniwersalny modul USB
             strt = messag.find(".")+1
             usbPlug.flagManualControl = True
             light.set_light(usbPlug.address, messag[strt])

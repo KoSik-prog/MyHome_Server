@@ -57,6 +57,7 @@ class Nrf():
             rxBuffer = self.get_message()
             self.radio.stopListening()
             time.sleep(.001)
+            print(self.radio.get_status())
 
     def to_send(self, address, data, txPower):
         for i in range(len(Nrf.txBuffer)):
@@ -178,7 +179,7 @@ class Nrf():
                     if stringNRF[3] == "?":
                         usbPlug.flag = int(stringNRF[4])
                         usbPlug.error = 0
-                        log.add_log(("   Uniwersalny USB ON/OFF:{}".format(usbPlug.flag)))
+                        log.add_log(("   USB Wtyk ON/OFF:{}".format(usbPlug.flag)))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "18":  # hydroponics
                     if stringNRF[3] == "?":
@@ -200,15 +201,16 @@ class Nrf():
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "20":  # terrace light
                     if stringNRF[3] == "?":
-                        if stringNRF[4:7].isdigit():
-                            ledTerrace.brightness = int(stringNRF[4:7])
-                        else:
-                            ledTerrace.brightness = 0
-                        if ledTerrace.brightness != 0:
-                            ledTerrace.flag = True
-                        else:
-                            ledTerrace.flag = False
-                        log.add_log(("   Terrace LED ON/OFF:{} Jasność: {}".format(ledTerrace.flag, ledTerrace.brightness)))
+                        if stringNRF[4] == "P":
+                            if stringNRF[5:9].isdigit():
+                                ledTerrace.brightness = int(stringNRF[5:9])
+                            else:
+                                ledTerrace.brightness = 0
+                            if ledTerrace.brightness != 0:
+                                ledTerrace.flag = True
+                            else:
+                                ledTerrace.flag = False
+                            log.add_log(("   Terrace LED ON/OFF:{} Jasność: {}".format(ledTerrace.flag, ledTerrace.brightness)))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "12":  # kwiatek 2  addres 12
                     sensorFlower1.add_record(stringNRF)

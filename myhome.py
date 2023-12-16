@@ -52,6 +52,9 @@ class MyHome:
         # --------------MAIN FUNCTION------------------------
         self.start_server()
 
+    def __del__(self):
+        self.socketTh.close()
+
     def start_server(self):
         ready = udp.readStatus()
         while server.read_server_active_flag() == True:
@@ -64,36 +67,47 @@ class MyHome:
         lcdTh.start()
 
     def nrf_thread_init(self):
-        nrfTh = threading.Thread(target=nrf.nrf24l01_thread)
-        nrfTh.start()
+        self.nrfTh = threading.Thread(target=nrf.nrf24l01_thread)
+        self.nrfTh.start()
         
     def socket_thread_init(self):
-        socketTh = threading.Thread(target=socket.server_thread)
-        socketTh.start()
+        self.socketTh = threading.Thread(target=socket.server_thread)
+        self.socketTh.start()
         
     def tasmota_thread_init(self):
-        tasmotaTh = threading.Thread(target=tasmota.tasmota_thread)
-        tasmotaTh.start()
+        self.tasmotaTh = threading.Thread(target=tasmota.tasmota_thread)
+        self.tasmotaTh.start()
 
     def display_brightness_thread_init(self):
-        nrfTh = threading.Thread(target=displayBrightness.set_brightness_thread)
-        nrfTh.start()
+        self.lcdBrightnessTh = threading.Thread(target=displayBrightness.set_brightness_thread)
+        self.lcdBrightnessTh.start()
 
     def settings_read_thread_init(self):
-        nrfTh = threading.Thread(target=settings.start_read)
-        nrfTh.start()
+        self.settingsTh = threading.Thread(target=settings.start_read)
+        self.settingsTh.start()
 
     def timer_thread_init(self):
-        nrfTh = threading.Thread(target=timer.timer_thread)
-        nrfTh.start()
+        self.timerTh = threading.Thread(target=timer.timer_thread)
+        self.timerTh.start()
 
     def check_sensors_thread_init(self):
-        nrfTh = threading.Thread(target=sensor.check_sensors_thread)
-        nrfTh.start()
+        self.sensorsTh = threading.Thread(target=sensor.check_sensors_thread)
+        self.sensorsTh.start()
 
     def check_weatherForecast_thread_init(self):
-        nrfTh = threading.Thread(target=weather.weather_thread)
-        nrfTh.start()
+        self.weatherTh = threading.Thread(target=weather.weather_thread)
+        self.weatherTh.start()
+    
+    def watchdog_thread_init(self):
+        self.wtdTh = threading.Thread(target=self.watchdog_thread)
+        self.wtdTh.start()
+
+    def watchdog_thread(self):
+        while True:
+            time.sleep(5)
+            if not self.nrfTh.is_alive():
+                print("nrfTh is not active. Restarting...")
+                self.nrf_thread_init()
 
 
 # -----START-------------------------------------
