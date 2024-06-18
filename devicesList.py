@@ -28,7 +28,6 @@ class Server():
     def set_server_active_flag(self, flag):
         self.serverActiveFlag = flag
 
-
 server = Server()
 
 sensorOutside = SensorOutside()
@@ -74,7 +73,7 @@ class DecorationRoom1:  # Dekoracje w salonie Reka
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:05:00.0000'
-    autoLuxMin = 600 
+    autoLuxMin = 50 
     autoBrightness = 1
     flagManualControl = False
     error = 0
@@ -103,7 +102,7 @@ class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
     flag = 0
     autoOn = '15:50:00.0000'
     autoOff = '23:04:00.0000'
-    autoLuxMin = 500
+    autoLuxMin = 30
     autoBrightness = 1
     flagManualControl = False
     error = 0
@@ -133,7 +132,7 @@ class DecorationFlamingo:  # Dekoracje w sypialni
     flag = 0
     autoOn = '21:30:00.0000'
     autoOff = '23:59:00.0000'
-    autoLuxMin = 300 
+    autoLuxMin = 100 
     autoBrightness = 1
     flagManualControl = False
     error = 0
@@ -222,7 +221,7 @@ class LedStripRoom1:  # LED TV
     flag = 0
     autoOn = '16:00:00.0000'
     autoOff = '23:00:00.0000'
-    autoLuxMin = 600  # brightness setting for auto light
+    autoLuxMin = 100  # brightness setting for auto light
     autoBrightness = 70
     flagManualControl = False
     error = 0
@@ -273,7 +272,7 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
     flag = 0
     autoOn = '15:00:00.0000'
     autoOff = '23:58:00.0000'
-    autoLuxMin = 1300 
+    autoLuxMin = 150 
     autoBrightness = 1
     flagManualControl = False
     error = 0
@@ -302,7 +301,7 @@ class LedDeskRoom3:  # LED biurka
     flag = 0
     autoOn = '16:00:00.0000'
     autoOff = '23:00:00.0000'
-    autoLuxMin = 600  # brightness setting for auto light
+    autoLuxMin = 0
     autoBrightness = 70
     flagManualControl = False
     error = 0
@@ -328,12 +327,43 @@ class LedDeskRoom3:  # LED biurka
 ledDeskRoom3 = LedDeskRoom3()
 
 
+class LedLego:  # LED LEGO Strelicja
+    label = "LED Lego"
+    flag = 0
+    autoOn = '16:00:00.0000'
+    autoOff = '23:00:00.0000'
+    autoLuxMin = 50  # brightness setting for auto light
+    autoBrightness = 20
+    flagManualControl = False
+    error = 0
+    address = [0x33, 0x33, 0x33, 0x22, 0x00]
+    nrfPower = NRF24.PA_LOW
+    brightness = 0
+    
+    def get_json_data(self):
+        retData = {
+            "name": self.label,
+            "flag": self.flag,
+            "autoOn": self.autoOn,
+            "autoOff": self.autoOff,
+            "autoLuxMin": self.autoLuxMin,
+            "autoBrightness": self.autoBrightness,
+            "flagManualControl": self.flagManualControl,
+            "error": self.error,
+            "address": self.address,
+            "brightness": self.brightness
+            } 
+        return retData
+
+ledLego = LedLego()
+
+
 class LedTerrace:  # LED balkon
     label = "LED Terrace"
     flag = 0
     autoOn = '20:00:00.0000'
     autoOff = '23:00:00.0000'
-    autoLuxMin = 600  # brightness setting for auto light
+    autoLuxMin = 100  # brightness setting for auto light
     autoBrightness = 100
     flagManualControl = False
     error = 0
@@ -364,7 +394,7 @@ class LedPhotosHeart:  # LED serce w sypialni
     flag = 0
     autoOn = '20:00:00.0000'
     autoOff = '23:00:00.0000'
-    autoLuxMin = 600  # brightness setting for auto light
+    autoLuxMin = 50  # brightness setting for auto light
     autoBrightness = 10
     flagManualControl = False
     error = 0
@@ -388,21 +418,6 @@ class LedPhotosHeart:  # LED serce w sypialni
         return retData
 
 ledPhotosHeart = LedPhotosHeart()
-# class LedLightRoom2:  # OSWIETLENIE SYPIALNI
-#     brightness = 0
-#     flag = 0
-#     autoOn = '21:00:00.0000'
-#     autoOff = '23:50:00.0000'
-#     autoLuxMin = 200
-#     flagManualControl = False
-#     autoBrightness = 5
-#     error = 0
-#     address = [0x33, 0x33, 0x33, 0x33, 0x44]
-#     nrfPower = NRF24.PA_LOW
-#     label = 'Sypialnia'
-
-
-# ledLightRoom2 = LedLightRoom2()
 
 
 class FloorLampRoom1Tradfri:
@@ -435,7 +450,7 @@ class LedLightRoom2Tradfri:
     flag = 0
     autoOn = '21:10:00.0000'
     autoOff = '23:50:00.0000'
-    autoLuxMin = 600
+    autoLuxMin = 30
     flagManualControl = False
     autoBrightness = 5
     error = 0

@@ -22,6 +22,8 @@ try:
     from lib.tasmota import *
     from lib.nrfConnect import *
     from lib.infoStrip import *
+    from devicesList import *
+    from lib.firebase import *
 except ImportError:
     print("Import error - socket services")
 
@@ -36,8 +38,10 @@ class Socket:
         self.backlog = 5 
         self.size = 1024
         
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind((self.host, self.port)) 
         self.s.listen(self.backlog)
+        # self.s.settimeout(1)
 
     def server_thread(self):
         while server.read_server_active_flag() == True:
@@ -54,6 +58,10 @@ class Socket:
                 client.close()
             except (KeyboardInterrupt, SystemExit):
                 log.add_log('server UDP error')
+    
+    def __del__(self):
+        if hasattr(self, 's'):
+            self.s.close()
 
     def stop_server(self):
         if self.s:
@@ -86,6 +94,7 @@ class Socket:
             jsonData.append(ledStripRoom1.get_json_data())
             jsonData.append(kitchenLight.get_json_data())
             jsonData.append(ledDeskRoom3.get_json_data())
+            jsonData.append(ledLego.get_json_data())
             jsonData.append(ledPhotosHeart.get_json_data())
             jsonData.append(ledTerrace.get_json_data())
             jsonData.append(usbPlug.get_json_data())
@@ -186,6 +195,20 @@ class Socket:
                 # ledDeskRoom3.brightness = setting
                 light.set_light(ledDeskRoom3.address, str(setting))
                 ledDeskRoom3.flagManualControl = True
+            elif(message.find('ledLego.') != -1):
+                strt = message.find(".")+1
+                settingBuffer = message[strt:]
+                if(settingBuffer.isdigit()):
+                    if int(settingBuffer) > 100:
+                        settingBuffer = 100
+                    setting = int(settingBuffer)
+                    client.send("ok")
+                else:
+                    setting = 0
+                    client.send("setting error")  
+                # ledDeskRoom3.brightness = setting
+                light.set_light(ledLego.address, str(setting))
+                ledLego.flagManualControl = True
             elif(message.find('ledTerrace.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -240,12 +263,16 @@ class Socket:
                 light.set_light(decorationRoom1.address, 0)
                 decoration2Room1.flagManualControl = True
                 light.set_light(decoration2Room1.address, 0)
-                Set_light_with_delay(mainLightRoom1Tradfri.address, 0, 30).start()
+                usbPlug.flagManualControl = True
+                light.set_light(usbPlug.address, 0)
+                light.set_light(ledLego.address, 0)
+                light.set_light(ledDeskRoom3.address, 0)
                 decorationFlamingo.flagManualControl = True
                 Set_light_with_delay(decorationFlamingo.address, 0, 5*60).start()
                 kitchenLight.flagManualControl = True
                 Set_light_with_delay(kitchenLight.address, 0, 5*60).start()
                 Set_light_with_delay(ledPhotosHeart.address, 0, 2*60).start()
+                Set_light_with_delay(mainLightRoom1Tradfri.address, 0, 30).start()
                 log.add_log("Theme: sleep")
             elif(message.find('themeRomantic') != -1):
                 if(random.randint(0, 1) == 1):
@@ -289,10 +316,29 @@ class Socket:
                 log.add_log("access denied")
                 toSend = "denied"
             client.send(toSend)
-            
-    def __del__(self):
-        self.s.shutdown(socket.SHUT_RDWR)
-        self.s.close()
+        if(message.find('refreshFirebaseToken^') != -1):
+            strt = message.find("^") + 1
+            login = message[strt:]
+            dataArray = login.split(".")
+            logUser = dataArray[0]
+            logPassword = dataArray[1]
+            if len(dataArray) > 2:
+                logToken = dataArray[2]
+                phoneNotification.update_token(logUser, logToken)
+            log.add_log("LOG -> {}:{} - {}".format(logUser, logPassword, logToken))
+            try:
+                passwordToCheck = self.usersList[logUser.lower()]
+            except:
+                passwordToCheck = ""
+                log.add_log("user not found")
+                
+            if(logPassword == passwordToCheck):
+                log.add_log("user {} has logged in".format(logUser))
+                toSend = "OK"
+            else:
+                log.add_log("access denied")
+                toSend = "denied"
+            client.send(toSend)
 
     def transmit(self, client, messag):
         if(messag.find('set^') != -1):

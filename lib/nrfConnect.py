@@ -57,7 +57,6 @@ class Nrf():
             rxBuffer = self.get_message()
             self.radio.stopListening()
             time.sleep(.001)
-            print(self.radio.get_status())
 
     def to_send(self, address, data, txPower):
         for i in range(len(Nrf.txBuffer)):
@@ -199,6 +198,18 @@ class Nrf():
                             ledDeskRoom3.flag = False
                         log.add_log(("   Desk LED ON/OFF:{} Jasność: {}".format(ledDeskRoom3.flag, ledDeskRoom3.brightness)))
                 # ------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3] == "20":  # lego light
+                    if stringNRF[3] == "?":
+                        if stringNRF[4:7].isdigit():
+                            ledLego.brightness = int(stringNRF[4:7])
+                        else:
+                            ledLego.brightness = 0
+                        if ledLego.brightness != 0:
+                            ledLego.flag = True
+                        else:
+                            ledLego.flag = False
+                        log.add_log(("   LEGO LED ON/OFF:{} Jasność: {}".format(ledLego.flag, ledLego.brightness)))
+                # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "20":  # terrace light
                     if stringNRF[3] == "?":
                         if stringNRF[4] == "P":
@@ -241,11 +252,7 @@ class Nrf():
                             dogHouse.temp1, dogHouse.temp2, dogHouse.temp3, dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
     # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "99":  # test module
-                    if stringNRF[3] == ".":
-                        int1 = ''.join(str(chr(e)) for e in stringNRF[4:8])
-                        int2 = ''.join(str(chr(e)) for e in stringNRF[9:])
-                        fl1 = (float(int1)/1000)
-                        log.add_log('power: {:.3f}V  -> humidity: {}'.format(fl1, int2))
+                    log.add_log('TEST!: {}'.format(stringNRF))
 
 
 nrf = Nrf([0x11, 0x11, 0x11, 0x11, 0x11])

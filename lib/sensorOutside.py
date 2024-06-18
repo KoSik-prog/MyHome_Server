@@ -13,6 +13,7 @@ try:
     from lib.log import *
     from lib.sqlDatabase import *
     from lib.infoStrip import *
+    import numpy as np
 except ImportError:
     print("Import error - sensor outside")
 
@@ -20,9 +21,11 @@ except ImportError:
 class SensorOutside:
     temperature = 0.0
     humidity = 0.0
+    airPressure = 0
     power = 0.0
     light = 0
-    ir = 0
+    windX = 0
+    windY = 0
     windSpeed = 0
     windDirection = 0
     time = datetime.datetime.now()
@@ -31,6 +34,7 @@ class SensorOutside:
     nightSetting = 60
     LUXvalue = [2000, 2000, 2000, 2000, 2000]
     calculatedBrightness = 2000
+    directionOffset = 83
 
     def __init__(self):
         self.time = datetime.datetime.now()
@@ -40,38 +44,61 @@ class SensorOutside:
             "name": "sensorOutside",
             "temperature": self.temperature,
             "humidity": self.humidity,
-            "power": self.power,
+            "airPressure": self.airPressure,
             "light": self.light,
-            "ir": self.ir,
-            "windspeed": self.windSpeed
+            "power": self.power,
+            "windspeed": self.windSpeed,
+            "winddirection": self.windDirection,
+            "directionOffset": self.directionOffset,
             } 
         return retData
 
     def add_record(self, data):
-        if data[3] == "s":
-            self.light = int(data[4:9])
-            self.ir = int(data[9:14])
-            self.power = int(data[14:17])
-            powerRAW = int(data[17:21])
-            sql.add_record_sensor_outdoor_light(self.light, self.ir)
-            self.calculate_light()
-            log.add_log("Sensor outside -> light: {}    lightIR: {}    power: {}   RAW: {}".format(self.light, self.ir, self.power, powerRAW))
         if data[3] == "t":
-            if(data[4] == "1"):
-                tempVal = ('-' + data[5:7] + "." + data[7])
-            else:
-                tempVal = (data[5:7] + "." + data[7])
-            self.temperature = float(tempVal)
-            self.humidity = float(data[8:11])
-
-            sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.windSpeed, self.windDirection)
-            self.windSpeed = float(data[11:13]+'.'+data[13])
-            self.windDirection = int(data[14:17])
+            self.temperature = (float(data[4:8])) / 10
+            self.humidity = int(data[8:11])
+            self.airPressure = int(data[11:15])
+            self.light = int(data[15:21])
+            self.power = (float(data[21:24])) / 100 
+            sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.airPressure, self.light, self.power)
+            self.calculate_light()
             self.time = datetime.datetime.now()
             self.errorFlag = False
             infoStrip.set_error(0, False)
-            log.add_log("Sensor outside -> temp: {}°C   humi: {}%   wind: {}m/s   dir:{}".format(self.temperature,
-                                                                                                 self.humidity, self.windSpeed, self.windDirection))
+            log.add_log("Sensor outside -> temp: {}°C  humi: {}%   press: {}hPa  light: {}lux  power: {}V".format(self.temperature, self.humidity, self.airPressure, self.light, self.power))
+        if data[3] == "w":
+            self.windX = int(data[4:11])
+            self.windY = int(data[11:18])
+            calibrationCounter = int(data[18:21])
+            cycleCounter = int(data[21:24])
+            self.calculate_wind()
+            sql.add_record_sensor_wind(self.windSpeed, self.windDirection)
+            log.add_log("Sensor outside -> {}/{} direction:{:.0f}°  speed:{:.0f}kmh  calibCounter: {} cycleCounter: {}".format(self.windX, self.windY, self.windDirection, self.windSpeed, calibrationCounter, cycleCounter))
+
+    def calculate_wind(self):
+        self.windDirection = self.points_to_direction(self.windX, self.windY, self.directionOffset)
+        self.windSpeed = self.points_to_speed(self.windX, self.windY)
+
+    def points_to_direction(self, x, y, offset=0):
+        directionRadians = np.arctan2(y, x)
+        directionDegrees = np.degrees(directionRadians) + offset
+
+        directionDegrees %= 360
+        return int(directionDegrees)
+    
+    def points_to_speed(self, x, y):
+        # data for wind calibration
+        # 10kmh - 4500
+        # 25kmh - 15000
+        windForce = np.sqrt(x**2 + y**2)
+        # forcesWind = np.array([0, 4500, 15000])
+        # speedsWind = np.array([0, 10, 25])  # km/h
+        # return int(np.interp(windForce, forcesWind, speedsWind))
+
+        windSpeed = (0.001428 * windForce) + 3.57
+        if(windSpeed < 0):
+            windSpeed = 0
+        return int(windSpeed)
 
     def calculate_light(self):
         k = 3  # amplifier

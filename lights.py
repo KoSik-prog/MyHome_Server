@@ -58,6 +58,19 @@ class LIGHTS_CL:
                 ledDeskRoom3.error += 1
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
+        if address == ledLego.address:  # LED biurka
+            packet = "#20P{:03d}".format(int(setting))
+            if len(packet) >= 5:
+                log.add_log("Ustawiono Led LEGO: {}".format(packet))
+                infoStrip.add_info("światło LEGO: {}".format(setting))
+                nrf.to_send(ledLego.address, packet, ledLego.nrfPower)
+                # if int(setting) == 0:
+                #     ledLego.flag = 0
+                # else:
+                #     ledLego.flag = 1
+                ledLego.error += 1
+            else:
+                log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == ledTerrace.address:  # LED balkon
             packet = "#20P{:03d}".format(int(setting))
             if len(packet) >= 5:

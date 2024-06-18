@@ -26,20 +26,17 @@ class Sql:
     flagBusy = False
     flagSqlRecordsDelete = False
 
-    def add_record_sensor_outdoor_temp(self, temp, humi, wiatr, kierunek):
-        self.add_record("zewTemp", "{}, {}, {}, {}".format(temp, humi, wiatr, kierunek))
+    def add_record_sensor_outdoor_temp(self, temperature, humidity, pressure, light, power):
+        self.add_record("sensOutside", "{}, {}, {}, {}, {}".format(temperature, humidity, pressure, light, power))
 
-    def add_record_sensor_outdoor_light(self, lux1, ir1):
-        self.add_record("zewSwiatlo", "{}, {}".format(lux1, ir1))
+    def add_record_sensor_wind(self, windX, windY):
+        self.add_record("sensWind", "{}, {}".format(windX, windY))
 
     def add_record_sensor_temp(self, room, temp, humi):
         self.add_record(room, "{}, {}, 0".format(temp, humi))
 
     def add_record_flower(self, flowerNumber, humidity, sun, power):
         self.add_record("flower{}".format(flowerNumber), "{}, {}, {}".format(sun, humidity, power))
-
-    def add_record_terrarium(self, tempUP, humiUP, tempDN, humiDN, uvi):
-        self.add_record("terrarium", "{}, {}, {}, {}, {}".format(tempUP, humiUP, tempDN, humiDN, uvi))
 
     def add_record(self, databaseName, record):
         for i in range(100):
@@ -66,8 +63,7 @@ class Sql:
         conn = sqlite3.connect(self.databaseLoc)
         curs = conn.cursor()
         try:
-            databases = ["pok1Temp", "Pok2Temp", "zewSwiatlo", "zewTemp", "terrarium",
-                         "flower1", "flower2", "flower3", "kwiatek3", "kwiatek4", "kwiatek5", "kwiatek6"]
+            databases = ["pok1Temp", "Pok2Temp", "sensOutside", "sensWind", "flower1", "flower2", "flower3"]
             for i in range(len(databases)):
                 request = "DELETE FROM {} WHERE timestamp < datetime('now', '-{} days')".format(databases[i], days)
                 curs.execute(request)

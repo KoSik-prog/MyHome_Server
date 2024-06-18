@@ -38,12 +38,13 @@ class Timer:
         self.auto_timer(decorationRoom1)
         self.auto_timer(decoration2Room1)
         self.auto_timer(decorationFlamingo)
+        self.auto_timer(ledLego)
         self.auto_timer(ledLightRoom2Tradfri)
         self.auto_timer(ledPhotosHeart)#---- LED SYPIALNI - serce ze zdjęciami
         self.auto_timer(hydroponics)
         self.auto_timer(kitchenLight)
         self.auto_timer(usbPlug)#----USB Stick
-        # self.auto_timer(ledTerrace)
+        self.auto_timer(ledTerrace)
 
     def auto_timer(self, deviceClass):
         format = '%H:%M:%S.%f'
@@ -65,6 +66,7 @@ class Timer:
         # ------CHECK------------------------
         if(deviceClass.flag == 0 and sensorOutside.get_calulated_brightness() < deviceClass.autoLuxMin and (int(stampOn.total_seconds()) > 0) and (int(stampOff.total_seconds()) < (-60)) and deviceClass.flagManualControl == False and deviceClass.error < 20):
             log.add_log("AUTO {} -> ON".format(deviceClass.label))
+            log.add_log("AUTO {} -> ON / brightnessCalc: {} / setting: {}".format(deviceClass.label, sensorOutside.get_calulated_brightness(), deviceClass.autoLuxMin))
             light.set_light(deviceClass.address, deviceClass.autoBrightness)
             deviceClass.flag = 1
             time.sleep(20)

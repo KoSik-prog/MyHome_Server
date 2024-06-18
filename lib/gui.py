@@ -206,8 +206,10 @@ class Gui:
                       "Nimbus Sans L", 48, 505+dlugosc, 290, self.fontColour4, 255)
 
         display.display_picture(display.screen, 390, 350, 255, display.get_picture("wind"))
-        dlugosc = display.text2(display.screen, "{:.1f}m/s".format(sensorOutside.windSpeed),
+        dlugosc = display.text2(display.screen, "{:.0f}km/h".format(sensorOutside.windSpeed),
                                 "Nimbus Sans L", 50, 485, 370, self.fontColour3, 255)
+        dlugosc = display.text2(display.screen, "{}hPa".format(sensorOutside.airPressure),
+                                "Nimbus Sans L", 50, 485 + dlugosc + 25, 370, self.fontColour3, 255)
 
         # Info strip
         infoStrip.actualInformation = infoStrip.read_info()
