@@ -9,27 +9,27 @@
 # Copyright:   (c) kosik 2021
 # -------------------------------------------------------------------------------
 
-try:
-    import time
-    import datetime
-    import threading
-    from time import sleep
-    import RPi.GPIO as GPIO
-    from lib.log import *
-    from lib.gui import *
-    from devicesList import *
-    from lib.infoStrip import *
-    from lib.sqlDatabase import *
-    from lib.nrfConnect import *
-    from lib.webServices import *
-    from lib.socketServices import *
-    from lib.settings import *
-    from lib.displayBrightness import *
-    from lib.timer import *
-    from lib.tasmota import *
-    from sensors import *
-except ImportError:
-    print("Import error - My Home")
+# try:
+import time
+import datetime
+import threading
+from time import sleep
+import RPi.GPIO as GPIO
+from lib.log import *
+from lib.gui import *
+from devicesList import *
+from lib.infoStrip import *
+from lib.sqlDatabase import *
+from lib.nrfConnect import *
+from lib.webServices import *
+from lib.socketServices import *
+from lib.settings import *
+from lib.displayBrightness import *
+from lib.timer import *
+from lib.tasmota import *
+from sensors import *
+# except ImportError:
+#     print("Import error - My Home")
 
 
 class MyHome:

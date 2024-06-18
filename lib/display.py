@@ -9,20 +9,18 @@
 # Created:     1.03.2021
 # Copyright:   (c) kosik 2021
 # -------------------------------------------------------------------------------
-try:
-    import sys
-    import os
-    import pygame
-    import pygame.mixer
-    import pygame.gfxdraw
-    import glob
-    from pygame.locals import *
-    from pygame.compat import unichr_, unicode_
-    from pygame.locals import *
-    from pygame.compat import geterror
-    from lib.log import *
-except ImportError:
-    print("Import error - display")
+# try:
+import os
+import pygame
+import pygame.mixer
+import pygame.gfxdraw
+from pygame.locals import *
+from pygame.compat import unichr_, unicode_
+from pygame.locals import *
+from pygame.compat import geterror
+from lib.log import *
+# except ImportError:
+#     print("Import error - display")
 
 pygame.init()
 
@@ -198,13 +196,13 @@ class Display:
 
     def text_center(self, screen, text, font, size, x, y, color, alpha):
         a_sys_font = pygame.font.SysFont(font, size)
-        ren = a_sys_font.render(unicode(text, 'utf-8'), True, color)
+        ren = a_sys_font.render(text, True, color)
         ren.set_alpha(alpha)
         screen.blit(ren, (x - ren.get_width() // 2, y - ren.get_height() // 2))
 
     def text_center_background(self, screen, text, font, size, x, y, color, alpha, bgcolor):
         a_sys_font = pygame.font.SysFont(font, size)
-        ren = a_sys_font.render(unicode(text, 'utf-8'), True, color)
+        ren = a_sys_font.render(text, True, color)
         ren.set_alpha(alpha)
         self.box(screen, x - ren.get_width() // 2, y - ren.get_height() //
                  2, ren.get_width()+30, ren.get_height(), bgcolor)
@@ -212,14 +210,14 @@ class Display:
 
     def text_background(self, screen, text, font, size, x, y, color, alpha, bgcolor):
         a_sys_font = pygame.font.SysFont(font, size)
-        text = a_sys_font.render(unicode(text, 'utf-8'), True, color)
+        text = a_sys_font.render(text, True, color)
         text.set_alpha(alpha)
         self.box(screen, x, y, text.get_width()+30, text.get_height(), bgcolor)
         screen.blit(text, (x, y))
 
     def text2(self, screen, text, font, size, x, y, color, alpha):
         a_sys_font = pygame.font.SysFont(font, size)
-        text = a_sys_font.render(unicode(text, 'utf-8'), True, color)
+        text = a_sys_font.render(text, True, color)
         text.set_alpha(alpha)
         screen.blit(text, (x, y))
         return text.get_width()

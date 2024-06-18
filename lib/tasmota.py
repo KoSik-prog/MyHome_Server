@@ -9,15 +9,15 @@
 # Created:     23.11.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    from urllib import urlopen
-    from devicesList import *
-    from lib.log import *
-    from time import gmtime, localtime, strftime
-    import json
-    import time
-except ImportError:
-    print("Import error - tasmota")
+# try:
+from urllib.request import urlopen
+from devicesList import *
+from lib.log import *
+from time import gmtime, localtime, strftime
+import json
+import time
+# except ImportError:
+#     print("Import error - tasmota")
 
 
 class Tasmota:

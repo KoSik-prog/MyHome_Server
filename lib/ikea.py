@@ -9,22 +9,23 @@
 # Created:     13.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    import sys
-    import re
-    import os
-    import ConfigParser
-    from lib.tradfri import tradfriStatus
-    from lib.tradfri import tradfriActions
-    from lib.log import *
-    import subprocess as sp
-except ImportError:
-    print("Import error - ikea")
+# try:
+import sys
+import re
+import os
+# import configparser
+from lib.tradfri import tradfriStatus
+from lib.tradfri import tradfriActions
+from lib.log import *
+import subprocess as sp
+# except ImportError:
+#     print("Import error - ikea")
     
 
 class Ikea:
     user_id = ""
     security_user = ""
+    # config = configparser.ConfigParser()
 
     def __init__(self, mac, ip, password):
         self.MACaddress = mac

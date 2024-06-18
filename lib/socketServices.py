@@ -9,23 +9,23 @@
 # Created:     07.11.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    import socket
-    import select
-    import json
-    import random
-    import os
-    from lib.log import *
-    from lights import *
-    from sensorOutside import *
-    from devicesList import *
-    from lib.tasmota import *
-    from lib.nrfConnect import *
-    from lib.infoStrip import *
-    from devicesList import *
-    from lib.firebase import *
-except ImportError:
-    print("Import error - socket services")
+# try:
+import socket
+import select
+import json
+import random
+import os
+from lib.log import *
+from lights import *
+from .sensorOutside import *
+from devicesList import *
+from lib.tasmota import *
+from lib.nrfConnect import *
+from lib.infoStrip import *
+from devicesList import *
+# from lib.firebase import *
+# except ImportError:
+#     print("Import error - socket services")
 
 
 class Socket:

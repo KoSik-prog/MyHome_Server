@@ -7,15 +7,15 @@
 # Created:     29.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    import datetime
-    from devicesList import *
-    from lib.log import *
-    from lib.sqlDatabase import *
-    from lib.infoStrip import *
-    import numpy as np
-except ImportError:
-    print("Import error - sensor outside")
+# try:
+from devicesList import *
+import datetime
+from lib.log import *
+from lib.sqlDatabase import *
+from lib.infoStrip import *
+import numpy as np
+# except ImportError:
+#     print("Import error - sensor outside")
 
 
 class SensorOutside:

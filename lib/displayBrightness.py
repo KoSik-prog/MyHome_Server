@@ -9,16 +9,16 @@
 # Created:     18.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    import time
-    import smbus
-    from lib.log import *
-    import rpi_backlight as backlight
-except ImportError:
-    print("Import error - displayBrightness")
+# try:
+import time
+import smbus
+from rpi_backlight import Backlight
+# except ImportError:
+#     print("Import error - displayBrightness")
 
 class DisplayBrightness:
     light = 0
+    backlight = Backlight()
 
     def read_brightness(self):
         bus = smbus.SMBus(1)
@@ -48,7 +48,10 @@ class DisplayBrightness:
                 if displayBrightness > 80: # power save! when the power supply is weak
                     displayBrightness = 80
 
-                backlight.set_brightness(displayBrightness, smooth=True, duration=2)
+                
+                self.backlight.fade_duration = 2
+                self.backlight.brightness = displayBrightness
+                # backlight.set_brightness(displayBrightness, smooth=True, duration=2)
                 lightOld = self.light
             time.sleep(5)
 

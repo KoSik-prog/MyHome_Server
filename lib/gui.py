@@ -9,22 +9,22 @@
 # Created:     19.09.2019
 # Copyright:   (c) kosik 2019
 # -------------------------------------------------------------------------------
-try:
-    import select
-    import time
-    import datetime
-    from time import sleep
-    from random import randint
-    from lib.log import *
-    from lib.weatherForecast import *
-    from devicesList import *
-    from lib.infoStrip import *
-    from lib.dateDecode import *
-    from lib.display import *
-    from lib.displayBrightness import *
-    from sensorOutside import *
-except ImportError:
-    print("Import error - gui")
+# try:
+import select
+import time
+import datetime
+from time import sleep
+from random import randint
+from lib.log import *
+from lib.weatherForecast import *
+from devicesList import *
+from lib.infoStrip import *
+from lib.dateDecode import *
+from lib.display import *
+from lib.displayBrightness import *
+from lib.sensorOutside import *
+# except ImportError:
+#     print("Import error - gui")
 
 class Gui:
     backgroundColour = (255, 255, 255, 255)

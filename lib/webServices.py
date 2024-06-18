@@ -9,15 +9,15 @@
 # Created:     17.05.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-try:
-    import socket
-    import select
-    from lib.log import *
-    from lights import *
-    from sensorOutside import *
-    from lib.tasmota import *
-except ImportError:
-    print("Import error - web services")
+# try:
+import socket
+import select
+from lib.log import *
+from lights import *
+from .sensorOutside import *
+from lib.tasmota import *
+# except ImportError:
+#     print("Import error - web services")
 
 
 class Udp:
