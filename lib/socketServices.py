@@ -23,34 +23,50 @@ from lib.tasmota import *
 from lib.nrfConnect import *
 from lib.infoStrip import *
 from devicesList import *
+import asyncio
+import subprocess
 # from lib.firebase import *
 # except ImportError:
 #     print("Import error - socket services")
 
 
+# usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307"}
+
 class Socket:
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307"}
 
-    def __init__(self, host, port):
-        self.host = '192.168.0.99'
-        self.port = 2223
-        self.backlog = 5 
+    def __init__(self, host='192.168.0.99', port=2223):
+        self.host = host
+        self.port = port
+        self.backlog = 5
         self.size = 1024
-        
+        self.server = None
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.s.bind((self.host, self.port)) 
-        self.s.listen(self.backlog)
-        # self.s.settimeout(1)
+        
+        try:
+            self.s.bind((self.host, self.port))
+            self.s.listen(self.backlog)
+            log.add_log(f"Server successfully started on {self.host}:{self.port}")
+        except OSError as e:
+            log.add_log(f"Port {self.port} is already in use. Attempting to free it...")
+            self.unlock_port(self.port)
+            time.sleep(1)
+            self.s.bind((self.host, self.port))
+            self.s.listen(self.backlog)
+            log.add_log(f"Server successfully restarted on {self.host}:{self.port}")
+
+        self.loop = None
+        self.stop_event = threading.Event()
+
 
     def server_thread(self):
         while server.read_server_active_flag() == True:
             try:
                 client, address = self.s.accept() 
-                receivedData = client.recv(self.size)
+                receivedData = client.recv(self.size).decode('utf-8')
                 if receivedData:
                     if(receivedData[0] == "!"):
-                        #log.add_log("Socket return: {}".format(receivedData))
                         self.returnSocketData(client, receivedData) 
                     if(receivedData[0] == "#"):
                         log.add_log("Socket transmit: {} / address:{}".format(receivedData, client))
@@ -59,19 +75,22 @@ class Socket:
             except (KeyboardInterrupt, SystemExit):
                 log.add_log('server UDP error')
     
-    def __del__(self):
-        if hasattr(self, 's'):
-            self.s.close()
+    def unlock_port(self, port):
+        try:
+            subprocess.run(['sudo', 'fuser', '-k', f'{port}/tcp'], check=True)
+            log.add_log(f"Port {port} has been freed.")
+        except subprocess.CalledProcessError as e:
+            log.add_log(f"Failed to free port {port}: {e}")
 
     def stop_server(self):
         if self.s:
             self.s.close()
             print("Server socket closed.")
 
-    def sendSocketMsg(client, msg):
-        log.add_log("Socket tx: {}".format(msg))
-        client.send(msg) 
-        
+    def sendSocketMsg(self, client, msg):
+        encoded_msg = msg.encode('utf-8')
+        client.send(encoded_msg)
+
     def readStatus(self):
         ready = select.select([self.s], [], [], 0.5)
         return ready
@@ -83,7 +102,7 @@ class Socket:
             jsonData.append(sensorRoom2Temperature.get_json_data())
             jsonData.append(sensorOutside.get_json_data())
             toSend = json.dumps(jsonData)
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
             
         if(message.find("getDevicesData") != -1):
             jsonData = []
@@ -99,15 +118,15 @@ class Socket:
             jsonData.append(ledTerrace.get_json_data())
             jsonData.append(usbPlug.get_json_data())
             toSend = json.dumps(jsonData)
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
             
         if(message.find("getTasmotaData") != -1):
             toSend = json.dumps(tasmota.get_json_data())
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
             
         if(message.find("getErrorsData") != -1):
             toSend = json.dumps(infoStrip.get_errors_array())
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
             
         if(message.find('setTerrariumData.') != -1):
             receivedMessage = message[message.find(".")+1:]
@@ -142,7 +161,7 @@ class Socket:
                 strt = message.find(".")+1
                 hydroponics.flagManualControl = True
                 light.set_light(hydroponics.address, message[strt])
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('usbPlug.') != -1):  # uniwersalny modul USB
                 strt = message.find(".")+1
                 usbPlug.flagManualControl = True
@@ -151,7 +170,7 @@ class Socket:
                 strt = message.find(".")+1
                 kitchenLight.flagManualControl = True
                 light.set_light(kitchenLight.address, message[strt])
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('ledstripecolor.') != -1):
                 strt = message.find(".")+1
                 setting = message[strt:]
@@ -162,25 +181,25 @@ class Socket:
                     ledStripRoom1.setting = setting
                 light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
                 ledStripRoom1.flagManualControl = True
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('ledstripebrightness.') != -1):
                 strt = message.find(".")+1
                 setting = int(message[strt:])
                 ledStripRoom1.brightness = int(setting)
                 light.set_light(ledStripRoom1.address, setting)
                 ledStripRoom1.flagManualControl = True
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('room1Decorations.') != -1):
                 strt = message.find(".")+1
                 light.set_light(decorationRoom1.address, message[strt])
                 decorationRoom1.flagManualControl = True
                 light.set_light(decoration2Room1.address, message[strt])
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('room2Decorations.') != -1): 
                 strt = message.find(".")+1
                 decorationFlamingo.flagManualControl = True
                 light.set_light(decorationFlamingo.address, message[strt])
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('ledDesk.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -188,10 +207,10 @@ class Socket:
                     if int(settingBuffer) > 100:
                         settingBuffer = 100
                     setting = int(settingBuffer)
-                    client.send("ok")
+                    self.sendSocketMsg(client, "ok")
                 else:
                     setting = 0
-                    client.send("setting error")  
+                    self.sendSocketMsg(client, "setting error")  
                 # ledDeskRoom3.brightness = setting
                 light.set_light(ledDeskRoom3.address, str(setting))
                 ledDeskRoom3.flagManualControl = True
@@ -202,10 +221,10 @@ class Socket:
                     if int(settingBuffer) > 100:
                         settingBuffer = 100
                     setting = int(settingBuffer)
-                    client.send("ok")
+                    self.sendSocketMsg(client, "ok")
                 else:
                     setting = 0
-                    client.send("setting error")  
+                    self.sendSocketMsg(client, "setting error")  
                 # ledDeskRoom3.brightness = setting
                 light.set_light(ledLego.address, str(setting))
                 ledLego.flagManualControl = True
@@ -216,10 +235,10 @@ class Socket:
                     if int(settingBuffer) > 100:
                         settingBuffer = 100
                     setting = int(settingBuffer)
-                    client.send("ok")
+                    self.sendSocketMsg(client, "ok")
                 else:
                     setting = 0
-                    client.send("setting error")  
+                    self.sendSocketMsg(client, "setting error")  
                 # ledTerrace.brightness = setting
                 light.set_light(ledTerrace.address, str(setting))
                 ledTerrace.flagManualControl = True
@@ -230,10 +249,10 @@ class Socket:
                     if int(settingBuffer) > 100:
                         settingBuffer = 100
                     setting = int(settingBuffer)
-                    client.send("ok")
+                    self.sendSocketMsg(client, "ok")
                 else:
                     setting = 0
-                    client.send("setting error")  
+                    self.sendSocketMsg(client, "setting error")  
                 ledPhotosHeart.brightness = setting
                 light.set_light(ledPhotosHeart.address, str(setting))
                 ledPhotosHeart.flagManualControl = True
@@ -244,7 +263,7 @@ class Socket:
                     light.set_light(floorLampRoom1Tradfri.address, str(brightness))
                 else:
                     log.add_log("Tradfri brightness error! -> {}".format(brightness))
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('room1TradfriLampColor.') != -1):
                 strt = message.find(".")+1
                 color = message[strt:]
@@ -252,7 +271,7 @@ class Socket:
                     light.set_light(floorLampRoom1Tradfri.address, color)
                 else:
                     log.add_log("Tradfri color error! -> {}".format(color))
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(message.find('themeSleep') != -1):   # THEMES
                 ledStripRoom1.flagManualControl = True
                 light.set_light(ledStripRoom1.address, "000")
@@ -315,7 +334,7 @@ class Socket:
             else:
                 log.add_log("access denied")
                 toSend = "denied"
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
         if(message.find('refreshFirebaseToken^') != -1):
             strt = message.find("^") + 1
             login = message[strt:]
@@ -324,7 +343,7 @@ class Socket:
             logPassword = dataArray[1]
             if len(dataArray) > 2:
                 logToken = dataArray[2]
-                phoneNotification.update_token(logUser, logToken)
+                # phoneNotification.update_token(logUser, logToken)
             log.add_log("LOG -> {}:{} - {}".format(logUser, logPassword, logToken))
             try:
                 passwordToCheck = self.usersList[logUser.lower()]
@@ -338,9 +357,9 @@ class Socket:
             else:
                 log.add_log("access denied")
                 toSend = "denied"
-            client.send(toSend)
+            self.sendSocketMsg(client, toSend)
 
-    def transmit(self, client, messag):
+    async def transmit(self, client, messag):
         if(messag.find('set^') != -1):
             if(messag.find('hydroponics.') != -1):  # hydroponics
                 strt = messag.find(".")+1
@@ -351,7 +370,7 @@ class Socket:
                 kitchenLight.flagManualControl = True
                 light.set_light
                 (kitchenLight.address, messag[strt])
-                client.send("ok")
+                self.sendSocketMsg(client, "ok")
             elif(messag.find('ledstripecolor.') != -1):
                 strt = messag.find(".")+1
                 if int(messag[(strt+9):(strt+12)]) >= 0:
@@ -539,4 +558,4 @@ class Socket:
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
 
 
-socket = Socket("192.168.0.99", 2225)
+socket_server = Socket()

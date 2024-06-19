@@ -21,7 +21,7 @@ from devicesList import *
 from lib.infoStrip import *
 from lib.sqlDatabase import *
 from lib.nrfConnect import *
-from lib.webServices import *
+# from lib.webServices import * #old web server
 from lib.socketServices import *
 from lib.settings import *
 from lib.displayBrightness import *
@@ -50,17 +50,17 @@ class MyHome:
         self.socket_thread_init()
         self.tasmota_thread_init()
         # --------------MAIN FUNCTION------------------------
-        self.start_server()
+        # self.start_server()
 
     def __del__(self):
         self.socketTh.close()
 
-    def start_server(self):
-        ready = udp.readStatus()
-        while server.read_server_active_flag() == True:
-            if ready[0]:
-                udp.server()
-            ready = udp.readStatus()
+    # def start_server(self):
+    #     ready = udp.readStatus()
+    #     while server.read_server_active_flag() == True:
+    #         if ready[0]:
+    #             udp.server()
+    #         ready = udp.readStatus()
 
     def lcd_thread_init(self):
         lcdTh = threading.Thread(target=gui.gui_thread)
@@ -71,7 +71,7 @@ class MyHome:
         self.nrfTh.start()
         
     def socket_thread_init(self):
-        self.socketTh = threading.Thread(target=socket.server_thread)
+        self.socketTh = threading.Thread(target=socket_server.server_thread)
         self.socketTh.start()
         
     def tasmota_thread_init(self):

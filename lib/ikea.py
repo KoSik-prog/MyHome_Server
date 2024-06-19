@@ -13,6 +13,7 @@
 import sys
 import re
 import os
+import json
 # import configparser
 from lib.tradfri import tradfriStatus
 from lib.tradfri import tradfriActions
@@ -54,47 +55,46 @@ class Ikea:
             if ipData.find(MACaddress) != -1:
                 ipAddress = ipData[ipData.find('(')+1: ipData.find(')')]
                 return ipAddress
-            else:
-                return -1
+        return -1
 
     def connect(self):
         try:
             self.security_user, self.user_id = (self.tradfri_login(self.ipAddress, self.securityid))
-            log.add_log("Ikea Tradfri -> polaczono id: {}    pass: {}".format(self.user_id, self.security_user))
+            log.add_log(f"Ikea Tradfri -> polaczono IP: {self.ipAddress} id: {self.user_id}    pass: {self.security_user}")
         except:
             log.add_log("Ikea Tradfri -> nie mozna polaczyc z bramka")
 
     def tradfri_login(self, ipAddress, securityid):
         security = " "
-        for x in range(100):
+        for user_id in range(100):
             try:
-                security = tradfriStatus.tradfri_get_security(ipAddress, securityid, x)
-                user_id = x
+                security = tradfriStatus.tradfri_get_security(ipAddress, securityid, user_id)
                 break
             except:
-                startPoint = 0
-        recData = str(security)
-        securityData = recData.find("9091")
-        startPoint = recData.find("u'", securityData)
-        endPoint = recData.find("'", startPoint+2)
-        return (recData[startPoint+2: endPoint], user_id)
+                pass
+        if isinstance(security, dict):
+            return security.get('9091', ""), user_id
+        
+        return "", 0
 
     def check_access(self, ipAddress, securityid, result):
-        if result.find("v:") != -1:
+        try:
+            if result.find("v:") != -1:
+                return "0", "0"
+            else:
+                list = (self.tradfri_login(ipAddress, securityid))  # log in to the gate
+                user_id = list[1]
+                security_user = list[0]
+                log.add_log("Ikea Tradfri -> haslo wygaslo - nowe id: {}".format(user_id))
+                return security_user, user_id
+        except:
             return "0", "0"
-        else:
-            list = (self.tradfri_login(ipAddress, securityid))  # logowanie do bramy
-            user_id = list[1]
-            security_user = list[0]
-            log.add_log("Ikea Tradfri -> haslo wygaslo - nowe id: {}".format(user_id))
-            return security_user, user_id
 
     def check_result(self, ipAddress, securityid, result):
         new_pass, new_id = self.check_access(ipAddress, securityid, result)
         if new_id != "0":
             security_user = new_pass
             user_id = new_id
-            result = tradfriActions.tradfri_power_light(ipAddress, user_id, security_user, lightid, value)
             return security_user, user_id
         else:
             return "0", "0"

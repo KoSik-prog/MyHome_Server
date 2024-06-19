@@ -252,4 +252,4 @@ class Udp:
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
 
 
-udp = Udp(2222)
+# udp = Udp(2222)
