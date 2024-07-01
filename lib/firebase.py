@@ -1,20 +1,35 @@
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import messaging
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# -------------------------------------------------------------------------------
+# Name:        Firebase
+# Purpose:
+#
+# Author:      KoSik
+#
+# Created:     17.06.2024
+# Copyright:   (c) kosik 2022
+# -------------------------------------------------------------------------------
+try:
+    import firebase_admin
+    from firebase_admin import credentials
+    from firebase_admin import messaging
+except ImportError:
+    print("Import error - Firebase services")
+
 
 class Notifications:
     tokens = {"kosik":"cx-Nog-HSm6QOutoyDJPJi:APA91bGcLLmpYyDt2RpeP3Rli4zJ_hTS6nVmJfWhqJXEnabIMVWp85MZhoEbhs3IVh16Xzc4v9wrf8xdZOBo89u9qqpiY73BzxD4b6D8XQ8W1g5cJ89AviI5caSBD6nNcdpm2wn7zLV6"}
 
     def __init__(self, keyFileName):
         self.cred = credentials.Certificate(keyFileName)
-        firebase_admin.initialize_app(cred)
+        firebase_admin.initialize_app(self.cred)
 
     def update_token(self, user, token):
         if user in self.tokens:
             print("Token for user {} has been updated".format(user))
         else:
             print("Token for user {} has been created".format(user))
-        self.tokens[user] = token
+        self.tokens[user.lower()] = token
         return True
     
     def send_notification(self, title, message):
@@ -36,4 +51,4 @@ class Notifications:
                 print('Token send error', registration_tokens[idx], ':', resp.exception)
 
 
-phoneNotification = Notifications('firebase/myhome-7a62a-firebase-adminsdk-dxnth-6a54be3a53.json')
+phoneNotification = Notifications('Desktop/Home/myhome-7a62a-firebase-adminsdk-dxnth-6a54be3a53.json')

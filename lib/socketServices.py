@@ -9,28 +9,26 @@
 # Created:     07.11.2022
 # Copyright:   (c) kosik 2022
 # -------------------------------------------------------------------------------
-# try:
-import socket
-import select
-import json
-import random
-import os
-from lib.log import *
-from lights import *
-from .sensorOutside import *
-from devicesList import *
-from lib.tasmota import *
-from lib.nrfConnect import *
-from lib.infoStrip import *
-from devicesList import *
-import asyncio
-import subprocess
-# from lib.firebase import *
-# except ImportError:
-#     print("Import error - socket services")
+try:
+    import socket
+    import select
+    import json
+    import random
+    import os
+    from lib.log import *
+    from lights import *
+    from .sensorOutside import *
+    from devicesList import *
+    from lib.tasmota import *
+    from lib.nrfConnect import *
+    from lib.infoStrip import *
+    from devicesList import *
+    import asyncio
+    import subprocess
+    from lib.firebase import *
+except ImportError:
+    print("Import error - socket services")
 
-
-# usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307"}
 
 class Socket:
     usersList = {"kosik" : "Majeczka11", "jusi" : "jw270307"}
@@ -155,6 +153,11 @@ class Socket:
             mymessage = rxData["message"]
             log.add_log("TEST!!! {}/{}/{}".format(mydata, rxData["message"], rxData["power"]))
             nrf.to_send(mydata, str(mymessage), int(rxData["power"]))
+
+        if(message.find('alarm.') != -1):
+            alarmMsg = message[message.find(".")+1:]
+            phoneNotification.send_notification("Alarm!", alarmMsg)
+            log.add_log("ALARM! -> {}".format(alarmMsg))
             
         if(message.find('set^') != -1):
             if(message.find('hydroponics.') != -1):  # hydroponics
@@ -343,8 +346,8 @@ class Socket:
             logPassword = dataArray[1]
             if len(dataArray) > 2:
                 logToken = dataArray[2]
-                # phoneNotification.update_token(logUser, logToken)
-            log.add_log("LOG -> {}:{} - {}".format(logUser, logPassword, logToken))
+                phoneNotification.update_token(logUser, logToken)
+            log.add_log(f"LOG -> {logUser}:{logPassword} - {logToken}")
             try:
                 passwordToCheck = self.usersList[logUser.lower()]
             except:
@@ -352,7 +355,7 @@ class Socket:
                 log.add_log("user not found")
                 
             if(logPassword == passwordToCheck):
-                log.add_log("user {} has logged in".format(logUser))
+                log.add_log(f"user {logUser} has logged in")
                 toSend = "OK"
             else:
                 log.add_log("access denied")
@@ -470,21 +473,21 @@ class Socket:
                 ledStripRoom1.brightness = int(zmien)
             light.set_light(ledStripRoom1.address, zmien)
             ledStripRoom1.flagManualControl = True
-        if(messag.find('terrarium.') != -1):
-            strt = messag.find(".T:")+1
-            terrarium.tempUP = float(messag[(strt+2):(strt+6)])
-            strt = messag.find("/W:")+1
-            terrarium.humiUP = float(messag[(strt+2):(strt+5)])
-            strt = messag.find(",t:")+1
-            terrarium.tempDN = float(messag[(strt+2):(strt+6)])
-            strt = messag.find("/w:")+1
-            terrarium.humiDN = float(messag[(strt+2):(strt+5)])
-            strt = messag.find("/I:")+1
-            terrarium.uvi = float(messag[(strt+2):(strt+11)])
-            log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  uvi: {}".format(
-                terrarium.tempUP, terrarium.humiUP, terrarium.tempDN, terrarium.humiDN, terrarium.uvi))
-            sql.add_record_terrarium(terrarium.tempUP, terrarium.humiUP,
-                                     terrarium.tempDN, terrarium.humiDN, terrarium.uvi)
+        # if(messag.find('terrarium.') != -1):
+        #     strt = messag.find(".T:")+1
+        #     terrarium.tempUP = float(messag[(strt+2):(strt+6)])
+        #     strt = messag.find("/W:")+1
+        #     terrarium.humiUP = float(messag[(strt+2):(strt+5)])
+        #     strt = messag.find(",t:")+1
+        #     terrarium.tempDN = float(messag[(strt+2):(strt+6)])
+        #     strt = messag.find("/w:")+1
+        #     terrarium.humiDN = float(messag[(strt+2):(strt+5)])
+        #     strt = messag.find("/I:")+1
+        #     terrarium.uvi = float(messag[(strt+2):(strt+11)])
+        #     log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  uvi: {}".format(
+        #         terrarium.tempUP, terrarium.humiUP, terrarium.tempDN, terrarium.humiDN, terrarium.uvi))
+        #     sql.add_record_terrarium(terrarium.tempUP, terrarium.humiUP,
+        #                              terrarium.tempDN, terrarium.humiDN, terrarium.uvi)
         if(messag.find('ko2') != -1):
             packet = "#05L" + messag[3:15]
             log.add_log(packet)
