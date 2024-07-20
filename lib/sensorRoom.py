@@ -74,3 +74,15 @@ class SensorRoom:
         #     ledLightRoom2.flagManualControl = True
         #     ledLightRoom2.error = 0
         #     log.add_log(("Led Bedroom ON/OFF:{}  PWM:{}".format(ledLightRoom2.flag, ledLightRoom2.brightness)))
+
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)

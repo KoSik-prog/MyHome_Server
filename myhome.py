@@ -11,7 +11,6 @@
 
 # try:
 import time
-import datetime
 import threading
 from time import sleep
 import RPi.GPIO as GPIO
@@ -21,7 +20,6 @@ from devicesList import *
 from lib.infoStrip import *
 from lib.sqlDatabase import *
 from lib.nrfConnect import *
-# from lib.webServices import * #old web server
 from lib.socketServices import *
 from lib.settings import *
 from lib.displayBrightness import *
@@ -49,18 +47,9 @@ class MyHome:
         self.check_weatherForecast_thread_init()
         self.socket_thread_init()
         self.tasmota_thread_init()
-        # --------------MAIN FUNCTION------------------------
-        # self.start_server()
 
-    def __del__(self):
-        self.socketTh.close()
-
-    # def start_server(self):
-    #     ready = udp.readStatus()
-    #     while server.read_server_active_flag() == True:
-    #         if ready[0]:
-    #             udp.server()
-    #         ready = udp.readStatus()
+    # def __del__(self):
+    #     self.socketTh.close()
 
     def lcd_thread_init(self):
         lcdTh = threading.Thread(target=gui.gui_thread)

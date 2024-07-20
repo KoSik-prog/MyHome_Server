@@ -29,17 +29,17 @@ class Sensors:
             time.sleep(10)
 
     def set_receive_error_on_strip(self, myClass, time, errorNumber):
-        if((datetime.datetime.now() - myClass.time) > (datetime.timedelta(minutes=time))):
+        if((datetime.datetime.now() - myClass.get_param('time')) > (datetime.timedelta(minutes=time))):
             infoStrip.set_error(errorNumber, True)
 
     def set_power_error_on_strip(self, myClass, minPower, errorNumber):
-        if(myClass.power <= minPower):
+        if(myClass.get_param('power') <= minPower):
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)
 
     def set_min_humidity_error_on_strip(self, myClass, errorNumber):
-        if(myClass.humidity <= Sensors.minHumidity and myClass.light < 60):
+        if(myClass.get_param('humidity') <= Sensors.minHumidity and myClass.get_param('light') < 60):
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)
@@ -65,5 +65,17 @@ class Sensors:
         self.set_min_humidity_error_on_strip(sensorFlower3, 13)
         # self.set_min_humidity_error_on_strip(sensorFlower5, 15)
         # self.set_min_humidity_error_on_strip(sensorFlower6, 18)
+
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 
 sensor = Sensors()

@@ -1,0 +1,12 @@
+>>>--- AUTOSTART
+/etc/xdg/lxsession/LXDE-pi/autostart
+
+Zawartosc:
+@lxpanel --profile LXDE-pi
+@pcmanfm --desktop --profile LXDE-pi 
+@xscreensaver -no-splash
+@sudo python -u /home/pi/Desktop/Home/watchdog.py &>> /home/pi/Desktop/Home/log_watchdog.log
+@python -u /home/pi/Desktop/Home/myhome.py >> /home/pi/Desktop/Home/log_myhome.log 2>&1 &
+
+>>>--- Display brightness permissions config
+$ echo 'SUBSYSTEM=="backlight",RUN+="/bin/chmod 666 /sys/class/backlight/%k/brightness /sys/class/backlight/%k/bl_power"' | sudo tee -a /etc/udev/rules.d/backlight-permissions.rules

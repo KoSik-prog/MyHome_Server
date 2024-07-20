@@ -26,6 +26,7 @@ try:
     import asyncio
     import subprocess
     from lib.firebase import *
+    from lib.alarm import *
 except ImportError:
     print("Import error - socket services")
 
@@ -106,10 +107,10 @@ class Socket:
             jsonData = []
             jsonData.append(decorationRoom1.get_json_data())
             jsonData.append(decoration2Room1.get_json_data())
-            jsonData.append(decorationFlamingo.get_json_data())
-            jsonData.append(hydroponics.get_json_data())
+            jsonData.append(decorationFlamingo.to_dict())
+            jsonData.append(hydroponics.to_dict())
             jsonData.append(ledStripRoom1.get_json_data())
-            jsonData.append(kitchenLight.get_json_data())
+            jsonData.append(kitchenLight.to_dict())
             jsonData.append(ledDeskRoom3.get_json_data())
             jsonData.append(ledLego.get_json_data())
             jsonData.append(ledPhotosHeart.get_json_data())
@@ -117,6 +118,24 @@ class Socket:
             jsonData.append(usbPlug.get_json_data())
             toSend = json.dumps(jsonData)
             self.sendSocketMsg(client, toSend)
+
+        if(message.find("setDeviceData") != -1):
+            strt = message.find(".")+1
+            objectData = message[strt:]
+            try:
+                data_dict = json.loads(objectData)
+                device_name = data_dict.get("name", "")
+                if device_name:
+                    device_obj = globals().get(device_name)()
+                    device_obj.from_dict(data_dict)
+                    print(device_obj.to_dict())
+                    self.sendSocketMsg(client, '{"status": "ok"}')
+                else:
+                    log.add_log("Device name not provided in data")
+                    self.sendSocketMsg(client, '{"status": "ok"}')
+            except json.JSONDecodeError:
+               log.add_log("Invalid JSON data")
+               self.sendSocketMsg(client, '{"status": "ok"}')
             
         if(message.find("getTasmotaData") != -1):
             toSend = json.dumps(tasmota.get_json_data())
@@ -156,52 +175,71 @@ class Socket:
 
         if(message.find('alarm.') != -1):
             alarmMsg = message[message.find(".")+1:]
+            alarm.alarm("Alarm!", alarmMsg)
             phoneNotification.send_notification("Alarm!", alarmMsg)
             log.add_log("ALARM! -> {}".format(alarmMsg))
+
+        if(message.find('notify.') != -1):
+            alarmMsg = message[message.find(".")+1:]
+            alarm.alarm("Powiadomienie", alarmMsg)
+            # phoneNotification.send_notification("Alarm!", alarmMsg)
+            # log.add_log("ALARM! -> {}".format(alarmMsg))
+
+        if(message.find('alarmDeactivate.') != -1):
+            try:
+                dTime = message[message.find(".")+1:]
+                deactiveTime = int(dTime)
+                if deactiveTime == 0:
+                    alarm.activate_alarm()
+                else:
+                    alarm.deactivate_alarm(int(deactiveTime))
+            except:
+                log.add_log("Can't deactivate alarm!")
+
             
         if(message.find('set^') != -1):
             if(message.find('hydroponics.') != -1):  # hydroponics
                 strt = message.find(".")+1
-                hydroponics.flagManualControl = True
-                light.set_light(hydroponics.address, message[strt])
+                hydroponics.set_param('flagManualControl', True)
+                light.set_light(hydroponics.get_param('address'), message[strt])
                 self.sendSocketMsg(client, "ok")
             elif(message.find('usbPlug.') != -1):  # uniwersalny modul USB
                 strt = message.find(".")+1
-                usbPlug.flagManualControl = True
-                light.set_light(usbPlug.address, message[strt])
+                usbPlug.set_param('flagManualControl', True)
+                light.set_light(usbPlug.get_param('address'), message[strt])
             elif(message.find('kitchenlight.') != -1):  # KUCHNIA
                 strt = message.find(".")+1
-                kitchenLight.flagManualControl = True
-                light.set_light(kitchenLight.address, message[strt])
+                kitchenLight.set_param('flagManualControl', True)
+                light.set_light(kitchenLight.get_param('address'), message[strt])
                 self.sendSocketMsg(client, "ok")
             elif(message.find('ledstripecolor.') != -1):
                 strt = message.find(".")+1
                 setting = message[strt:]
                 if len(setting) > 9:
-                    ledStripRoom1.setting = setting[:9]
+                    ledStripRoom1.set_param('setting', setting[:9])
                     ledStripRoom1.brightness = int(setting[9:])
                 else:
                     ledStripRoom1.setting = setting
-                light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
-                ledStripRoom1.flagManualControl = True
+                light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.brightness)
+                ledStripRoom1.set_param('flagManualControl', True)
                 self.sendSocketMsg(client, "ok")
             elif(message.find('ledstripebrightness.') != -1):
                 strt = message.find(".")+1
                 setting = int(message[strt:])
-                ledStripRoom1.brightness = int(setting)
-                light.set_light(ledStripRoom1.address, setting)
-                ledStripRoom1.flagManualControl = True
+                ledStripRoom1.set_param('brightness', int(setting))
+                light.set_light(ledStripRoom1.get_param('address'), setting)
+                ledStripRoom1.set_param('flagManualControl', True)
                 self.sendSocketMsg(client, "ok")
             elif(message.find('room1Decorations.') != -1):
                 strt = message.find(".")+1
-                light.set_light(decorationRoom1.address, message[strt])
-                decorationRoom1.flagManualControl = True
-                light.set_light(decoration2Room1.address, message[strt])
+                light.set_light(decorationRoom1.get_param('address'), message[strt])
+                decorationRoom1.set_param('flagManualControl', True)
+                light.set_light(decoration2Room1.get_param('address'), message[strt])
                 self.sendSocketMsg(client, "ok")
             elif(message.find('room2Decorations.') != -1): 
                 strt = message.find(".")+1
-                decorationFlamingo.flagManualControl = True
-                light.set_light(decorationFlamingo.address, message[strt])
+                decorationFlamingo.set_param('flagManualControl', True)
+                light.set_light(decorationFlamingo.get_param('address'), message[strt])
                 self.sendSocketMsg(client, "ok")
             elif(message.find('ledDesk.') != -1):
                 strt = message.find(".")+1
@@ -214,9 +252,9 @@ class Socket:
                 else:
                     setting = 0
                     self.sendSocketMsg(client, "setting error")  
-                # ledDeskRoom3.brightness = setting
-                light.set_light(ledDeskRoom3.address, str(setting))
-                ledDeskRoom3.flagManualControl = True
+                # ledDeskRoom3.set_param('brightness', setting)
+                light.set_light(ledDeskRoom3.get_param('address'), str(setting))
+                ledDeskRoom3.set_param('flagManualControl', True)
             elif(message.find('ledLego.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -228,9 +266,9 @@ class Socket:
                 else:
                     setting = 0
                     self.sendSocketMsg(client, "setting error")  
-                # ledDeskRoom3.brightness = setting
-                light.set_light(ledLego.address, str(setting))
-                ledLego.flagManualControl = True
+                # ledDeskRoom3.set_param('brightness', setting)
+                light.set_light(ledLego.get_param('address'), str(setting))
+                ledLego.set_param('flagManualControl', True)
             elif(message.find('ledTerrace.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -242,9 +280,9 @@ class Socket:
                 else:
                     setting = 0
                     self.sendSocketMsg(client, "setting error")  
-                # ledTerrace.brightness = setting
-                light.set_light(ledTerrace.address, str(setting))
-                ledTerrace.flagManualControl = True
+                # ledTerrace.set_param('brightness', setting)
+                light.set_light(ledTerrace.get_param('address'), str(setting))
+                ledTerrace.set_param('flagManualControl', True)
             elif(message.find('ledHeart.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
@@ -256,14 +294,14 @@ class Socket:
                 else:
                     setting = 0
                     self.sendSocketMsg(client, "setting error")  
-                ledPhotosHeart.brightness = setting
-                light.set_light(ledPhotosHeart.address, str(setting))
-                ledPhotosHeart.flagManualControl = True
+                ledPhotosHeart.set_param('brightness', setting)
+                light.set_light(ledPhotosHeart.get_param('address'), str(setting))
+                ledPhotosHeart.set_param('flagManualControl', True)
             elif(message.find('room1TradfriLampBrightness.') != -1):   # TRADFRI
                 strt = message.find(".")+1
                 brightness = int(message[strt:])
                 if(brightness >= 0 and brightness <= 100):
-                    light.set_light(floorLampRoom1Tradfri.address, str(brightness))
+                    light.set_light(floorLampRoom1Tradfri.get_param('address'), str(brightness))
                 else:
                     log.add_log("Tradfri brightness error! -> {}".format(brightness))
                 self.sendSocketMsg(client, "ok")
@@ -271,54 +309,54 @@ class Socket:
                 strt = message.find(".")+1
                 color = message[strt:]
                 if len(color) == 9:
-                    light.set_light(floorLampRoom1Tradfri.address, color)
+                    light.set_light(floorLampRoom1Tradfri.get_param('address'), color)
                 else:
                     log.add_log("Tradfri color error! -> {}".format(color))
                 self.sendSocketMsg(client, "ok")
             elif(message.find('themeSleep') != -1):   # THEMES
-                ledStripRoom1.flagManualControl = True
-                light.set_light(ledStripRoom1.address, "000")
-                light.set_light(mainLightRoom1Tradfri.address, 0)
+                ledStripRoom1.set_param('flagManualControl', True)
+                light.set_light(ledStripRoom1.get_param('address'), "000")
+                light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
                 light.set_light(mainLightRoom1Tradfri.bulb, 15)
-                light.set_light(floorLampRoom1Tradfri.address, 0)
-                decorationRoom1.flagManualControl = True
-                light.set_light(decorationRoom1.address, 0)
-                decoration2Room1.flagManualControl = True
-                light.set_light(decoration2Room1.address, 0)
-                usbPlug.flagManualControl = True
-                light.set_light(usbPlug.address, 0)
-                light.set_light(ledLego.address, 0)
-                light.set_light(ledDeskRoom3.address, 0)
-                decorationFlamingo.flagManualControl = True
-                Set_light_with_delay(decorationFlamingo.address, 0, 5*60).start()
-                kitchenLight.flagManualControl = True
-                Set_light_with_delay(kitchenLight.address, 0, 5*60).start()
-                Set_light_with_delay(ledPhotosHeart.address, 0, 2*60).start()
-                Set_light_with_delay(mainLightRoom1Tradfri.address, 0, 30).start()
+                light.set_light(floorLampRoom1Tradfri.get_param('address'), 0)
+                decorationRoom1.set_param('flagManualControl', True)
+                light.set_light(decorationRoom1.get_param('address'), 0)
+                decoration2Room1.set_param('flagManualControl', True)
+                light.set_light(decoration2Room1.get_param('address'), 0)
+                usbPlug.set_param('flagManualControl', True)
+                light.set_light(usbPlug.get_param('address'), 0)
+                light.set_light(ledLego.get_param('address'), 0)
+                light.set_light(ledDeskRoom3.get_param('address'), 0)
+                decorationFlamingo.set_param('flagManualControl', True)
+                Set_light_with_delay(decorationFlamingo.get_param('address'), 0, 5*60).start()
+                kitchenLight.set_param('flagManualControl', True)
+                Set_light_with_delay(kitchenLight.get_param('address'), 0, 5*60).start()
+                Set_light_with_delay(ledPhotosHeart.get_param('address'), 0, 2*60).start()
+                Set_light_with_delay(mainLightRoom1Tradfri.get_param('address'), 0, 30).start()
                 log.add_log("Theme: sleep")
             elif(message.find('themeRomantic') != -1):
                 if(random.randint(0, 1) == 1):
-                    ledStripRoom1.setting = "255000{:03d}".format(random.randint(20, 120))
+                    ledStripRoom1.set_param('setting', "255000{:03d}".format(random.randint(20, 120)))
                 else:
-                    ledStripRoom1.setting = "255{:03d}000".format(random.randint(20, 120))
-                ledStripRoom1.flagManualControl = True
-                light.set_light(ledStripRoom1.address, ledStripRoom1.setting)
+                    ledStripRoom1.set_param('setting', "255{:03d}000".format(random.randint(20, 120)))
+                ledStripRoom1.set_param('flagManualControl', True)
+                light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.get_param('setting'))
                 if(random.randint(0, 1) == 1):
-                    kolor = "255000{:03d}".format(random.randint(20, 150))
+                    color = "255000{:03d}".format(random.randint(20, 150))
                 else:
-                    kolor = "255{:03d}000".format(random.randint(20, 150))
-                light.set_light(floorLampRoom1Tradfri.address, kolor)
-                light.set_light(floorLampRoom1Tradfri.address, 100)
+                    color = "255{:03d}000".format(random.randint(20, 150))
+                light.set_light(floorLampRoom1Tradfri.get_param('address'), color)
+                light.set_light(floorLampRoom1Tradfri.get_param('address'), 100)
                 if(random.randint(0, 1) == 1):
                     spootLightRoom1.setting = "255000{:03d}000".format(random.randint(20, 120))
                 else:
                     spootLightRoom1.setting = "255{:03d}000000".format(random.randint(20, 120))
-                light.set_light(spootLightRoom1.address, 255)
-                light.set_light(mainLightRoom1Tradfri.address, 0)
-                decorationRoom1.flagManualControl = True
-                light.set_light(decorationRoom1.address, 0)
-                decoration2Room1.flagManualControl = True
-                light.set_light(decoration2Room1.address, 1)
+                light.set_light(spootLightRoom1.get_param('address'), 255)
+                light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
+                decorationRoom1.set_param('flagManualControl', True)
+                light.set_light(decorationRoom1.get_param('address'), 0)
+                decoration2Room1.set_param('flagManualControl', True)
+                light.set_light(decoration2Room1.get_param('address'), 1)
                 log.add_log("Theme: romantic")
         if(message.find('login^') != -1):
             strt = message.find("^") + 1
@@ -366,93 +404,92 @@ class Socket:
         if(messag.find('set^') != -1):
             if(messag.find('hydroponics.') != -1):  # hydroponics
                 strt = messag.find(".")+1
-                hydroponics.flagManualControl = True
-                light.set_light(hydroponics.address, messag[strt])
+                hydroponics.set_param('flagManualControl', True)
+                light.set_light(hydroponics.get_param('address'), messag[strt])
             elif(messag.find('kitchenlight.') != -1):  # KUCHNIA
                 strt = messag.find(".")+1
-                kitchenLight.flagManualControl = True
-                light.set_light
-                (kitchenLight.address, messag[strt])
+                kitchenLight.set_param('flagManualControl', True)
+                light.set_light(kitchenLight.get_param('address'), messag[strt])
                 self.sendSocketMsg(client, "ok")
             elif(messag.find('ledstripecolor.') != -1):
                 strt = messag.find(".")+1
                 if int(messag[(strt+9):(strt+12)]) >= 0:
                     ledStripRoom1.setting = messag[(strt):(strt+9)]
                     ledStripRoom1.brightness = int(messag[(strt+9):(strt+12)])
-                light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
-                ledStripRoom1.flagManualControl = True
+                light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.brightness)
+                ledStripRoom1.set_param('flagManualControl', True)
             elif(messag.find('ledstripebrightness.') != -1):
                 zmien = messag[14:17]
                 if int(zmien) > 0:
                     ledStripRoom1.brightness = int(zmien)
-                light.set_light(ledStripRoom1.address, zmien)
-                ledStripRoom1.flagManualControl = True
+                light.set_light(ledStripRoom1.get_param('address'), zmien)
+                ledStripRoom1.set_param('flagManualControl', True)
         #---------------------------------------------------------------------------------
         if(messag.find('salonOswietlenie.') != -1):   # SALON
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
             if(chJasnosc >= 0 and chJasnosc <= 100):
-                light.set_light(mainLightRoom1Tradfri.address, str(chJasnosc))
+                light.set_light(mainLightRoom1Tradfri.get_param('address'), str(chJasnosc))
             else:
                 log.add_log("Blad danych! -> {}".format(chJasnosc))
         if(messag.find('tradfriLampaJasn.') != -1):   # LAMPA W SALONIE
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
             if(chJasnosc >= 0 and chJasnosc <= 100):
-                light.set_light(floorLampRoom1Tradfri.address, str(chJasnosc))
+                light.set_light(floorLampRoom1Tradfri.get_param('address'), str(chJasnosc))
             else:
                 log.add_log("Blad danych! -> {}".format(chJasnosc))
         if(messag.find('tradfriLampaKol.') != -1):   # LAMPA W SALONIE
             strt = messag.find(".")+1
-            light.set_light(floorLampRoom1Tradfri.address, messag[strt:strt+9])
+            light.set_light(floorLampRoom1Tradfri.get_param('address'), messag[strt:strt+9])
         if(messag.find('swiatloSypialni.') != -1):   # SYPIALNIA
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:strt+3])
             ledPhotosHeart.brightness = chJasnosc
-            light.set_light(ledLightRoom2Tradfri.address, ledPhotosHeart.brightness)
-            light.set_light(ledPhotosHeart.address, ledPhotosHeart.brightness)
-            ledPhotosHeart.flagManualControl = True
-            decorationFlamingo.flagManualControl = True
-            light.set_light(decorationFlamingo.address, messag[strt])
+            light.set_light(ledLightRoom2Tradfri.get_param('address'), ledPhotosHeart.brightness)
+            light.set_light(ledPhotosHeart.get_param('address'), ledPhotosHeart.brightness)
+            ledPhotosHeart.set_param('flagManualControl', True)
+            decorationFlamingo.set_param('flagManualControl', True)
+            light.set_light(decorationFlamingo.get_param('address'), messag[strt])
         if(messag.find('swiatloSypialniTradfri.') != -1):   # SYPIALNIA TRADFRI
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt])
-            light.set_light(ledLightRoom2Tradfri.address, chJasnosc)
+            light.set_light(ledLightRoom2Tradfri.get_param('address'), chJasnosc)
         if(messag.find('swiatloJadalniTradfri.') != -1):   # Jadalnia TRADFRI
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt])
-            light.set_light(diningRoomTradfri.address, chJasnosc)
+            light.set_light(diningRoomTradfri.get_param('address'), chJasnosc)
         if(messag.find('swiatlokuchni.') != -1):  # KUCHNIA
             strt = messag.find(".")+1
-            light.set_light(kitchenLight.address, messag[strt])
-            kitchenLight.flagManualControl = True
+            light.set_light(kitchenLight.get_param('address'), messag[strt])
+            kitchenLight.set_param('flagManualControl', True)
         if(messag.find('swiatloPrzedpokoj.') != -1):  # PRZEDPOKOJ
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:len(messag)])
-            light.set_light(hallTradfri.address, chJasnosc)
+            light.set_light(hallTradfri.get_param('address'), chJasnosc)
         if(messag.find('reflektor1.') != -1):  # REFLEKTOR LED COLOR
             spootLightRoom1.setting = messag[11:23]
             spootLightRoom1.brightness = messag[23:26]
-            light.set_light(spootLightRoom1.address, spootLightRoom1.brightness)
+            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
         if(messag.find('reflektor1kolor.') != -1):  # REFLEKTOR LED COLOR
             spootLightRoom1.setting = messag[16:28]
-            light.set_light(spootLightRoom1.address, spootLightRoom1.brightness)
+            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
         if(messag.find('reflektor1jasn.') != -1):  # REFLEKTOR LED COLOR JASNOSC
             spootLightRoom1.brightness = messag[15:18]
-            light.set_light(spootLightRoom1.address, spootLightRoom1.brightness)
+            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
         if(messag.find('dekoracjePok1.') != -1):  # DEKORACJE POKOJ 1
             strt = messag.find(".")+1
-            light.set_light(decorationRoom1.address, messag[strt])
-            decorationRoom1.flagManualControl = True
-            light.set_light(decoration2Room1.address, messag[strt])
+            light.set_light(decorationRoom1.get_param('address'), messag[strt])
+            decorationRoom1.set_param('flagManualControl', True)
+            light.set_light(decoration2Room1.get_param('address'), messag[strt])
         if(messag.find('dekoracjePok2.') != -1):  # DEKORACJE POKOJ 2
             strt = messag.find(".")+1
-            decorationFlamingo.flagManualControl = True
-            light.set_light(decorationFlamingo.address, messag[strt])
+            decorationFlamingo.set_param('flagManualControl', True)
+            light.set_light(decorationFlamingo.get_param('address'), messag[strt])
         if(messag.find('hydroponics.') != -1):  # hydroponics
             strt = messag.find(".")+1
-            hydroponics.flagManualControl = True
-            light.set_light(hydroponics.address, messag[strt])
+            hydroponics.set_param('flagManualControl', True)
+            light.set_light(hydroponics.get_param('address'), messag[strt])
         #if(messag == '?m'):
         #    try:
         #        self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
@@ -463,16 +500,16 @@ class Socket:
         if(messag.find('sterTV.') != -1):
             strt = messag.find(".")+1
             if int(messag[(strt+9):(strt+12)]) >= 0:
-                ledStripRoom1.setting = messag[(strt):(strt+9)]
-                ledStripRoom1.brightness = int(messag[(strt+9):(strt+12)])
-            light.set_light(ledStripRoom1.address, ledStripRoom1.brightness)
-            ledStripRoom1.flagManualControl = True
+                ledStripRoom1.set_param('setting', messag[(strt):(strt+9)])
+                ledStripRoom1.set_param('brightness', int(messag[(strt+9):(strt+12)]))
+            light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.get_param('brightness'))
+            ledStripRoom1.set_param('flagManualControl', True)
         if(messag.find('sterTVjasnosc.') != -1):
             zmien = messag[14:17]
             if int(zmien) > 0:
-                ledStripRoom1.brightness = int(zmien)
-            light.set_light(ledStripRoom1.address, zmien)
-            ledStripRoom1.flagManualControl = True
+                ledStripRoom1.set_param('brightness', int(zmien))
+            light.set_light(ledStripRoom1.get_param('address'), zmien)
+            ledStripRoom1.set_param('flagManualControl', True)
         # if(messag.find('terrarium.') != -1):
         #     strt = messag.find(".T:")+1
         #     terrarium.tempUP = float(messag[(strt+2):(strt+6)])
@@ -491,74 +528,73 @@ class Socket:
         if(messag.find('ko2') != -1):
             packet = "#05L" + messag[3:15]
             log.add_log(packet)
-            nrf.to_send(ledStripRoom1.addresss, packet, ledStripRoom1.nrfPower)
-            ledStripRoom1.flagManualControl = True
+            nrf.to_send(ledStripRoom1.get_param('address'), packet, ledStripRoom1.get_param('nrfPower'))
+            ledStripRoom1.set_param('flagManualControl', True)
         if(messag.find('gra') != -1):
             packet = "#05G" + messag[3:6]
             log.add_log(packet)
-            nrf.to_send(ledStripRoom1.addresss, packet, ledStripRoom1.nrfPower)
-            ledStripRoom1.flagManualControl = True
+            nrf.to_send(ledStripRoom1.get_param('address'), packet, ledStripRoom1.get_param('nrfPower'))
+            ledStripRoom1.set_param('flagManualControl', True)
         if(messag.find('lelw')):  # LAMPA LED white
             packet = "#06W" + messag[4:7]
-            #nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+            #nrf.to_send(ledStripRoom1.get_param('address'), packet, ledStripRoom1.get_param('nrfPower'))
         if(messag.find('pok1max') != -1):
             packet = "#05K255255255255"
-            ledStripRoom1.setting = "255255255"
-            ledStripRoom1.brightness = 255
+            ledStripRoom1.set_param('setting', "255255255")
+            ledStripRoom1.set_param('brightness', 255)
             log.add_log(packet)
             log.add_log(packet)
-            nrf.to_send(ledStripRoom1.address, packet, ledStripRoom1.nrfPower)
+            nrf.to_send(ledStripRoom1.get_param('address'), packet, ledStripRoom1.get_param('nrfPower'))
             # ikea.ikea_dim_group(ikea.ipAddress, ikea.user_id, ikea.securityid,
             #                     ikea.security_user, tradfriDev.salon, 100)
-            ledStripRoom1.flagManualControl = True
+            ledStripRoom1.set_param('flagManualControl', True)
             log.add_log("Tryb swiatel: Pokoj 1 max")
         if(messag.find('dogHouseTryb.') != -1):
             strt = messag.find(".")+1
             packet = "#15T" + messag[strt]
-            nrf.to_send(dogHouse.address, packet, dogHouse.nrfPower)
-            # light.set_light(ledStripRoom1.address,ledStripRoom1.brightness)
+            nrf.to_send(dogHouse.get_param('address'), packet, dogHouse.get_param('nrfPower'))
+            # light.set_light(ledStripRoom1.get_param('address'),ledStripRoom1.brightness)
             # ledStripRoom1.flagManualControl=True
         if(messag.find('spij') != -1):
-            light.set_light(ledStripRoom1.address, "000")
-            ledStripRoom1.flagManualControl = True
-            light.set_light(decorationRoom1.address, 0)
-            light.set_light(decoration2Room1.address, 0)
-            light.set_light(mainLightRoom1Tradfri.address, 0)
-            light.set_light(mainLightRoom1Tradfri.bulb, 15)
-            light.set_light(floorLampRoom1Tradfri.address, 0)
-            decorationRoom1.flagManualControl = True
-            decoration2Room1.flagManualControl = True
-            decoration2Room1.flagManualControl = True
-            Set_light_with_delay(mainLightRoom1Tradfri.address, 0, 30).start()
-            Set_light_with_delay(decorationFlamingo.address, 0, 5*60).start()
-            decorationFlamingo.flagManualControl = True
-            Set_light_with_delay(kitchenLight.address, 0, 5*60).start()
-            kitchenLight.flagManualControl = True
+            light.set_light(ledStripRoom1.get_param('address'), "000")
+            ledStripRoom1.set_param('flagManualControl', True)
+            light.set_light(decorationRoom1.get_param('address'), 0)
+            light.set_light(decoration2Room1.get_param('address'), 0)
+            light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
+            light.set_light(mainLightRoom1Tradfri.get_param('bulb'), 15)
+            light.set_light(floorLampRoom1Tradfri.get_param('address'), 0)
+            decorationRoom1.set_param('flagManualControl', True)
+            decoration2Room1.set_param('flagManualControl', True)
+            decoration2Room1.set_param('flagManualControl', True)
+            Set_light_with_delay(mainLightRoom1Tradfri.get_param('address'), 0, 30).start()
+            Set_light_with_delay(decorationFlamingo.get_param('address'), 0, 5*60).start()
+            decorationFlamingo.set_param('flagManualControl', True)
+            Set_light_with_delay(kitchenLight.get_param('address'), 0, 5*60).start()
+            kitchenLight.set_param('flagManualControl', True)
             log.add_log("Tryb swiatel: spij")
         if(messag.find('romantyczny') != -1):
             if(random.randint(0, 1) == 1):
-                ledStripRoom1.setting = "255000{:03d}".format(random.randint(20, 120))
+                ledStripRoom1.set_param('setting', "255000{:03d}".format(random.randint(20, 120)))
             else:
-                ledStripRoom1.setting = "255{:03d}000".format(random.randint(20, 120))
-            light.set_light(ledStripRoom1.address, ledStripRoom1.setting)
+                ledStripRoom1.set_param('setting', "255{:03d}000".format(random.randint(20, 120)))
+            light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.get_param('setting'))
             if(random.randint(0, 1) == 1):
                 kolor = "255000{:03d}".format(random.randint(20, 150))
             else:
                 kolor = "255{:03d}000".format(random.randint(20, 150))
-            light.set_light(floorLampRoom1Tradfri.address, kolor)
-            light.set_light(floorLampRoom1Tradfri.address, 100)
+            light.set_light(floorLampRoom1Tradfri.get_param('address'), kolor)
+            light.set_light(floorLampRoom1Tradfri.get_param('address'), 100)
             if(random.randint(0, 1) == 1):
-                spootLightRoom1.setting = "255000{:03d}000".format(random.randint(20, 120))
+                spootLightRoom1.set_param('setting', "255000{:03d}000".format(random.randint(20, 120)))
             else:
-                spootLightRoom1.setting = "255{:03d}000000".format(random.randint(20, 120))
-            light.set_light(spootLightRoom1.address, 255)
-            light.set_light(mainLightRoom1Tradfri.address, 0)
-            ledStripRoom1.flagManualControl = True
-            light.set_light(decorationRoom1.address, 0)
-            decorationRoom1.flagManualControl = True
-            light.set_light(decoration2Room1.address, 1)
-            decoration2Room1.flagManualControl = True
+                spootLightRoom1.set_param('setting', "255{:03d}000000".format(random.randint(20, 120)))
+            light.set_light(spootLightRoom1.get_param('address'), 255)
+            light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
+            ledStripRoom1.set_param('flagManualControl', True)
+            light.set_light(decorationRoom1.get_param('address'), 0)
+            decorationRoom1.set_param('flagManualControl', True)
+            light.set_light(decoration2Room1.get_param('address'), 1)
+            decoration2Room1.set_param('flagManualControl', True)
             log.add_log("Tryb swiatel: romantyczny  --> "+packet)
-
 
 socket_server = Socket()

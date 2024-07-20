@@ -42,7 +42,6 @@ class Notifications:
             ),
             tokens=registration_tokens,
         )
-
         response = messaging.send_multicast(message)
         print('Notifications sent: ', response.success_count, ' / failed:', response.failure_count)
 

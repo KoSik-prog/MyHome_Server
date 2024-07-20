@@ -107,14 +107,14 @@ class Nrf():
                         sensorRoom2Temperature.decode_data(stringNRF)
                     if stringNRF[3] == "s":
                         if stringNRF[4:7].isdigit():
-                            ledPhotosHeart.brightness = int(stringNRF[4:7])
+                            ledPhotosHeart.set_param('brightness', int(stringNRF[4:7]))
                         else:
-                            ledPhotosHeart.brightness = 0
-                        if ledPhotosHeart.brightness != 0:
-                            ledPhotosHeart.flag = True
+                            ledPhotosHeart.set_param('brightness', 0)
+                        if ledPhotosHeart.get_param('brightness'):
+                            ledPhotosHeart.set_param('flag', True)
                         else:
-                            ledPhotosHeart.flag = False
-                        log.add_log(("   Led Heart ON/OFF:{} Jasność: {}".format(ledPhotosHeart.flag, ledPhotosHeart.brightness)))
+                            ledPhotosHeart.set_param('flag', False)
+                        log.add_log(("   Led Heart ON/OFF:{} Jasność: {}".format(ledPhotosHeart.get_param('flag'), ledPhotosHeart.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "03":  #outside sensor
                     sensorOutside.add_record(stringNRF)
@@ -126,89 +126,89 @@ class Nrf():
                     if stringNRF[3] == "?":
                         string2 = (stringNRF[13:16])
                         if(int(string2) == 0):
-                            ledStripRoom1.flag = 0
+                            ledStripRoom1.set_param('flag', 0)
                         else:
-                            ledStripRoom1.flag = 1
+                            ledStripRoom1.set_param('flag', 1)
                         if int(string2) > 0:
-                            ledStripRoom1.brightness = int(string2)
-                        ledStripRoom1.error = 0
-                        log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.flag)) +
-                                    ("   Jasnosc:{}".format(ledStripRoom1.brightness)))
+                            ledStripRoom1.set_param('brightness', int(string2))
+                        ledStripRoom1.set_param('error', 0)
+                        log.add_log(("   Led TV ON/OFF:{}".format(ledStripRoom1.get_param('flag'))) +
+                                    ("   Jasnosc:{}".format(ledStripRoom1.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "06":  # LED LAMPA
+                if stringNRF[1:3] == "06":  # LED KUCHNIA
+                    if stringNRF[3] == ".":
+                        if (int(stringNRF[4]) == 1 or int(stringNRF[4]) == 2):
+                            kitchenLight.set_param('flag', 1)
+                        else:
+                            kitchenLight.set_param('flag', 0)
+                        kitchenLight.set_param('error', 0)
+                        log.add_log(("   Led kuchnia TRYB:{}".format(kitchenLight.get_param('flag'))))
+                # ------------------------------------------------------------------------------------------------------------
+                if stringNRF[1:3] == "07":  # LED LAMPA
                     if stringNRF[3] == "?":
                         string2 = (stringNRF[13:16])
                         if(int(string2) == 0):
-                            spootLightRoom1.flag = 0
+                            spootLightRoom1.set_param('flag', 0)
                         else:
-                            spootLightRoom1.flag = 1
+                            spootLightRoom1.set_param('flag', 1)
                         # spootLightRoom1.brightness=int(string2)
-                        spootLightRoom1.error = 0
-                        log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.flag)) +
-                                    ("   Jasnosc:{}".format(spootLightRoom1.brightness)))
-                # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "07":  # LED KUCHNIA
-                    if stringNRF[3] == "?":
-                        if (int(stringNRF[4]) == 1 or int(stringNRF[4]) == 2):
-                            kitchenLight.flag = 1
-                        else:
-                            kitchenLight.flag = 0
-                        kitchenLight.error = 0
-                        log.add_log(("   Led kuchnia TRYB:{}".format(kitchenLight.flag)))
+                        spootLightRoom1.set_param('error', 0)
+                        log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.get_param('flag'))) +
+                                    ("   Jasnosc:{}".format(spootLightRoom1.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "08":  # DEKORACJE POK 1
                     if stringNRF[3] == "?":
-                        decorationRoom1.flag = int(stringNRF[4])
-                        decorationRoom1.error = 0
-                        log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(decorationRoom1.flag)))
+                        decorationRoom1.set_param('flag', int(stringNRF[4]))
+                        decorationRoom1.set_param('error', 0)
+                        log.add_log(("   Dekoracje Pok 1 ON/OFF:{}".format(decorationRoom1.get_param('flag'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "09":  # DEKORACJE 2 POK 1
                     if stringNRF[3] == "?":
-                        decoration2Room1.flag = int(stringNRF[4])
-                        decoration2Room1.error = 0
-                        log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(decorationRoom1.flag)))
+                        decoration2Room1.set_param('flag', int(stringNRF[4]))
+                        decoration2Room1.set_param('error', 0)
+                        log.add_log(("   Dekoracje 2 Pok 1 ON/OFF:{}".format(decorationRoom1.get_param('flag'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "10":  # FLAMING
                     if stringNRF[3] == "?":
-                        decorationFlamingo.flag = int(stringNRF[4])
-                        decorationFlamingo.error = 0
-                        log.add_log(("   Flaming ON/OFF:{}".format(decorationFlamingo.flag)))
+                        decorationFlamingo.set_param('flag', int(stringNRF[4]))
+                        decorationFlamingo.set_param('error', 0)
+                        log.add_log(("   Flaming ON/OFF:{}".format(decorationFlamingo.get_param('flag'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "11":  # Uniwersalny modul USB
                     if stringNRF[3] == "?":
-                        usbPlug.flag = int(stringNRF[4])
-                        usbPlug.error = 0
-                        log.add_log(("   USB Wtyk ON/OFF:{}".format(usbPlug.flag)))
+                        usbPlug.set_param('flag', int(stringNRF[4]))
+                        usbPlug.set_param('error', 0)
+                        log.add_log(("   USB Wtyk ON/OFF:{}".format(usbPlug.get_param('flag'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "18":  # hydroponics
                     if stringNRF[3] == "?":
-                        hydroponics.flag = int(stringNRF[4])
-                        hydroponics.error = 0
-                        log.add_log(("   hydroponics ON/OFF:{}".format(hydroponics.flag)))
+                        hydroponics.set_param('flag', int(stringNRF[4]))
+                        hydroponics.set_param('error', 0)
+                        log.add_log(("   hydroponics ON/OFF:{}".format(hydroponics.get_param('flag'))))
                 # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "19":  # table light
+                if stringNRF[1:3] == "19":  # desk light
                     if stringNRF[3] == "?":
                         if stringNRF[4:7].isdigit():
-                            ledDeskRoom3.brightness = int(stringNRF[4:7])
+                            ledDeskRoom3.set_param('brightness', int(stringNRF[4:7]))
                         else:
-                            ledDeskRoom3.brightness = 0
-                        if ledDeskRoom3.brightness != 0:
-                            ledDeskRoom3.flag = True
+                            ledDeskRoom3.set_param('brightness', 0)
+                        if ledDeskRoom3.get_param('brightness'):
+                            ledDeskRoom3.set_param('flag', True)
                         else:
-                            ledDeskRoom3.flag = False
-                        log.add_log(("   Desk LED ON/OFF:{} Jasność: {}".format(ledDeskRoom3.flag, ledDeskRoom3.brightness)))
+                            ledDeskRoom3.set_param('flag', False)
+                        log.add_log(("   Desk LED ON/OFF:{} Jasność: {}".format(ledDeskRoom3.get_param('flag'), ledDeskRoom3.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "20":  # lego light
                     if stringNRF[3] == "?":
                         if stringNRF[4:7].isdigit():
-                            ledLego.brightness = int(stringNRF[4:7])
+                            ledLego.set_param('brightness', int(stringNRF[4:7]))
                         else:
-                            ledLego.brightness = 0
-                        if ledLego.brightness != 0:
-                            ledLego.flag = True
+                            ledLego.set_param('brightness', 0)
+                        if ledLego.get_param('brightness'):
+                            ledLego.set_param('flag', True)
                         else:
-                            ledLego.flag = False
-                        log.add_log(("   LEGO LED ON/OFF:{} Jasność: {}".format(ledLego.flag, ledLego.brightness)))
+                            ledLego.set_param('flag', False)
+                        log.add_log(("   LEGO LED ON/OFF:{} Jasność: {}".format(ledLego.get_param('flag'), ledLego.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "20":  # terrace light
                     if stringNRF[3] == "?":
@@ -216,12 +216,12 @@ class Nrf():
                             if stringNRF[5:9].isdigit():
                                 ledTerrace.brightness = int(stringNRF[5:9])
                             else:
-                                ledTerrace.brightness = 0
-                            if ledTerrace.brightness != 0:
-                                ledTerrace.flag = True
+                                ledTerrace.set_param('brightness', 0)
+                            if ledTerrace.get_param('brightness'):
+                                ledTerrace.set_param('flag', True)
                             else:
-                                ledTerrace.flag = False
-                            log.add_log(("   Terrace LED ON/OFF:{} Jasność: {}".format(ledTerrace.flag, ledTerrace.brightness)))
+                                ledTerrace.set_param('flag', False)
+                            log.add_log(("   Terrace LED ON/OFF:{} Jasność: {}".format(ledTerrace.get_param('flag'), ledTerrace.get_param('brightness'))))
                 # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "12":  # kwiatek 2  addres 12
                     sensorFlower1.add_record(stringNRF)
@@ -235,21 +235,21 @@ class Nrf():
                     sensorFlower3.add_record(stringNRF)
                     infoStrip.set_error(16, False)
                 # ------------------------------------------------------------------------------------------------------------
-                if stringNRF[1:3] == "15":  # dogHouse 15
-                    if stringNRF[3] == "s":
-                        string2 = (stringNRF[4:7])
-                        dogHouse.temp1 = float(string2)/10
-                        string5 = (stringNRF[7:10])
-                        dogHouse.temp2 = float(string5)/10
-                        string6 = (stringNRF[10:13])
-                        dogHouse.temp3 = float(string6)/10
-                        string7 = (stringNRF[13])
-                        dogHouse.czujnikZajetosciflaga = int(string7)
-                        string8 = (stringNRF[14:16])
-                        dogHouse.czujnikZajetosciRaw = int(string8)
-                        dogHouse.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
-                        log.add_log(("   dogHouse t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(
-                            dogHouse.temp1, dogHouse.temp2, dogHouse.temp3, dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
+                # if stringNRF[1:3] == "15":  # dogHouse 15
+                #     if stringNRF[3] == "s":
+                #         string2 = (stringNRF[4:7])
+                #         dogHouse.temp1 = float(string2)/10
+                #         string5 = (stringNRF[7:10])
+                #         dogHouse.temp2 = float(string5)/10
+                #         string6 = (stringNRF[10:13])
+                #         dogHouse.temp3 = float(string6)/10
+                #         string7 = (stringNRF[13])
+                #         dogHouse.czujnikZajetosciflaga = int(string7)
+                #         string8 = (stringNRF[14:16])
+                #         dogHouse.czujnikZajetosciRaw = int(string8)
+                #         dogHouse.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
+                #         log.add_log(("   dogHouse t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(
+                #             dogHouse.temp1, dogHouse.temp2, dogHouse.temp3, dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
     # ------------------------------------------------------------------------------------------------------------
                 if stringNRF[1:3] == "99":  # test module
                     log.add_log('TEST!: {}'.format(stringNRF))

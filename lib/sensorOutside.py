@@ -119,3 +119,15 @@ class SensorOutside:
         
     def get_calulated_brightness(self):
         return self.calculatedBrightness
+
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)

@@ -94,6 +94,17 @@ class DecorationRoom1:  # Dekoracje w salonie Reka
                 } 
             return retData
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 decorationRoom1 = DecorationRoom1()
 
 
@@ -123,21 +134,33 @@ class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 decoration2Room1 = Decoration2Room1()
 
 
 class DecorationFlamingo:  # Dekoracje w sypialni
-    label = 'Flaming'
-    flag = 0
-    autoOn = '21:30:00.0000'
-    autoOff = '23:59:00.0000'
-    autoLuxMin = 100 
-    autoBrightness = 1
-    flagManualControl = False
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x33, 0x10]
-    nrfPower = NRF24.PA_LOW
+    def __init__(self) -> None:
+        self.name = "decorationFlamingo"
+        self.label = 'Flaming'
+        self.flag = 0
+        self.autoOn = '21:30:00.0000'
+        self.autoOff = '23:59:00.0000'
+        self.autoLuxMin = 100 
+        self.autoBrightness = 1
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x33, 0x10]
+        self.nrfPower = NRF24.PA_LOW
     
     def get_json_data(self):
         retData = {
@@ -153,7 +176,17 @@ class DecorationFlamingo:  # Dekoracje w sypialni
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 decorationFlamingo = DecorationFlamingo()
 
 
@@ -183,20 +216,33 @@ class UsbPlug:  # USB Wtyk
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 usbPlug = UsbPlug()
 
 
 class Hydroponics:  # hydroponika
-    label = 'Hydroponika'
-    flag = 0
-    autoOn = '09:00:00.0000'
-    autoOff = '17:00:00.0000'
-    autoLuxMin = 65000
-    autoBrightness = 1
-    flagManualControl = False
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x11, 0x88]
-    nrfPower = NRF24.PA_LOW
+    def __init__(self) -> None:
+        self.name = "hydroponics"
+        self.label = 'Hydroponika'
+        self.flag = 0
+        self.autoOn = '09:00:00.0000'
+        self.autoOff = '17:00:00.0000'
+        self.autoLuxMin = 65000
+        self.autoBrightness = 1
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x11, 0x88]
+        self.nrfPower = NRF24.PA_LOW
     
     def get_json_data(self):
         retData = {
@@ -212,24 +258,36 @@ class Hydroponics:  # hydroponika
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 hydroponics = Hydroponics()
 
 
 class LedStripRoom1:  # LED TV
-    label = "LED strip"
-    flag = 0
-    autoOn = '16:00:00.0000'
-    autoOff = '23:00:00.0000'
-    autoLuxMin = 100  # brightness setting for auto light
-    autoBrightness = 70
-    flagManualControl = False
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x33, 0x33]
-    nrfPower = NRF24.PA_LOW
-    white = 000
-    brightness = 0
-    setting = "255255255"
+    def __init__(self):
+        self.name = "LedStripRoom1"
+        self.label = "LED strip"
+        self.flag = 0
+        self.autoOn = '16:00:00.0000'
+        self.autoOff = '23:00:00.0000'
+        self.autoLuxMin = 100
+        self.autoBrightness = 70
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x33, 0x33]
+        self.nrfPower = "PA_LOW"  # Assuming NRF24.PA_LOW is a string
+        self.white = 0
+        self.brightness = 0
+        self.setting = "255255255"
     
     def get_json_data(self):
         retData = {
@@ -248,36 +306,61 @@ class LedStripRoom1:  # LED TV
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledStripRoom1 = LedStripRoom1()
 
 
 
 
 class SpootLightRoom1:  # REFLEKTOR W SALONIE
-    setting = "000000000100"
-    brightness = 0
-    flag = 0
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x00, 0x55]
-    nrfPower = NRF24.PA_LOW
-    label = 'Reflektor 1'
+    def __init__(self) -> None:
+        self.name = "SpootLightRoom1"
+        self.setting = "000000000100"
+        self.brightness = 0
+        self.flag = 0
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x00, 0x55]
+        self.nrfPower = NRF24.PA_LOW
+        self.label = 'Reflektor 1'
 
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 spootLightRoom1 = SpootLightRoom1()
 
 
 class KitchenLight:  # OSWIETLENIE KUCHNI
-    label = 'Kuchnia'
-    flag = 0
-    autoOn = '15:00:00.0000'
-    autoOff = '23:58:00.0000'
-    autoLuxMin = 150 
-    autoBrightness = 1
-    flagManualControl = False
-    error = 0
-    address = [0, 0, 0, 0, 6]
-    nrfPower = NRF24.PA_LOW
+    def __init__(self) -> None:
+        self.name = "kitchenLight"
+        self.label = 'Kuchnia'
+        self.flag = 0
+        self.autoOn = '15:00:00.0000'
+        self.autoOff = '23:58:00.0000'
+        self.autoLuxMin = 150 
+        self.autoBrightness = 1
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0, 0, 0, 0, 6]
+        self.nrfPower = NRF24.PA_LOW
     
     def get_json_data(self):
         retData = {
@@ -293,21 +376,33 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 kitchenLight = KitchenLight()
 
 class LedDeskRoom3:  # LED biurka
-    label = "LED Desk"
-    flag = 0
-    autoOn = '16:00:00.0000'
-    autoOff = '23:00:00.0000'
-    autoLuxMin = 0
-    autoBrightness = 70
-    flagManualControl = False
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x11, 0x99]
-    nrfPower = NRF24.PA_LOW
-    brightness = 0
+    def __init__(self) -> None:
+        self.name = "ledDeskRoom3"
+        self.label = "LED Desk"
+        self.flag = 0
+        self.autoOn = '16:00:00.0000'
+        self.autoOff = '23:00:00.0000'
+        self.autoLuxMin = 0
+        self.autoBrightness = 70
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x11, 0x99]
+        self.nrfPower = NRF24.PA_LOW
+        self.brightness = 0
     
     def get_json_data(self):
         retData = {
@@ -324,21 +419,34 @@ class LedDeskRoom3:  # LED biurka
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledDeskRoom3 = LedDeskRoom3()
 
 
 class LedLego:  # LED LEGO Strelicja
-    label = "LED Lego"
-    flag = 0
-    autoOn = '16:00:00.0000'
-    autoOff = '23:00:00.0000'
-    autoLuxMin = 50  # brightness setting for auto light
-    autoBrightness = 20
-    flagManualControl = False
-    error = 0
-    address = [0x33, 0x33, 0x33, 0x22, 0x00]
-    nrfPower = NRF24.PA_LOW
-    brightness = 0
+    def __init__(self) -> None:
+        self.name = "ledLego"
+        self.label = "LED Lego"
+        self.flag = 0
+        self.autoOn = '16:00:00.0000'
+        self.autoOff = '23:00:00.0000'
+        self.autoLuxMin = 50  # brightness setting for auto light
+        self.autoBrightness = 20
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x33, 0x33, 0x33, 0x22, 0x00]
+        self.nrfPower = NRF24.PA_LOW
+        self.brightness = 0
     
     def get_json_data(self):
         retData = {
@@ -354,7 +462,18 @@ class LedLego:  # LED LEGO Strelicja
             "brightness": self.brightness
             } 
         return retData
+    
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledLego = LedLego()
 
 
@@ -386,21 +505,34 @@ class LedTerrace:  # LED balkon
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledTerrace = LedTerrace()
 
 
 class LedPhotosHeart:  # LED serce w sypialni
-    label = "LED serce"
-    flag = 0
-    autoOn = '20:00:00.0000'
-    autoOff = '23:00:00.0000'
-    autoLuxMin = 50  # brightness setting for auto light
-    autoBrightness = 10
-    flagManualControl = False
-    error = 0
-    address = [0x00, 0x00, 0x00, 0x00, 0x22]
-    nrfPower = NRF24.PA_LOW
-    brightness = 70
+    def __init__(self) -> None:
+        self.name = "LedPhotosHeart"
+        self.label = "LED serce"
+        self.flag = 0
+        self.autoOn = '20:00:00.0000'
+        self.autoOff = '23:00:00.0000'
+        self.autoLuxMin = 50  # brightness setting for auto light
+        self.autoBrightness = 10
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x00, 0x00, 0x00, 0x00, 0x22]
+        self.nrfPower = NRF24.PA_LOW
+        self.brightness = 70
     
     def get_json_data(self):
         retData = {
@@ -417,54 +549,120 @@ class LedPhotosHeart:  # LED serce w sypialni
             } 
         return retData
 
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledPhotosHeart = LedPhotosHeart()
 
 
 class FloorLampRoom1Tradfri:
-    address = "65537"  # address="131079"  -> group
-    status = False
+    def __init__(self) -> None:
+        self.address = "65537"  # address="131079"  -> group
+        self.status = False
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 floorLampRoom1Tradfri = FloorLampRoom1Tradfri()
 
 
 class MainLightRoom1Tradfri:
-    bulb = "65559"
-    address = "131074"
-    status = False
+    def __init__(self) -> None:
+        self.bulb = "65559"
+        self.address = "131074"
+        self.status = False
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 mainLightRoom1Tradfri = MainLightRoom1Tradfri()
 
 
 class DiningRoomTradfri:
-    address = "131075"
-    status = False
+    def __init__(self) -> None:
+        self.address = "131075"
+        self.status = False
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 diningRoomTradfri = DiningRoomTradfri()
 
 
 class LedLightRoom2Tradfri:
-    address = "131082"
-    flag = 0
-    autoOn = '21:10:00.0000'
-    autoOff = '23:50:00.0000'
-    autoLuxMin = 30
-    flagManualControl = False
-    autoBrightness = 5
-    error = 0
-    label = "Lampy sypialnia"
+    def __init__(self) -> None:
+        self.address = "131082"
+        self.flag = 0
+        self.autoOn = '21:10:00.0000'
+        self.autoOff = '23:50:00.0000'
+        self.autoLuxMin = 30
+        self.flagManualControl = False
+        self.autoBrightness = 5
+        self.error = 0
+        self.label = "Lampy sypialnia"
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 ledLightRoom2Tradfri = LedLightRoom2Tradfri()
 
 
 class HallTradfri:
-    address = "131077"
-    status = False
-    label = "Oswietlenie przedpokoj"
+    def __init__(self) -> None:
+        self.address = "131077"
+        self.status = False
+        self.label = "Oswietlenie przedpokoj"
 
+    def to_dict(self):
+        return self.__dict__
 
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
 hallTradfri = HallTradfri()
 

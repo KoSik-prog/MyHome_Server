@@ -60,3 +60,15 @@ class SensorFlower:
         
     def get_name(self):
         return self.name
+
+    def to_dict(self):
+        return self.__dict__
+
+    def from_dict(self, data):
+        self.__dict__.update(data)
+
+    def set_param(self, param, setting):
+        setattr(self, param, setting)
+
+    def get_param(self, param):
+        return getattr(self, param, None)
