@@ -33,7 +33,11 @@ class Sensors:
             infoStrip.set_error(errorNumber, True)
 
     def set_power_error_on_strip(self, myClass, minPower, errorNumber):
-        if(myClass.get_param('power') <= minPower):
+        try:
+            powerValue = float(myClass.get_param('power'))
+        except (TypeError, ValueError):
+            powerValue = 0.0
+        if powerValue <= minPower:
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)

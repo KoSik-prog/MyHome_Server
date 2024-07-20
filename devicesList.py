@@ -15,6 +15,7 @@ try:
     from lib.sensorRoom import *
     from deviceWaterCan import *
     from lib.sensorRoom import *
+    from lib.nrfConnect import *
 except ImportError:
     print("Import error - devices list")
 
@@ -390,7 +391,7 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
 kitchenLight = KitchenLight()
 
 class LedDeskRoom3:  # LED biurka
-    def __init__(self) -> None:
+    def __init__(self, nrf) -> None:
         self.name = "ledDeskRoom3"
         self.label = "LED Desk"
         self.flag = 0
@@ -430,7 +431,51 @@ class LedDeskRoom3:  # LED biurka
 
     def get_param(self, param):
         return getattr(self, param, None)
-ledDeskRoom3 = LedDeskRoom3()
+
+    def handle_nrf(self, data):
+        if data[1:3] == self.get_address_value():
+            if data[3] == "?":
+                if data[4:7].isdigit():
+                    self.brightness = int(data[4:7])
+                else:
+                    self.brightness = 0
+                self.flag = True if self.brightness else False
+                log.add_log(f"   Desk LED ON/OFF:{self.flag} Jasność: {self.brightness}")
+                return True
+        return False
+
+    def handle_socketService(self, message):
+        if(message.find('ledDesk.') != -1):
+            strt = message.find(".")+1
+            settingBuffer = message[strt:]
+            if(settingBuffer.isdigit()):
+                if int(settingBuffer) > 100:
+                    settingBuffer = 100
+                setting = int(settingBuffer)
+                result = "ok"
+            else:
+                setting = 0
+                result = "error" 
+            packet = f"#{self.get_address_value()}P{int(setting):03d}"
+            if len(packet) >= 5:
+                log.add_log(f"Ustawiono Led Biurka: {packet}")
+                infoStrip.add_info(f"światło biurka: {setting}")
+                nrf.to_send(self.address, packet, self.nrfPower)
+                if int(setting) == 0:
+                    ledDeskRoom3.flag = False
+                else:
+                    ledDeskRoom3.flag = True
+                ledDeskRoom3.error += 1
+            else:
+                log.add_log(f"BLAD SKLADNI!: {packet}")
+            self.flagManualControl = True
+            return True, result
+        return False, 0
+
+    def get_address_value(self):
+        addrStr = f"{self.address[-2]:02x}{self.address[-1]:02x}"
+        return addrStr[1:3]
+ledDeskRoom3 = LedDeskRoom3(nrf)
 
 
 class LedLego:  # LED LEGO Strelicja
@@ -462,6 +507,39 @@ class LedLego:  # LED LEGO Strelicja
             "brightness": self.brightness
             } 
         return retData
+
+    def handle_nrf(self, data):
+        if data[1:3] == self.get_address_value():
+            if data[3] == "?":
+                if data[4:7].isdigit():
+                    self.brightness = int(data[4:7])
+                else:
+                    self.brightness = 0
+                self.flag = True if self.brightness else False
+                log.add_log(f"   LEGO LED ON/OFF:{self.flag} Jasność: {self.brightness}")
+                return True
+        return False
+
+    def handle_socketService(self, message):
+        if(message.find('ledLego.') != -1):
+            strt = message.find(".")+1
+            settingBuffer = message[strt:]
+            if(settingBuffer.isdigit()):
+                if int(settingBuffer) > 100:
+                    settingBuffer = 100
+                setting = int(settingBuffer)
+                result = "ok"
+            else:
+                setting = 0
+                result = "error" 
+                packet = "#20P{:03d}".format(int(setting))
+                if len(packet) >= 5:
+                    log.add_log("Ustawiono Led LEGO: {}".format(packet))
+                    infoStrip.add_info("światło LEGO: {}".format(setting))
+                    nrf.to_send(self.address, packet, self.nrfPower)
+                    self.flagManualControl = True
+            return True, result
+        return False, 0
     
     def to_dict(self):
         return self.__dict__
@@ -474,6 +552,10 @@ class LedLego:  # LED LEGO Strelicja
 
     def get_param(self, param):
         return getattr(self, param, None)
+
+    def get_address_value(self):
+        addrStr = f"{self.address[-2]:02x}{self.address[-1]:02x}"
+        return addrStr[1:3]
 ledLego = LedLego()
 
 
@@ -665,4 +747,6 @@ class HallTradfri:
     def get_param(self, param):
         return getattr(self, param, None)
 hallTradfri = HallTradfri()
+
+nrf.set_devicesList([ledDeskRoom3, ledLego])
 

@@ -241,20 +241,24 @@ class Socket:
                 decorationFlamingo.set_param('flagManualControl', True)
                 light.set_light(decorationFlamingo.get_param('address'), message[strt])
                 self.sendSocketMsg(client, "ok")
-            elif(message.find('ledDesk.') != -1):
-                strt = message.find(".")+1
-                settingBuffer = message[strt:]
-                if(settingBuffer.isdigit()):
-                    if int(settingBuffer) > 100:
-                        settingBuffer = 100
-                    setting = int(settingBuffer)
-                    self.sendSocketMsg(client, "ok")
-                else:
-                    setting = 0
-                    self.sendSocketMsg(client, "setting error")  
-                # ledDeskRoom3.set_param('brightness', setting)
-                light.set_light(ledDeskRoom3.get_param('address'), str(setting))
-                ledDeskRoom3.set_param('flagManualControl', True)
+            # elif(message.find('ledDesk.') != -1):
+            res = ledDeskRoom3.handle_socketService(message)
+            if res[0] == True:
+                self.sendSocketMsg(client, res[1])
+                return True
+                # strt = message.find(".")+1
+                # settingBuffer = message[strt:]
+                # if(settingBuffer.isdigit()):
+                #     if int(settingBuffer) > 100:
+                #         settingBuffer = 100
+                #     setting = int(settingBuffer)
+                #     self.sendSocketMsg(client, "ok")
+                # else:
+                #     setting = 0
+                #     self.sendSocketMsg(client, "setting error")  
+                # # ledDeskRoom3.set_param('brightness', setting)
+                # light.set_light(ledDeskRoom3.get_param('address'), str(setting))
+                # ledDeskRoom3.set_param('flagManualControl', True)
             elif(message.find('ledLego.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
