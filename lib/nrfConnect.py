@@ -46,7 +46,6 @@ class Nrf():
         self.radio.startListening()
 
     def set_devicesList(self, devices):
-        print("devices reg!!!")
         self.devices = devices
 
     def nrf24l01_thread(self):
@@ -102,6 +101,9 @@ class Nrf():
         return stringNRF
 
     def decode_message(self, stringNRF):
+        for device in self.devices: # TODO - new solution
+            if device.handle_nrf(stringNRF):
+                return True
     #     if len(stringNRF) != 0:
     #         if stringNRF[0] == "#":  # '#' - poczatek transmisji
     #             flaga_NRFOdebral = 0
@@ -240,29 +242,8 @@ class Nrf():
     #             elif stringNRF[1:3] == "14":  # kwiatek 5 adres 14
     #                 sensorFlower3.add_record(stringNRF)
     #                 infoStrip.set_error(16, False)
-    #             # ------------------------------------------------------------------------------------------------------------
-    #             # if stringNRF[1:3] == "15":  # dogHouse 15
-    #             #     if stringNRF[3] == "s":
-    #             #         string2 = (stringNRF[4:7])
-    #             #         dogHouse.temp1 = float(string2)/10
-    #             #         string5 = (stringNRF[7:10])
-    #             #         dogHouse.temp2 = float(string5)/10
-    #             #         string6 = (stringNRF[10:13])
-    #             #         dogHouse.temp3 = float(string6)/10
-    #             #         string7 = (stringNRF[13])
-    #             #         dogHouse.czujnikZajetosciflaga = int(string7)
-    #             #         string8 = (stringNRF[14:16])
-    #             #         dogHouse.czujnikZajetosciRaw = int(string8)
-    #             #         dogHouse.time = datetime.datetime.now()  # zapisanie czasu ostatniego odbioru
-    #             #         log.add_log(("   dogHouse t.wew: {}   t.ciepla: {}  t.zimna: {}   f:{}   cz:{}".format(
-    #             #             dogHouse.temp1, dogHouse.temp2, dogHouse.temp3, dogHouse.czujnikZajetosciflaga, dogHouse.czujnikZajetosciRaw)))
     # # ------------------------------------------------------------------------------------------------------------
     #             elif stringNRF[1:3] == "99":  # test module
     #                 log.add_log('TEST!: {}'.format(stringNRF))
-
-                # TODO - new solution
-                for device in self.devices:
-                    if device.handle_nrf(stringNRF):
-                        return True
 
 nrf = Nrf([0x11, 0x11, 0x11, 0x11, 0x11])

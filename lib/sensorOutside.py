@@ -53,27 +53,28 @@ class SensorOutside:
             } 
         return retData
 
-    def add_record(self, data):
-        if data[3] == "t":
-            self.temperature = (float(data[4:8])) / 10
-            self.humidity = int(data[8:11])
-            self.airPressure = int(data[11:15])
-            self.light = int(data[15:21])
-            self.power = (float(data[21:24])) / 100 
-            sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.airPressure, self.light, self.power)
-            self.calculate_light()
-            self.time = datetime.datetime.now()
-            self.errorFlag = False
-            infoStrip.set_error(0, False)
-            log.add_log("Sensor outside -> temp: {}°C  humi: {}%   press: {}hPa  light: {}lux  power: {}V".format(self.temperature, self.humidity, self.airPressure, self.light, self.power))
-        if data[3] == "w":
-            self.windX = int(data[4:11])
-            self.windY = int(data[11:18])
-            calibrationCounter = int(data[18:21])
-            cycleCounter = int(data[21:24])
-            self.calculate_wind()
-            sql.add_record_sensor_wind(self.windSpeed, self.windDirection)
-            log.add_log("Sensor outside -> {}/{} direction:{:.0f}°  speed:{:.0f}kmh  calibCounter: {} cycleCounter: {}".format(self.windX, self.windY, self.windDirection, self.windSpeed, calibrationCounter, cycleCounter))
+    def handle_nrf(self, data):
+        if data[1:3] == "03":
+            if data[3] == "t":
+                self.temperature = (float(data[4:8])) / 10
+                self.humidity = int(data[8:11])
+                self.airPressure = int(data[11:15])
+                self.light = int(data[15:21])
+                self.power = (float(data[21:24])) / 100 
+                sql.add_record_sensor_outdoor_temp(self.temperature, self.humidity, self.airPressure, self.light, self.power)
+                self.calculate_light()
+                self.time = datetime.datetime.now()
+                self.errorFlag = False
+                infoStrip.set_error(0, False)
+                log.add_log(f"Sensor outside -> temp: {self.temperature}°C  humi: {self.humidity}%   press: {self.airPressure}hPa  light: {self.light}lux  power: {self.power}V")
+            if data[3] == "w":
+                self.windX = int(data[4:11])
+                self.windY = int(data[11:18])
+                calibrationCounter = int(data[18:21])
+                cycleCounter = int(data[21:24])
+                self.calculate_wind()
+                sql.add_record_sensor_wind(self.windSpeed, self.windDirection)
+                log.add_log(f"Sensor outside -> {self.windX}/{self.windY} direction:{self.windDirection:.0f}°  speed:{self.windSpeed:.0f}kmh  calibCounter: {calibrationCounter} cycleCounter: {cycleCounter}")
 
     def calculate_wind(self):
         self.windDirection = self.points_to_direction(self.windX, self.windY, self.directionOffset)
@@ -116,6 +117,12 @@ class SensorOutside:
         else:
             self.nightFlag = False
         log.add_log("Calculated outside light: {} / {}".format(self.calculatedBrightness, self.LUXvalue))
+
+    def handle_socketService(self, message):
+        return [0]
+
+    def auto_timer(self):
+        return
         
     def get_calulated_brightness(self):
         return self.calculatedBrightness
