@@ -205,32 +205,31 @@ class Socket:
                     return True
 
 
-            if(message.find('hydroponics.') != -1):  # hydroponics
-                strt = message.find(".")+1
-                hydroponics.set_param('flagManualControl', True)
-                light.set_light(hydroponics.get_param('address'), message[strt])
-                self.sendSocketMsg(client, "ok")
-            elif(message.find('usbPlug.') != -1):  # uniwersalny modul USB
-                strt = message.find(".")+1
-                usbPlug.set_param('flagManualControl', True)
-                light.set_light(usbPlug.get_param('address'), message[strt])
-            elif(message.find('kitchenlight.') != -1):  # KUCHNIA
-                strt = message.find(".")+1
-                kitchenLight.set_param('flagManualControl', True)
-                light.set_light(kitchenLight.get_param('address'), message[strt])
-                self.sendSocketMsg(client, "ok")
-            elif(message.find('ledstripecolor.') != -1):
-                strt = message.find(".")+1
-                setting = message[strt:]
-                if len(setting) > 9:
-                    ledStripRoom1.set_param('setting', setting[:9])
-                    ledStripRoom1.brightness = int(setting[9:])
-                else:
-                    ledStripRoom1.setting = setting
-                light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.brightness)
-                ledStripRoom1.set_param('flagManualControl', True)
-                self.sendSocketMsg(client, "ok")
-
+            # if(message.find('hydroponics.') != -1):  # hydroponics
+            #     strt = message.find(".")+1
+            #     hydroponics.set_param('flagManualControl', True)
+            #     light.set_light(hydroponics.get_param('address'), message[strt])
+            #     self.sendSocketMsg(client, "ok")
+            # elif(message.find('usbPlug.') != -1):  # uniwersalny modul USB
+            #     strt = message.find(".")+1
+            #     usbPlug.set_param('flagManualControl', True)
+            #     light.set_light(usbPlug.get_param('address'), message[strt])
+            # elif(message.find('kitchenlight.') != -1):  # KUCHNIA
+            #     strt = message.find(".")+1
+            #     kitchenLight.set_param('flagManualControl', True)
+            #     light.set_light(kitchenLight.get_param('address'), message[strt])
+            #     self.sendSocketMsg(client, "ok")
+            # elif(message.find('ledstripecolor.') != -1):
+            #     strt = message.find(".")+1
+            #     setting = message[strt:]
+            #     if len(setting) > 9:
+            #         ledStripRoom1.set_param('setting', setting[:9])
+            #         ledStripRoom1.brightness = int(setting[9:])
+            #     else:
+            #         ledStripRoom1.setting = setting
+            #     light.set_light(ledStripRoom1.get_param('address'), ledStripRoom1.brightness)
+            #     ledStripRoom1.set_param('flagManualControl', True)
+            #     self.sendSocketMsg(client, "ok")
             # res = ledStripRoom1.handle_socketService(message)
             # if res[0] == True:
             #     self.sendSocketMsg(client, res[1])
@@ -318,7 +317,7 @@ class Socket:
             #     # ledTerrace.set_param('brightness', setting)
             #     light.set_light(ledTerrace.get_param('address'), str(setting))
             #     ledTerrace.set_param('flagManualControl', True)
-            elif(message.find('ledHeart.') != -1):
+            if(message.find('ledHeart.') != -1):
                 strt = message.find(".")+1
                 settingBuffer = message[strt:]
                 if(settingBuffer.isdigit()):

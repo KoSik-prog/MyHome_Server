@@ -404,11 +404,9 @@ class LedStripRoom1:  # LED TV
             } 
         return retData
 
-    def set_light(self, setting):
-        if not isinstance(setting, int):
-            setting = int(setting)
-        if setting <= 256 and setting >= 0:
-            packet = f"#05K{self.setting}{setting:03d}"
+    def set_light(self):
+        if self.brightness <= 256 and self.brightness >= 0:
+            packet = f"#05K{self.setting}{self.brightness:03d}"
             nrf.to_send(self.address, packet, self.nrfPower)
             log.add_log(f"Ustawiono Led TV: {setting}")
             infoStrip.add_info(f"Led TV: {setting}")
@@ -419,7 +417,9 @@ class LedStripRoom1:  # LED TV
     def handle_nrf(self, data):
         if data[1:3] == "05":
             if data[3] == "?":
-                if (int(data[4]) == 1 or int(data[4]) == 2):
+                self.setting = data[4:13]
+                self.brightness = data[13:]
+                if (int(self.brightness) > 0):
                     self.flag = 1
                 else:
                     self.flag = 0
@@ -441,7 +441,18 @@ class LedStripRoom1:  # LED TV
             else:
                 setting = 0
                 result = "error" 
-            self.set_light(setting)
+            self.set_light()
+            self.flagManualControl = True
+            return True, result
+        elif(message.find('ledstripecolor.') != -1):
+            strt = message.find(".")+1
+            setting = message[strt:]
+            if len(setting) > 9:
+                self.setting = setting[:9]
+                self.brightness = int(setting[9:])
+            else:
+                self.setting = setting
+            self.set_light()
             self.flagManualControl = True
             return True, result
         return False, 0
@@ -595,6 +606,7 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
         addrStr = f"{self.address[-1]:02x}"
         return addrStr
 kitchenLight = KitchenLight()
+
 
 class LedDeskRoom3:  # LED biurka
     def __init__(self, nrf) -> None:
@@ -965,6 +977,70 @@ class Hydroponics:  # hydroponika
             } 
         return retData
 
+    def set_light(self, setting):
+        if not isinstance(setting, int):
+            setting = int(setting)
+        if int(setting) > 1:
+            packet = "#17P1"
+        else:
+            packet = f"#17A{setting}"
+        nrf.to_send(self.address, packet, self.nrfPower)
+        log.add_log(f"Ustawiono {self.label}: {setting}".format(setting))
+        infoStrip.add_info(f"{self.name}: {setting}".format(setting))
+        return True
+
+    def handle_nrf(self, data):
+        if data[1:3] == self.get_address_value():
+            if data[3] == "?":
+                if data[4].isdigit():
+                    self.flag = int(data[4])
+                else:
+                    self.flag = 0
+                log.add_log(f"   Terrace LED ON/OFF:{self.flag}")
+                return True
+        return False
+
+    def handle_socketService(self, message):
+        if(message.find('hydroponics.') != -1):
+            strt = message.find(".")+1
+            settingBuffer = message[strt:]
+            if(settingBuffer.isdigit()):
+                if int(settingBuffer) > 100:
+                    settingBuffer = 100
+                setting = int(settingBuffer)
+                result = "ok"
+            else:
+                setting = 0
+                result = "error" 
+            self.set_light(setting)
+            self.flagManualControl = True
+            return True, result
+        return False, 0
+
+    def auto_timer(self):
+        now = datetime.datetime.now().time()
+        autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
+        autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
+
+        if self.flagManualControl and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
+            self.flagManualControl = False
+
+        if self.flagManualControl and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
+            self.flagManualControl = False
+
+        if (self.flag == 0 and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
+            autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
+            not self.flagManualControl and self.error < 20):
+            log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
+            self.setLight(self.autoBrightness)
+            time.sleep(20)
+
+        if (self.flag == 1 and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
+            not self.flagManualControl and self.error < 20):
+            log.add_log(f"AUTO {self.label} -> OFF")
+            self.setLight(0)
+            time.sleep(20)
+    
     def to_dict(self):
         return self.__dict__
 
@@ -976,6 +1052,10 @@ class Hydroponics:  # hydroponika
 
     def get_param(self, param):
         return getattr(self, param, None)
+
+    def get_address_value(self):
+        addrStr = f"{self.address[-2]:02x}{self.address[-1]:02x}"
+        return addrStr[1:3]
 hydroponics = Hydroponics()
 
 
@@ -1005,6 +1085,69 @@ class UsbPlug:  # USB Wtyk
             } 
         return retData
 
+    def set_light(self, setting):
+        if not isinstance(setting, int):
+            setting = int(setting)
+        if setting <= 1 and setting >= 0:
+            packet = f"#{self.get_address_value()}T{setting:01d}"
+            nrf.to_send(self.address, packet, self.nrfPower)
+            log.add_log(f"Ustawiono {self.label}: {setting}".format(setting))
+            infoStrip.add_info(f"{self.name}: {setting}".format(setting))
+            return True
+        return False
+
+    def handle_nrf(self, data):
+        if data[1:3] == self.get_address_value():
+            if data[3] == "?":
+                if data[4].isdigit():
+                    self.flag = int(data[4])
+                else:
+                    self.flag = 0
+                log.add_log(f"   Terrace LED ON/OFF:{self.flag}")
+                return True
+        return False
+
+    def handle_socketService(self, message):
+        if(message.find('usbPlug.') != -1):
+            strt = message.find(".")+1
+            settingBuffer = message[strt:]
+            if(settingBuffer.isdigit()):
+                if int(settingBuffer) > 1:
+                    settingBuffer = 1
+                setting = int(settingBuffer)
+                result = "ok"
+            else:
+                setting = 0
+                result = "error" 
+            self.set_light(setting)
+            self.flagManualControl = True
+            return True, result
+        return False, 0
+
+    def auto_timer(self):
+        now = datetime.datetime.now().time()
+        autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
+        autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
+
+        if self.flagManualControl and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
+            self.flagManualControl = False
+
+        if self.flagManualControl and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
+            self.flagManualControl = False
+
+        if (self.flag == 0 and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
+            autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
+            not self.flagManualControl and self.error < 20):
+            log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
+            self.setLight(self.autoBrightness)
+            time.sleep(20)
+
+        if (self.flag == 1 and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
+            not self.flagManualControl and self.error < 20):
+            log.add_log(f"AUTO {self.label} -> OFF")
+            self.setLight(0)
+            time.sleep(20)
+    
     def to_dict(self):
         return self.__dict__
 
@@ -1016,6 +1159,10 @@ class UsbPlug:  # USB Wtyk
 
     def get_param(self, param):
         return getattr(self, param, None)
+
+    def get_address_value(self):
+        addrStr = f"{self.address[-1]:02x}"
+        return addrStr
 usbPlug = UsbPlug()
 
 
