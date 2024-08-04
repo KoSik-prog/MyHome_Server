@@ -15,7 +15,6 @@ import RPi.GPIO as GPIO
 import spidev
 from sensorFlower import *
 from .sensorOutside import *
-from deviceWaterCan import *
 from lib.log import *
 from .lib_nrf24 import NRF24
 from lib.sqlDatabase import *
@@ -149,18 +148,6 @@ class Nrf():
     #                         kitchenLight.set_param('flag', 0)
     #                     kitchenLight.set_param('error', 0)
     #                     log.add_log(("   Led kuchnia TRYB:{}".format(kitchenLight.get_param('flag'))))
-    #             # ------------------------------------------------------------------------------------------------------------
-    #             elif stringNRF[1:3] == "07":  # LED LAMPA
-    #                 if stringNRF[3] == "?":
-    #                     string2 = (stringNRF[13:16])
-    #                     if(int(string2) == 0):
-    #                         spootLightRoom1.set_param('flag', 0)
-    #                     else:
-    #                         spootLightRoom1.set_param('flag', 1)
-    #                     # spootLightRoom1.brightness=int(string2)
-    #                     spootLightRoom1.set_param('error', 0)
-    #                     log.add_log(("   Led lampa ON/OFF:{}".format(spootLightRoom1.get_param('flag'))) +
-    #                                 ("   Jasnosc:{}".format(spootLightRoom1.get_param('brightness'))))
     #             # ------------------------------------------------------------------------------------------------------------
     #             elif stringNRF[1:3] == "08":  # DEKORACJE POK 1
     #                 if stringNRF[3] == "?":

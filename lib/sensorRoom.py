@@ -28,6 +28,10 @@ class SensorRoom:
         self.sensorName = sensorName
         self.databaseName = databaseName
         self.time = datetime.datetime.now()
+        self.temp = 0.0
+        self.humi = 0.0
+        self.batt = 0.0
+        self.error = False
         
     def get_json_data(self):
         retData = {

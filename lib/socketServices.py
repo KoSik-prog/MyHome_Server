@@ -63,7 +63,8 @@ class Socket:
         while server.read_server_active_flag() == True:
             try:
                 client, address = self.s.accept() 
-                receivedData = client.recv(self.size).decode('utf-8')
+                recData = client.recv(self.size)
+                receivedData = recData.decode('utf-8')
                 if receivedData:
                     if(receivedData[0] == "!"):
                         self.returnSocketData(client, receivedData) 
@@ -144,20 +145,6 @@ class Socket:
         if(message.find("getErrorsData") != -1):
             toSend = json.dumps(infoStrip.get_errors_array())
             self.sendSocketMsg(client, toSend)
-            
-        if(message.find('setTerrariumData.') != -1):
-            receivedMessage = message[message.find(".")+1:]
-            dataList = json.loads(receivedMessage)
-            terrarium.tempUP = float(dataList["tempTop"])
-            terrarium.humiUP = float(dataList["humiTop"])
-            terrarium.tempDN = float(dataList["tempBottom"])
-            terrarium.humiDN = float(dataList["humiBottom"])
-            terrarium.uvi = int(dataList["uvi"])
-            terrarium.spraysToday = int(dataList["spraysToday"])
-            log.add_log("Terrarium tempUP: {}°C, humiUP: {}%  /  tempDN: {}°C, humiDN: {}%  /  uvi: {} / spr: {}".format(
-                terrarium.tempUP, terrarium.humiUP, terrarium.tempDN, terrarium.humiDN, terrarium.uvi, terrarium.spraysToday))
-            sql.add_record_terrarium(terrarium.tempUP, terrarium.humiUP,
-                                     terrarium.tempDN, terrarium.humiDN, terrarium.uvi)
             
         if(message.find('systemReset.') != -1):
             time.sleep(10)
@@ -381,11 +368,6 @@ class Socket:
                     color = "255{:03d}000".format(random.randint(20, 150))
                 light.set_light(floorLampRoom1Tradfri.get_param('address'), color)
                 light.set_light(floorLampRoom1Tradfri.get_param('address'), 100)
-                if(random.randint(0, 1) == 1):
-                    spootLightRoom1.setting = "255000{:03d}000".format(random.randint(20, 120))
-                else:
-                    spootLightRoom1.setting = "255{:03d}000000".format(random.randint(20, 120))
-                light.set_light(spootLightRoom1.get_param('address'), 255)
                 light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
                 decorationRoom1.set_param('flagManualControl', True)
                 light.set_light(decorationRoom1.get_param('address'), 0)
@@ -501,16 +483,6 @@ class Socket:
             strt = messag.find(".")+1
             chJasnosc = int(messag[strt:len(messag)])
             light.set_light(hallTradfri.get_param('address'), chJasnosc)
-        if(messag.find('reflektor1.') != -1):  # REFLEKTOR LED COLOR
-            spootLightRoom1.setting = messag[11:23]
-            spootLightRoom1.brightness = messag[23:26]
-            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
-        if(messag.find('reflektor1kolor.') != -1):  # REFLEKTOR LED COLOR
-            spootLightRoom1.setting = messag[16:28]
-            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
-        if(messag.find('reflektor1jasn.') != -1):  # REFLEKTOR LED COLOR JASNOSC
-            spootLightRoom1.brightness = messag[15:18]
-            light.set_light(spootLightRoom1.get_param('address'), spootLightRoom1.get_param('brightness'))
         if(messag.find('dekoracjePok1.') != -1):  # DEKORACJE POKOJ 1
             strt = messag.find(".")+1
             light.set_light(decorationRoom1.get_param('address'), messag[strt])
@@ -524,13 +496,6 @@ class Socket:
             strt = messag.find(".")+1
             hydroponics.set_param('flagManualControl', True)
             light.set_light(hydroponics.get_param('address'), messag[strt])
-        #if(messag == '?m'):
-        #    try:
-        #        self.s.sendto('temz{:04.1f}wilz{:04.1f}tem1{:04.1f}wil1{:04.1f}tem2{:04.1f}wil2{:04.1f}'.format(sensorOutside.temperature, sensorOutside.humidity, sensorRoom1Temperature.temp, sensorRoom1Temperature.humi, sensorRoom2Temperature.temp, sensorRoom2Temperature.humi)+'wilk{:03d}slok{:03d}wodk{:03d}zask{:03d}'.format(int(czujnikKwiatek.wilgotnosc), int(
-        #            czujnikKwiatek.slonce), int(czujnikKwiatek.woda), int(czujnikKwiatek.power))+'letv{}{}{}'.format(int(ledStripRoom1.flag), ledStripRoom1.setting, ledStripRoom1.brightness)+'lesy{}{:03d}'.format(int(ledLightRoom2.flag), ledLightRoom2.brightness)+'lela{}{:03d}'.format(int(spootLightRoom1.flag), spootLightRoom1.brightness), client)
-        #        log.add_log("Wyslano dane UDP")
-        #    except:
-        #        log.add_log("Blad danych dla UDP")
         if(messag.find('sterTV.') != -1):
             strt = messag.find(".")+1
             if int(messag[(strt+9):(strt+12)]) >= 0:
@@ -544,21 +509,6 @@ class Socket:
                 ledStripRoom1.set_param('brightness', int(zmien))
             light.set_light(ledStripRoom1.get_param('address'), zmien)
             ledStripRoom1.set_param('flagManualControl', True)
-        # if(messag.find('terrarium.') != -1):
-        #     strt = messag.find(".T:")+1
-        #     terrarium.tempUP = float(messag[(strt+2):(strt+6)])
-        #     strt = messag.find("/W:")+1
-        #     terrarium.humiUP = float(messag[(strt+2):(strt+5)])
-        #     strt = messag.find(",t:")+1
-        #     terrarium.tempDN = float(messag[(strt+2):(strt+6)])
-        #     strt = messag.find("/w:")+1
-        #     terrarium.humiDN = float(messag[(strt+2):(strt+5)])
-        #     strt = messag.find("/I:")+1
-        #     terrarium.uvi = float(messag[(strt+2):(strt+11)])
-        #     log.add_log("   Terrarium TempUP: {}*C, humiUP: {}%  /  TempDN: {}*C, humiDN: {}*C  /  uvi: {}".format(
-        #         terrarium.tempUP, terrarium.humiUP, terrarium.tempDN, terrarium.humiDN, terrarium.uvi))
-        #     sql.add_record_terrarium(terrarium.tempUP, terrarium.humiUP,
-        #                              terrarium.tempDN, terrarium.humiDN, terrarium.uvi)
         if(messag.find('ko2') != -1):
             packet = "#05L" + messag[3:15]
             log.add_log(packet)
@@ -612,11 +562,6 @@ class Socket:
                 kolor = "255{:03d}000".format(random.randint(20, 150))
             light.set_light(floorLampRoom1Tradfri.get_param('address'), kolor)
             light.set_light(floorLampRoom1Tradfri.get_param('address'), 100)
-            if(random.randint(0, 1) == 1):
-                spootLightRoom1.set_param('setting', "255000{:03d}000".format(random.randint(20, 120)))
-            else:
-                spootLightRoom1.set_param('setting', "255{:03d}000000".format(random.randint(20, 120)))
-            light.set_light(spootLightRoom1.get_param('address'), 255)
             light.set_light(mainLightRoom1Tradfri.get_param('address'), 0)
             ledStripRoom1.set_param('flagManualControl', True)
             light.set_light(decorationRoom1.get_param('address'), 0)

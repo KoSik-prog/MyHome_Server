@@ -116,7 +116,7 @@ class SensorOutside:
             self.nightFlag = True
         else:
             self.nightFlag = False
-        log.add_log("Calculated outside light: {} / {}".format(self.calculatedBrightness, self.LUXvalue))
+        log.add_log(f"Calculated outside light: {self.calculatedBrightness:.0f} / {self.LUXvalue}")
 
     def handle_socketService(self, message):
         return [0]

@@ -32,7 +32,7 @@ class Settings:
 
 
     def save(self):
-        dataToSave = [ledStripRoom1.to_dict(), kitchenLight.to_dict(), ledLego.to_dict(), spootLightRoom1.to_dict(), ledPhotosHeart.to_dict()]
+        dataToSave = [ledStripRoom1.to_dict(), kitchenLight.to_dict(), ledLego.to_dict(), ledPhotosHeart.to_dict()]
         try:
             with open(self.path, 'w') as file:
                 json.dump(dataToSave, file)
@@ -49,11 +49,10 @@ class Settings:
                 ledStripRoom1.from_dict(data[0])
                 kitchenLight.from_dict(data[1])
                 ledLego.from_dict(data[2])
-                spootLightRoom1.from_dict(data[3])
                 ledPhotosHeart.from_dict(data[4])
             return True
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"bleble Error: {e}")
             return False
 
     # def save(self):
