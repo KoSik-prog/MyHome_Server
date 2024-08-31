@@ -117,30 +117,30 @@ class Socket:
             jsonData.append(ledPhotosHeart.get_json_data())
             jsonData.append(ledTerrace.get_json_data())
             jsonData.append(usbPlug.get_json_data())
+            jsonData.append(concorde.get_json_data())
             toSend = json.dumps(jsonData)
             self.sendSocketMsg(client, toSend)
 
-        if(message.find("setDeviceData") != -1):
-            strt = message.find(".")+1
+        if message.find("setDeviceData") != -1:
+            strt = message.find(".") + 1
             objectData = message[strt:]
             try:
                 data_dict = json.loads(objectData)
                 device_name = data_dict.get("name", "")
                 if device_name:
-                    device_obj = globals().get(device_name)()
-                    device_obj.from_dict(data_dict)
-                    print(device_obj.to_dict())
-                    self.sendSocketMsg(client, '{"status": "ok"}')
+                    device_obj = next((obj for obj in deviceArray if getattr(obj, 'name', None) == device_name), None)
+                    if device_obj:
+                        device_obj.from_dict(data_dict)
+                        self.sendSocketMsg(client, '{"status": "ok"}')
+                    else:
+                        log.add_log(f"Device object '{device_name}' not found in deviceArray")
+                        self.sendSocketMsg(client, '{"status": "error"}')
                 else:
                     log.add_log("Device name not provided in data")
-                    self.sendSocketMsg(client, '{"status": "ok"}')
+                    self.sendSocketMsg(client, '{"status": "error"}')
             except json.JSONDecodeError:
-               log.add_log("Invalid JSON data")
-               self.sendSocketMsg(client, '{"status": "ok"}')
-            
-        if(message.find("getTasmotaData") != -1):
-            toSend = json.dumps(tasmota.get_json_data())
-            self.sendSocketMsg(client, toSend)
+                log.add_log("Invalid JSON data")
+                self.sendSocketMsg(client, '{"status": "error"}')
             
         if(message.find("getErrorsData") != -1):
             toSend = json.dumps(infoStrip.get_errors_array())

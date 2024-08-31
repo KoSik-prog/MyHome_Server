@@ -44,6 +44,7 @@ sensorFlower3 = SensorFlower(3, [0x22, 0x22, 0x22, 0x22, 0x22], "Szeflera", 200.
 
 class DecorationRoom1:  # Dekoracje w salonie Reka
     def __init__(self):
+        self.name = "decorationRoom1"
         self.label = "Lampa-reka"
         self.flag = False
         self.autoOn = '15:50:00.0000'
@@ -134,7 +135,7 @@ class DecorationRoom1:  # Dekoracje w salonie Reka
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -160,8 +161,9 @@ class DecorationRoom1:  # Dekoracje w salonie Reka
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -172,6 +174,7 @@ decorationRoom1 = DecorationRoom1()
 
 class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
     def __init__(self):
+        self.name = "decoration2Room1"
         self.label = "Dekoracje szafka"
         self.flag = 0
         self.autoOn = '15:50:00.0000'
@@ -240,29 +243,30 @@ class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
         return False, 0
 
     def auto_timer(self):
-        now = datetime.datetime.now().time()
-        autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
-        autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
+        return True
+        # now = datetime.datetime.now().time()
+        # autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
+        # autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
 
-        if self.get_param("flagManualControl") and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
-            self.set_param("flagManualControl", False)
-        elif self.get_param("flagManualControl") and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
-            self.set_param("flagManualControl", False)
+        # if self.get_param("flagManualControl") and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
+        #     self.set_param("flagManualControl", False)
+        # elif self.get_param("flagManualControl") and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
+        #     self.set_param("flagManualControl", False)
 
-        if (not self.get_param("flag") and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
-            autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
-            not self.get_param('flagManualControl') and self.get_param('error') < 20):
-            log.add_log(f"!!! flag: {self.get_param('flag')} //  flagManualControl: {self.get_param('flagManualControl')}")
-            log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
-            self.set_light(self.autoBrightness)
-            time.sleep(20)
+        # if (not self.get_param("flag") and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
+        #     autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
+        #     not self.get_param('flagManualControl') and self.get_param('error') < 20):
+        #     log.add_log(f"!!! flag: {self.get_param('flag')} //  flagManualControl: {self.get_param('flagManualControl')}")
+        #     log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
+        #     self.set_light(self.autoBrightness)
+        #     time.sleep(20)
 
-        if (self.get_param("flag") and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
-            not self.get_param("flagManualControl") and self.error < 20):
-            log.add_log(f"AUTO {self.label} -> OFF")
-            self.set_light(0)
-            time.sleep(20)
-        time.sleep(1)
+        # if (self.get_param("flag") and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
+        #     not self.get_param("flagManualControl") and self.error < 20):
+        #     log.add_log(f"AUTO {self.label} -> OFF")
+        #     self.set_light(0)
+        #     time.sleep(20)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -288,8 +292,9 @@ class Decoration2Room1:  # Dekoracje 2 w salonie  Eifla i inne
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -389,7 +394,7 @@ class DecorationFlamingo:  # Dekoracje w sypialni
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -415,8 +420,9 @@ class DecorationFlamingo:  # Dekoracje w sypialni
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -437,7 +443,7 @@ class LedStripRoom1:  # LED TV
         self.flagManualControl = False
         self.error = 0
         self.address = [0x33, 0x33, 0x33, 0x33, 0x33]
-        self.nrfPower = "PA_LOW"  # Assuming NRF24.PA_LOW is a string
+        self.nrfPower = "PA_LOW"
         self.white = 0
         self.brightness = 0
         self.setting = "255255255"
@@ -554,7 +560,7 @@ class LedStripRoom1:  # LED TV
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -580,8 +586,9 @@ class LedStripRoom1:  # LED TV
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -595,9 +602,9 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
         self.name = "kitchenLight"
         self.label = 'Kuchnia'
         self.flag = False
-        self.autoOn = '09:00:00.0000' #'15:00:00.0000'
+        self.autoOn = '15:00:00.0000'
         self.autoOff = '23:58:00.0000'
-        self.autoLuxMin = 65000#150 
+        self.autoLuxMin = 150 
         self.autoBrightness = 1
         self.flagManualControl = False
         self.error = 0
@@ -663,25 +670,35 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
         autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
         autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
 
-        if self.get_param("flagManualControl") and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
+        with self.lock:
+            flag = self.flag
+            flagManualControl = self.flagManualControl
+            error = self.error
+
+        if flagManualControl and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
             self.set_param("flagManualControl", False)
-        elif self.get_param("flagManualControl") and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
+        elif flagManualControl and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
             self.set_param("flagManualControl", False)
 
-        if (not self.get_param("flag") and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
+        with self.lock:
+            flag = self.flag
+            flagManualControl = self.flagManualControl
+            error = self.error
+
+        if (not flag and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
             autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
-            not self.get_param('flagManualControl') and self.get_param('error') < 20):
-            log.add_log(f"!!! flag: {self.get_param('flag')} //  flagManualControl: {self.get_param('flagManualControl')}")
+            not flagManualControl and error < 20):
+            log.add_log(f"!!! flag: {flag} // flagManualControl: {flagManualControl}")
             log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
             self.set_light(self.autoBrightness)
             time.sleep(20)
 
-        if (self.get_param("flag") and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
-            not self.get_param("flagManualControl") and self.error < 20):
+        if (flag and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
+            not flagManualControl and error < 20):
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -707,8 +724,9 @@ class KitchenLight:  # OSWIETLENIE KUCHNI
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -751,7 +769,7 @@ class LedDeskRoom3:  # LED biurka
     def set_light(self, setting):
         if not isinstance(setting, int):
             setting = int(setting)
-        if setting < 100 and setting >= 0:
+        if setting <= 100 and setting >= 0:
             packet = f"#{self.get_address_value()}P{int(setting):03d}"
             nrf.to_send(self.address, packet, self.nrfPower)
             log.add_log(f"Ustawiono {self.label}: {setting}")
@@ -819,7 +837,7 @@ class LedDeskRoom3:  # LED biurka
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -845,14 +863,176 @@ class LedDeskRoom3:  # LED biurka
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
         addrStr = f"{self.address[-2]:02x}{self.address[-1]:02x}"
         return addrStr[1:3]
 ledDeskRoom3 = LedDeskRoom3()
+
+class Concorde:
+    def __init__(self) -> None:
+        self.name = "Concorde"
+        self.label = "Concorde"
+        self.flag = 0
+        self.autoOn = '16:00:00.0000'
+        self.autoOff = '23:00:00.0000'
+        self.autoLuxMin = 100
+        self.autoBrightness = 5
+        self.flagManualControl = False
+        self.error = 0
+        self.address = [0x00, 0x00, 0x00, 0x22, 0x33]
+        self.nrfPower = NRF24.PA_LOW
+        self.brightness = 0
+        self.mode = 0
+        self.lock = threading.Lock()
+    
+    def get_json_data(self):
+        retData = {
+            "name": self.label,
+            "flag": self.flag,
+            "autoOn": self.autoOn,
+            "autoOff": self.autoOff,
+            "autoLuxMin": self.autoLuxMin,
+            "autoBrightness": self.autoBrightness,
+            "flagManualControl": self.flagManualControl,
+            "error": self.error,
+            "address": self.address,
+            "brightness": self.brightness,
+            "mode": self.mode
+            } 
+        return retData
+
+    def set_light(self, setting):
+        if not isinstance(setting, int):
+            setting = int(setting)
+        if setting <= 100 and setting >= 0:
+            packet = f"#{self.get_address_value()}M{int(setting):01d}"
+            nrf.to_send(self.address, packet, self.nrfPower)
+            log.add_log(f"Ustawiono {self.label}: {setting}")
+            infoStrip.add_info(f"{self.label}: {setting}")
+            return True
+        return False
+
+    def set_lightColor(self, color):
+        if not isinstance(color, int):
+            color = int(color)
+        packet = f"#{self.get_address_value()}C{int(color):06X}"
+        nrf.to_send(self.address, packet, self.nrfPower)
+        log.add_log(f"Ustawiono {self.label}: {color}")
+        infoStrip.add_info(f"{self.label}: {color}")
+        return True 
+
+    def set_lightPower(self, power):
+        print(f"power = {power}")
+        if not isinstance(power, int):
+            power = int(power)
+        packet = f"#{self.get_address_value()}P{int(power):03d}"
+        nrf.to_send(self.address, packet, self.nrfPower)
+        log.add_log(f"Ustawiono {self.label}: {power}")
+        infoStrip.add_info(f"{self.label}: {power}")
+        return True 
+
+    def handle_nrf(self, data):
+        #23?0FF3564010
+        if data[1:3] == self.get_address_value():
+            if data[3] == "?":
+                if data[4].isdigit():
+                    self.mode = int(data[4])
+                else:
+                    self.mode = 0
+                if self.get_param('mode'):
+                    self.set_param('flag', True)
+                else:
+                    self.set_param('flag', False)
+                log.add_log(f"   {self.label} ON/OFF:{self.get_param('flag')} Tryb: {self.get_param('mode')}")
+                return True
+        return False
+
+    def handle_socketService(self, message):
+        if(message.find('concorde.') != -1):
+            strt = message.find(".")+1
+            buffer = message[strt:]
+            if(buffer[0] == "M"):
+                result = "ok"
+                setting = int(buffer[1])
+                self.set_light(setting)
+            elif(buffer[0] == "C"):
+                result = "ok"
+                setting = int(buffer[1:7], 16)
+                self.set_lightColor(setting)
+            elif(buffer[0] == "P"):
+                result = "ok"
+                setting = int(buffer[1:])
+                self.set_lightPower(setting)
+            else:
+                result = "error"
+            self.error += 1
+            self.set_param("flagManualControl", True)
+            return True, result
+        return False, 0
+
+    def auto_timer(self):
+        now = datetime.datetime.now().time()
+        autoOnTime = datetime.datetime.strptime(self.autoOn, '%H:%M:%S.%f').time()
+        autoOffTime = datetime.datetime.strptime(self.autoOff, '%H:%M:%S.%f').time()
+
+        if self.get_param("flagManualControl") and autoOnTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOnTime) + datetime.timedelta(seconds=15)).time():
+            self.set_param("flagManualControl", False)
+        elif self.get_param("flagManualControl") and autoOffTime <= now < (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=15)).time():
+            self.set_param("flagManualControl", False)
+
+        if (not self.get_param("flag") and sensorOutside.get_calulated_brightness() < self.autoLuxMin and
+            autoOnTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) - datetime.timedelta(seconds=60)).time() and
+            not self.get_param('flagManualControl') and self.get_param('error') < 20):
+            log.add_log(f"!!! flag: {self.get_param('flag')} //  flagManualControl: {self.get_param('flagManualControl')}")
+            log.add_log(f"AUTO {self.label} -> ON / brightnessCalc: {sensorOutside.get_calulated_brightness()} / setting: {self.autoLuxMin}")
+            self.set_light(self.autoBrightness)
+            time.sleep(20)
+
+        if (self.get_param("flag") and autoOffTime <= now <= (datetime.datetime.combine(datetime.date.today(), autoOffTime) + datetime.timedelta(seconds=60)).time() and
+            not self.get_param("flagManualControl") and self.error < 20):
+            log.add_log(f"AUTO {self.label} -> OFF")
+            self.set_light(0)
+            time.sleep(20)
+        # time.sleep(1)
+
+    def set_param(self, paramName, value):
+        try:
+            with self.lock:
+                setattr(self, paramName, value)
+        except:
+            print("Parameter error")
+        
+    def get_param(self, paramName):
+        try:
+            with self.lock:
+                return getattr(self, paramName)
+        except:
+            print("Parameter error")
+    
+    def to_dict(self):
+        def is_serializable(value):
+            try:
+                json.dumps(value)
+                return True
+            except (TypeError, OverflowError):
+                return False
+        return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
+
+    def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
+        for key, value in data.items():
+            if key in self.__dict__ and key not in excludedKeys:
+                setattr(self, key, value)
+
+    def get_address_value(self):
+        addrStr = f"{self.address[-2]:02x}{self.address[-1]:02x}"
+        return addrStr[1:3]
+concorde = Concorde()
 
 
 class LedLego:  # LED LEGO Strelicja
@@ -889,7 +1069,7 @@ class LedLego:  # LED LEGO Strelicja
     def set_light(self, setting):
         if not isinstance(setting, int):
             setting = int(setting)
-        if setting < 100 and setting >= 0:
+        if setting <= 100 and setting >= 0:
             packet = f"#{self.get_address_value()}P{setting:03d}"
             nrf.to_send(self.address, packet, self.nrfPower)
             log.add_log(f"Ustawiono {self.label}: {setting}")
@@ -952,7 +1132,7 @@ class LedLego:  # LED LEGO Strelicja
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -978,8 +1158,9 @@ class LedLego:  # LED LEGO Strelicja
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -990,6 +1171,7 @@ ledLego = LedLego()
 
 class LedTerrace:  # LED balkon
     def __init__(self):
+        self.name = "LED Terrace"
         self.label = "LED Terrace"
         self.flag = 0
         self.autoOn = '20:00:00.0000'
@@ -1021,7 +1203,7 @@ class LedTerrace:  # LED balkon
     def set_light(self, setting):
         if not isinstance(setting, int):
             setting = int(setting)
-        if setting < 100 and setting >= 0:
+        if setting <= 100 and setting >= 0:
             packet = f"#{self.get_address_value()}P{setting:03d}"
             nrf.to_send(self.address, packet, self.nrfPower)
             log.add_log(f"Ustawiono {self.label}: {setting}")
@@ -1085,7 +1267,7 @@ class LedTerrace:  # LED balkon
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -1111,8 +1293,9 @@ class LedTerrace:  # LED balkon
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -1213,7 +1396,7 @@ class Hydroponics:  # hydroponika
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -1239,8 +1422,9 @@ class Hydroponics:  # hydroponika
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -1338,7 +1522,7 @@ class UsbPlug:  # USB Wtyk
             log.add_log(f"AUTO {self.label} -> OFF")
             self.set_light(0)
             time.sleep(20)
-        time.sleep(1)
+        # time.sleep(1)
 
     def set_param(self, paramName, value):
         try:
@@ -1364,8 +1548,9 @@ class UsbPlug:  # USB Wtyk
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 
     def get_address_value(self):
@@ -1459,8 +1644,9 @@ class MainLightRoom1Tradfri:
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 mainLightRoom1Tradfri = MainLightRoom1Tradfri()
 
@@ -1520,14 +1706,17 @@ class LedPhotosHeart:  # LED serce w sypialni
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 ledPhotosHeart = LedPhotosHeart()
 
 
 class FloorLampRoom1Tradfri:
     def __init__(self) -> None:
+        self.name = "FloorLampRoom1Tradfri"
+        self.label = "FloorLampRoom1Tradfri"
         self.address = "65537"  # address="131079"  -> group
         self.status = False
         self.lock = threading.Lock()
@@ -1556,14 +1745,17 @@ class FloorLampRoom1Tradfri:
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 floorLampRoom1Tradfri = FloorLampRoom1Tradfri()
 
 
 class DiningRoomTradfri:
     def __init__(self) -> None:
+        self.name = "DiningRoomTradfri"
+        self.label = "DiningRoomTradfri"
         self.address = "131075"
         self.status = False
         self.lock = threading.Lock()
@@ -1592,14 +1784,16 @@ class DiningRoomTradfri:
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 diningRoomTradfri = DiningRoomTradfri()
 
 
 class LedLightRoom2Tradfri:
     def __init__(self) -> None:
+        self.name = "LedLightRoom2Tradfri"
         self.address = "131082"
         self.flag = 0
         self.autoOn = '21:10:00.0000'
@@ -1635,17 +1829,19 @@ class LedLightRoom2Tradfri:
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 ledLightRoom2Tradfri = LedLightRoom2Tradfri()
 
 
 class HallTradfri:
     def __init__(self) -> None:
+        self.name = "HallTradfri"
+        self.label = "Oswietlenie przedpokoj"
         self.address = "131077"
         self.status = False
-        self.label = "Oswietlenie przedpokoj"
         self.lock = threading.Lock()
 
     def set_param(self, paramName, value):
@@ -1672,13 +1868,13 @@ class HallTradfri:
         return {key: value for key, value in self.__dict__.items() if is_serializable(value) and key != 'lock'}
 
     def from_dict(self, data):
+        excludedKeys = {'lock', 'flag', 'flagManualControl', 'error'}
         for key, value in data.items():
-            if key in self.__dict__ and key != 'lock':
+            if key in self.__dict__ and key not in excludedKeys:
                 setattr(self, key, value)
 hallTradfri = HallTradfri()
 
 deviceArray = [decorationRoom1, decoration2Room1, decorationFlamingo, ledDeskRoom3, ledStripRoom1, 
-               ledLego, kitchenLight, sensorOutside, sensorRoom1Temperature, sensorFlower1, sensorFlower2, 
+               ledLego, kitchenLight, concorde, sensorOutside, sensorRoom1Temperature, sensorFlower1, sensorFlower2, 
                sensorFlower3, ledTerrace, mainLightRoom1Tradfri]
 nrf.set_devicesList(deviceArray)
-

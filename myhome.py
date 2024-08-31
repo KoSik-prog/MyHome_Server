@@ -42,11 +42,13 @@ class MyHome:
         self.nrf_thread_init()
         self.display_brightness_thread_init()
         self.settings_read_thread_init()
-        self.timer_thread_init()
+        # self.timer_thread_init()
         self.check_sensors_thread_init()
         self.check_weatherForecast_thread_init()
         self.socket_thread_init()
         self.tasmota_thread_init()
+
+        timer.timer_thread()
 
     # def __del__(self):
     #     self.socketTh.close()
@@ -72,6 +74,7 @@ class MyHome:
         self.lcdBrightnessTh.start()
 
     def settings_read_thread_init(self):
+        # settings.save() - only for settings update
         self.settingsTh = threading.Thread(target=settings.start_read)
         self.settingsTh.start()
 

@@ -37,6 +37,8 @@ class SensorOutside:
     directionOffset = 83
 
     def __init__(self):
+        self.name = "sensorOutside"
+        self.label = "sensorOutside"
         self.time = datetime.datetime.now()
         
     def get_json_data(self):

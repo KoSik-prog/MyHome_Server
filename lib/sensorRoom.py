@@ -25,7 +25,8 @@ class SensorRoom:
     error = False
 
     def __init__(self, sensorName, databaseName):
-        self.sensorName = sensorName
+        self.name = sensorName
+        self.label = sensorName
         self.databaseName = databaseName
         self.time = datetime.datetime.now()
         self.temp = 0.0
@@ -35,7 +36,7 @@ class SensorRoom:
         
     def get_json_data(self):
         retData = {
-            "name": self.sensorName,
+            "name": self.name,
             "temperature": self.temp,
             "humidity": self.humi,
             "power": self.batt
