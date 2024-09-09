@@ -57,7 +57,7 @@ class SensorRoom:
                 self.time = datetime.datetime.now()
                 self.error = False
                 infoStrip.set_error(1, False)
-                log.add_log(("Sensor {}  temp: {}°C  humi: {}%  power: {}".format(self.sensorName, self.temp, self.humi, self.batt)))
+                log.add_log(("Sensor {}  temp: {}°C  humi: {}%  power: {}".format(self.name, self.temp, self.humi, self.batt)))
         if data[1:3] == "02":  # for bedroom sensor
             if data[3] == "t":
                 bufTemp = ("{}.{}".format(data[5:7], data[7]))
@@ -68,7 +68,7 @@ class SensorRoom:
                 self.time = datetime.datetime.now()
                 self.error = False 
                 infoStrip.set_error(2, False)
-                log.add_log("Sensor {}  temp: {}°C humi: {}%".format(self.sensorName, self.temp, self.humi))
+                log.add_log("Sensor {}  temp: {}°C humi: {}%".format(self.name, self.temp, self.humi))
 
     def handle_socketService(self, message):
         return [0]

@@ -67,8 +67,8 @@ class Sql:
             for i in range(len(databases)):
                 request = "DELETE FROM {} WHERE timestamp < datetime('now', '-{} days')".format(databases[i], days)
                 curs.execute(request)
-            curs.execute("VACUUM;")
             conn.commit()
+            curs.execute("VACUUM;")
             log.add_log("SQL {} days old records are deleted".format(days))
         except sqlite3.IntegrityError:
             log.add_log("SQL error")

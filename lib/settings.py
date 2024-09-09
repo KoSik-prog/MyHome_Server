@@ -52,22 +52,20 @@ class Settings:
         raise TypeError(f"Type {type(obj)} not serializable")
         
     def read(self):
+        allowed_keys = {"label", "autoOn", "autoOff", "autoLuxMin", "autoBrightness", "address", "nrfPower"}
         try:
             with open(self.path, 'r') as file:
                 data = json.load(file)
                 for device_data in data:
                     device_name = device_data.get("name")
-                    # Znajdź obiekt z deviceArray, który ma odpowiednią nazwę
                     matching_device = next((device for device in deviceArray if device.name == device_name), None)
                     if matching_device:
-                        # Usuń klucze, które mają być pominięte
-                        device_data.pop("name", None)
-                        device_data.pop("flag", None)
-                        # Ustaw zmienne obiektu na podstawie danych JSON
-                        matching_device.from_dict(device_data)
+                        filtered_data = {key: device_data[key] for key in allowed_keys if key in device_data}
+                        matching_device.from_dict(filtered_data)
                 return True
         except Exception as e:
             print(f"Error: {e}")
             return False
+
 
 settings = Settings("/var/www/html/settings.json")

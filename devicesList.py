@@ -470,7 +470,12 @@ class LedStripRoom1:  # LED TV
         if color != None:
             self.setting = color
         if brightness != None:
-            self.brightness = brightness
+            if isinstance(brightness, int):
+                self.brightness = brightness
+            try:
+                self.brightness = int(brightness)
+            except (ValueError, TypeError):
+                return False
         if self.brightness <= 256 and self.brightness >= 0:
             packet = f"#05K{self.setting}{self.brightness:03d}"
             nrf.to_send(self.address, packet, self.nrfPower)
