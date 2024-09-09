@@ -28,9 +28,9 @@ class Watchdog:
         time.sleep(1200)
         log.add_watchdog_log("watchdog uruchomiony")
         while(1):
-            self.watchdog_set()
+            self.set()
             time.sleep(120)
-            self.watchdog_read()
+            self.read()
             log.add_watchdog_log('flaga watchdog = {}'.format(self.watchdogFlag))
             sys.stdout.flush()
             if(self.watchdogFlag == 0):

@@ -11,6 +11,7 @@ try:
     import datetime
     from lib.log import *
     from lib.sqlDatabase import *
+    from lib.infoStrip import *
 except ImportError:
     print("Import error - sensor flower")
 
@@ -27,6 +28,23 @@ class SensorFlower:
         self.humiMin = humiMin
         self.humiMax = humiMax
         self.time = datetime.datetime.now()
+
+    def handle_nrf(self, data):
+        if data[1:3] == "12":  # kwiatek 2  addres 12
+            self.add_record(data)
+            infoStrip.set_error(4, False)  # poprawic - przeniesc do klasy urzadzenia
+            return True
+        # ------------------------------------------------------------------------------------------------------------
+        elif data[1:3] == "13":  # kwiatek 3 adres 13
+            self.add_record(data)
+            infoStrip.set_error(5, False)
+            return True
+        # ------------------------------------------------------------------------------------------------------------
+        elif data[1:3] == "14":  # kwiatek 5 adres 14
+            self.add_record(data)
+            infoStrip.set_error(16, False)
+            return True
+        return False
 
     def add_record(self, data): #12k 000 0998 306
         if data[3] == "k":
@@ -57,6 +75,12 @@ class SensorFlower:
             diff = max - min
             result = ((100.0/diff)*float(value)) + ((-min)*(100.0/diff))
             return int(round(result))
+            
+    def handle_socketService(self, message):
+        return [0]
+
+    def auto_timer(self):
+        return
         
     def get_name(self):
         return self.name

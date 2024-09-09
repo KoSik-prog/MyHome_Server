@@ -29,11 +29,22 @@ class Sensors:
             time.sleep(10)
 
     def set_receive_error_on_strip(self, myClass, time, errorNumber):
-        if((datetime.datetime.now() - myClass.get_param('time')) > (datetime.timedelta(minutes=time))):
+        param_time = myClass.get_param('time')
+        if not isinstance(param_time, datetime.datetime):
+            try:
+                param_time = datetime.datetime.strptime(param_time, '%Y-%m-%dT%H:%M:%S.%f')
+            except ValueError:
+                print(f"Time conversion error - type:{type(param_time)} / param: {param_time}")
+                return
+        if (datetime.datetime.now() - param_time > datetime.timedelta(minutes=time)):
             infoStrip.set_error(errorNumber, True)
 
     def set_power_error_on_strip(self, myClass, minPower, errorNumber):
-        if(myClass.get_param('power') <= minPower):
+        try:
+            powerValue = float(myClass.get_param('power'))
+        except (TypeError, ValueError):
+            powerValue = 0.0
+        if powerValue <= minPower:
             infoStrip.set_error(errorNumber, True)
         else:
             infoStrip.set_error(errorNumber, False)

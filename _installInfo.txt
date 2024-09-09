@@ -10,3 +10,11 @@ Zawartosc:
 
 >>>--- Display brightness permissions config
 $ echo 'SUBSYSTEM=="backlight",RUN+="/bin/chmod 666 /sys/class/backlight/%k/brightness /sys/class/backlight/%k/bl_power"' | sudo tee -a /etc/udev/rules.d/backlight-permissions.rules
+
+
+>>>--- WIFI power managment
+1. check config:iwconfig
+2. In Terminal type
+    > sudo nano /etc/rc.local
+3. A file will come up with something about the IP hostname. Insert this line right below “# By default this script does nothing”:
+    /sbin/iwconfig wlan0 power off

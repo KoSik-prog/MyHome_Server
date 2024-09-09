@@ -39,14 +39,14 @@ class DisplayBrightness:
                 if self.light < 7:
                     displayBrightness = 11
                 elif self.light >= 7 and self.light < 100:
-                    displayBrightness = int(((0.645 * self.light) + 5.4838) + 11)
+                    displayBrightness = int(0.312 * self.light + 8.82)
                 elif self.light >= 100 and self.light < 1000:
-                    displayBrightness = int(((0.193 * self.light) + 50.67) + 11)
+                    displayBrightness = int(0.034 * self.light + 36.6)
                 elif self.light >= 1000:
-                    displayBrightness = 255
+                    displayBrightness = 70
                 
-                if displayBrightness > 80: # power save! when the power supply is weak
-                    displayBrightness = 80
+                if displayBrightness > 70: # power save! when the power supply is weak
+                    displayBrightness = 70
 
                 
                 self.backlight.fade_duration = 2

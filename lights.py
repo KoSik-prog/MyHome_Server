@@ -107,27 +107,13 @@ class LIGHTS_CL:
                 kitchenLight.set_param('error', kitchenLight.get_param('error')+1)
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
-        if address == spootLightRoom1.get_param('address'):  # LAMPA 1 w salonie
-            packet = "#05K{}{:03d}".format(spootLightRoom1.get_param('setting'), int(setting))
-            if len(packet) >= 5:
-                spootLightRoom1.brightness = int(setting)
-                log.add_log("Ustawiono Reflektor 1: {}".format(packet))
-                infoStrip.add_info("reflektor 1 w salonie: {}/{}".format(spootLightRoom1.get_param('setting'), int(setting)))
-                nrf.to_send(spootLightRoom1.get_param('address'), packet, spootLightRoom1.get_param('nrfPower'))
-                spootLightRoom1.set_param('error', spootLightRoom1.get_param('error')+1)
-                if(int(setting) == 0):
-                    spootLightRoom1.set_param('flag', 0)
-                else:
-                    spootLightRoom1.set_param('flag', 1)
-            else:
-                log.add_log("BLAD SKLADNI!: {}".format(packet))
         if address == decorationRoom1.get_param('address'):  # dekoracje pok 1 / Reka
             packet = "#08T{:1d}".format(int(setting))
             if len(packet) >= 5:
                 log.add_log("Ustawiono Lampa 1: {}".format(packet))
                 infoStrip.add_info("dekoracje 1 w salonie: {}".format(setting))
                 nrf.to_send(decorationRoom1.get_param('address'), packet, decorationRoom1.get_param('nrfPower'))
-                spootLightRoom1.set_param('error', spootLightRoom1.get_param('error')+1)
+                decorationRoom1.set_param('error', decorationRoom1.get_param('error')+1)
                 decorationRoom1.set_param('flag', int(setting))
             else:
                 log.add_log("BLAD SKLADNI!: {}".format(packet))
